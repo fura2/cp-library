@@ -11,6 +11,7 @@
 #endif
 
 #include "template/constant.hpp"
+#include "template/io.hpp"
 
 #define impl_overload4(a, b, c, d, e, ...) e
 
