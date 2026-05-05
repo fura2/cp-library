@@ -1,0 +1,19 @@
+---
+Language: Cpp
+BasedOnStyle: Google
+
+BinPackArguments: false
+BinPackParameters: false
+BitFieldColonSpacing: After
+BraceWrapping:
+  BeforeElse: true
+BreakBeforeBinaryOperators: All
+BreakBeforeBraces: Custom
+ColumnLimit: 80
+ForEachMacros:
+  - rep
+  - rrep
+InsertNewlineAtEOF: true
+SpaceBeforeCtorInitializerColon: false
+SpaceBeforeInheritanceColon: false
+SpaceBeforeRangeBasedForLoopColon: false
