@@ -1,4 +1,4 @@
 #pragma once
 
-inline constexpr int INF = 1'000'000'000;
-inline constexpr long long LINF = 4'000'000'000'000'000'000LL;
+inline constexpr int INF = 500'000'000;
+inline constexpr long long LINF = 2'000'000'000'000'000'000LL;
