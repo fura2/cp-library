@@ -12,6 +12,9 @@ ColumnLimit: 80
 ForEachMacros:
   - rep
   - rrep
+IncludeCategories:
+  - Regex: '^"template/template\.hpp"$'
+    Priority: -1
 InsertNewlineAtEOF: true
 SpaceBeforeCtorInitializerColon: false
 SpaceBeforeInheritanceColon: false
