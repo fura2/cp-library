@@ -5,6 +5,7 @@
 template <typename S>
 concept Semiring =
     requires { typename S::value_type; } &&
+    std::copyable<typename S::value_type> &&
     requires(const typename S::value_type& a, const typename S::value_type& b) {
       { S::add(a, b) } -> std::same_as<typename S::value_type>;
       { S::mul(a, b) } -> std::same_as<typename S::value_type>;

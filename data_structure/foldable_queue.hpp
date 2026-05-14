@@ -90,7 +90,7 @@ class FoldableQueue {
 
   friend std::string pretty(const FoldableQueue& q) {
     std::string s = "[";
-    for (FoldableQueue::size_type i = 0; i < q.size(); ++i) {
+    for (size_type i = 0; i < q.size(); ++i) {
       s += (i == 0 ? "" : ", ") + pretty(q[i]);
     }
     s += "]";
