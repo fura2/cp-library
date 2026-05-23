@@ -79,15 +79,6 @@ class FoldableQueue {
 
   value_type fold() const { return M::op(cum_front.back(), cum_back); }
 
-  void swap(FoldableQueue& q) {
-    stk_front.swap(q.stk_front);
-    stk_back.swap(q.stk_back);
-    cum_front.swap(q.cum_front);
-    using std::swap;
-    swap(cum_back, q.cum_back);
-  }
-  friend void swap(FoldableQueue& q1, FoldableQueue& q2) { q1.swap(q2); }
-
 #ifdef DEBUG
   friend std::string pretty(const FoldableQueue& q) {
     std::string s = "[";
