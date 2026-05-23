@@ -88,6 +88,7 @@ class FoldableQueue {
   }
   friend void swap(FoldableQueue& q1, FoldableQueue& q2) { q1.swap(q2); }
 
+#ifdef DEBUG
   friend std::string pretty(const FoldableQueue& q) {
     std::string s = "[";
     for (size_type i = 0; i < q.size(); ++i) {
@@ -96,6 +97,7 @@ class FoldableQueue {
     s += "]";
     return s;
   }
+#endif
 
  private:
   std::vector<value_type> stk_front, stk_back, cum_front;

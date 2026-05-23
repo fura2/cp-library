@@ -2,31 +2,30 @@
 
 #include <concepts>
 
-template <typename S>
+template <typename R>
 concept Semiring =
-    requires { typename S::value_type; } &&
-    std::copyable<typename S::value_type> &&
-    requires(const typename S::value_type& a, const typename S::value_type& b) {
-      { S::add(a, b) } -> std::same_as<typename S::value_type>;
-      { S::mul(a, b) } -> std::same_as<typename S::value_type>;
-      { S::zero() } -> std::same_as<typename S::value_type>;
-      { S::one() } -> std::same_as<typename S::value_type>;
+    requires { typename R::value_type; } &&
+    requires(const typename R::value_type& a, const typename R::value_type& b) {
+      { R::add(a, b) } -> std::same_as<typename R::value_type>;
+      { R::mul(a, b) } -> std::same_as<typename R::value_type>;
+      { R::zero() } -> std::same_as<typename R::value_type>;
+      { R::one() } -> std::same_as<typename R::value_type>;
     };
 
-template <Semiring S>
-struct AdditiveMonoidOf {
-  using value_type = S::value_type;
+template <Semiring R>
+struct AdditiveMonoidOfSemiring {
+  using value_type = R::value_type;
   static constexpr value_type op(const value_type& a, const value_type& b) {
-    return S::add(a, b);
+    return R::add(a, b);
   }
-  static constexpr value_type id() { return S::zero(); }
+  static constexpr value_type id() { return R::zero(); }
 };
 
-template <Semiring S>
-struct MultiplicativeMonoidOf {
-  using value_type = S::value_type;
+template <Semiring R>
+struct MultiplicativeMonoidOfSemiring {
+  using value_type = R::value_type;
   static constexpr value_type op(const value_type& a, const value_type& b) {
-    return S::mul(a, b);
+    return R::mul(a, b);
   }
-  static constexpr value_type id() { return S::one(); }
+  static constexpr value_type id() { return R::one(); }
 };

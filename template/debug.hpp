@@ -17,6 +17,8 @@
 
 #include "template/constant.hpp"
 
+#define DEBUG
+
 #define impl_overload7(a, b, c, d, e, f, g, h, ...) h
 
 // clang-format off
