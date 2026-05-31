@@ -54,5 +54,6 @@ inline const auto io_setup = [] {
 }();
 
 using lint = long long;
+using ulint = unsigned long long;
 
 using namespace std;

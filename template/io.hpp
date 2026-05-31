@@ -3,6 +3,12 @@
 #include <iostream>
 #include <vector>
 
+#ifdef LOCAL
+using std::endl;
+#else
+#define endl "\n"
+#endif
+
 struct InputValue {
   template <typename T>
   operator T() const {
@@ -28,7 +34,7 @@ inline InputVector input(int n) { return {n}; }
 
 template <typename T>
 void output(const T& x) {
-  std::cout << x << "\n";
+  std::cout << x << endl;
 }
 
 template <typename T>
@@ -37,5 +43,5 @@ void output(const std::vector<T>& v) {
     std::cout << (i == 0 ? "" : " ") << x;
     ++i;
   }
-  std::cout << "\n";
+  std::cout << endl;
 }
