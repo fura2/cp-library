@@ -10,8 +10,7 @@
 template <Semiring R, std::size_t N>
 struct SquareMatrix {
   using scalar_type = R::value_type;
-  using row_type = std::array<scalar_type, N>;
-  using data_type = std::array<row_type, N>;
+  using data_type = std::array<std::array<scalar_type, N>, N>;
 
   constexpr SquareMatrix() {
     for (auto& row: data) row.fill(R::zero());
