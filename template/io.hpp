@@ -28,7 +28,7 @@ inline InputVector input(int n) { return {n}; }
 
 template <typename T>
 void output(const T& x) {
-  std::cout << x << "\n";
+  std::cout << x << std::endl;
 }
 
 template <typename T>
@@ -37,5 +37,5 @@ void output(const std::vector<T>& v) {
     std::cout << (i == 0 ? "" : " ") << x;
     ++i;
   }
-  std::cout << "\n";
+  std::cout << std::endl;
 }
