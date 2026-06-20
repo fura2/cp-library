@@ -11,7 +11,9 @@ int main() {
 #else
   int t = input();
   rep (i, t) {
-    std::clog << "\033[36mCase #" << i + 1 << "\033[0m" << std::endl;
+#ifdef LOCAL
+    std::cerr << std::format("\033[36mCase #{}\033[0m\n", i + 1);
+#endif
     testcase();
   }
 #endif

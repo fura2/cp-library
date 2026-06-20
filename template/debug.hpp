@@ -22,18 +22,18 @@
 #define impl_overload7(a, b, c, d, e, f, g, h, ...) h
 
 // clang-format off
-#define impl_show1(a) { std::clog << #a << " = " << pretty(a) << "\n"; }
-#define impl_show2(a, ...) { std::clog << #a << " = " << pretty(a) << ", "; impl_show1(__VA_ARGS__); }
-#define impl_show3(a, ...) { std::clog << #a << " = " << pretty(a) << ", "; impl_show2(__VA_ARGS__); }
-#define impl_show4(a, ...) { std::clog << #a << " = " << pretty(a) << ", "; impl_show3(__VA_ARGS__); }
-#define impl_show5(a, ...) { std::clog << #a << " = " << pretty(a) << ", "; impl_show4(__VA_ARGS__); }
-#define impl_show6(a, ...) { std::clog << #a << " = " << pretty(a) << ", "; impl_show5(__VA_ARGS__); }
-#define impl_show7(a, ...) { std::clog << #a << " = " << pretty(a) << ", "; impl_show6(__VA_ARGS__); }
+#define impl_show1(a) { std::cerr << #a << " = " << pretty(a) << "\n"; }
+#define impl_show2(a, ...) { std::cerr << #a << " = " << pretty(a) << ", "; impl_show1(__VA_ARGS__); }
+#define impl_show3(a, ...) { std::cerr << #a << " = " << pretty(a) << ", "; impl_show2(__VA_ARGS__); }
+#define impl_show4(a, ...) { std::cerr << #a << " = " << pretty(a) << ", "; impl_show3(__VA_ARGS__); }
+#define impl_show5(a, ...) { std::cerr << #a << " = " << pretty(a) << ", "; impl_show4(__VA_ARGS__); }
+#define impl_show6(a, ...) { std::cerr << #a << " = " << pretty(a) << ", "; impl_show5(__VA_ARGS__); }
+#define impl_show7(a, ...) { std::cerr << #a << " = " << pretty(a) << ", "; impl_show6(__VA_ARGS__); }
 #define show(...) \
   do { \
-    std::clog << "\033[33m"; \
+    std::cerr << "\033[33m"; \
     impl_overload7(__VA_ARGS__, impl_show7, impl_show6, impl_show5, impl_show4, impl_show3, impl_show2, impl_show1)(__VA_ARGS__) \
-    std::clog << "\033[0m" << std::flush; \
+    std::cerr << "\033[0m"; \
   } while (false)
 // clang-format on
 
