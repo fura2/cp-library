@@ -3,32 +3,32 @@
 #include <iostream>
 #include <vector>
 
-struct InputValue {
-  template <typename T>
-  operator T() const {
+template <typename T>
+struct Input {
+  static T read() {
     T x;
     std::cin >> x;
     return x;
   }
 };
 
-struct InputVector {
-  int n;
+template <typename T, typename... Args>
+T input(Args&&... args) {
+  return Input<T>::read(std::forward<Args>(args)...);
+}
 
-  template <typename T>
-  operator std::vector<T>() const {
-    std::vector<T> v(n);
-    for (auto& x: v) std::cin >> x;
-    return v;
-  }
-};
-
-inline InputValue input() { return {}; }
-inline InputVector input(int n) { return {n}; }
+inline void newline() {
+#ifdef LOCAL
+  std::cout << std::endl;
+#else
+  std::cout << "\n";
+#endif
+}
 
 template <typename T>
 void output(const T& x) {
-  std::cout << x << std::endl;
+  std::cout << x;
+  newline();
 }
 
 template <typename T>
@@ -37,5 +37,5 @@ void output(const std::vector<T>& v) {
     std::cout << (i == 0 ? "" : " ") << x;
     ++i;
   }
-  std::cout << std::endl;
+  newline();
 }
