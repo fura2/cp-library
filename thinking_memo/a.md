@@ -11,7 +11,7 @@
 フォーマット設定を[ライブラリ用](../.clang-format)と[本番用](https://github.com/fura2/cp-utils/blob/main/.clang-format)で分けることにした。
 main.cpp だけは、本番用の設定に従うべきであって、ライブラリ用に従っていなくてもよいものとした。
 
-# 2026.6.27
+## 2026.6.27
 
 最小限だけを残して、main 関数なども全部 template.hpp に写した。
 コンテスト中は testcase 関数だけを実装する形。

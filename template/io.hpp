@@ -12,6 +12,17 @@ struct Input {
   }
 };
 
+template <typename T>
+struct Input<std::vector<T>> {
+  static std::vector<T> read(int n) {
+    std::vector<T> v(n);
+    for (int i = 0; i < n; ++i) {
+      std::cin >> v[i];
+    }
+    return v;
+  }
+};
+
 template <typename T, typename... Args>
 T input(Args&&... args) {
   return Input<T>::read(std::forward<Args>(args)...);
