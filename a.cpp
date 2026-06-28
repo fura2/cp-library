@@ -1,5 +1,6 @@
-// #define MULTI_TESTCASE
 #include "template/template.hpp"
 
-void testcase() {
-}
+// #define MULTI_TESTCASE
+#include "template/main.hpp"
+
+void testcase() {}
