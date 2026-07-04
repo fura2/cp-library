@@ -81,9 +81,13 @@ struct SquareMatrix {
     return res;
   }
 
-#ifdef DEBUG
-  friend std::string pretty(const SquareMatrix& a) { return pretty(a.data); }
-#endif
+  friend std::string pretty(const SquareMatrix& a)
+    requires requires(const data_type& x) {
+      { pretty(x) } -> std::convertible_to<std::string>;
+    }
+  {
+    return pretty(a.data);
+  }
 
  private:
   data_type data;

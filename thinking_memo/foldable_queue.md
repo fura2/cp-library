@@ -10,3 +10,7 @@
 ## 2026.5.24
 
 やりすぎに思えてきたので `swap` は消した。
+
+## 2026.7.4
+
+`FoldableQueue(std::vector<M>&& v)`, `void push(M&& x)` も削除した。
