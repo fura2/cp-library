@@ -82,12 +82,6 @@ class Grid {
 
 template <>
 struct Input<Grid> {
-  static Grid read() {
-    auto h = input<int>();
-    auto w = input<int>();
-    return read(h, w);
-  }
-
   static Grid read(int h, int w) {
     Grid G(h, w);
     for (int i = 0; i < h; ++i) {
