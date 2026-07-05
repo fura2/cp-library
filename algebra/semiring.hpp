@@ -2,30 +2,62 @@
 
 #include <concepts>
 
-template <typename R>
-concept Semiring =
-    requires { typename R::value_type; } &&
-    requires(const typename R::value_type& a, const typename R::value_type& b) {
-      { R::add(a, b) } -> std::same_as<typename R::value_type>;
-      { R::mul(a, b) } -> std::same_as<typename R::value_type>;
-      { R::zero() } -> std::same_as<typename R::value_type>;
-      { R::one() } -> std::same_as<typename R::value_type>;
-    };
-
-template <Semiring R>
-struct AdditiveMonoidOfSemiring {
-  using value_type = R::value_type;
-  static constexpr value_type op(const value_type& a, const value_type& b) {
-    return R::add(a, b);
-  }
-  static constexpr value_type id() { return R::zero(); }
+template <typename S>
+concept Semiring = requires {
+  { S::zero() } -> std::same_as<S>;
+  { S::one() } -> std::same_as<S>;
+} && requires(const S& a, const S& b) {
+  { a + b } -> std::same_as<S>;
+  { a * b } -> std::same_as<S>;
+} && requires(S a, const S& b) {
+  { a += b } -> std::same_as<S&>;
+  { a *= b } -> std::same_as<S&>;
 };
 
-template <Semiring R>
-struct MultiplicativeMonoidOfSemiring {
-  using value_type = R::value_type;
-  static constexpr value_type op(const value_type& a, const value_type& b) {
-    return R::mul(a, b);
+template <Semiring S>
+class AdditiveMonoidOfSemiring {
+ public:
+  AdditiveMonoidOfSemiring(): x{S::zero()} {}
+  AdditiveMonoidOfSemiring(const S& x): x{x} {}
+
+  AdditiveMonoidOfSemiring& operator*=(const AdditiveMonoidOfSemiring& a) {
+    x += a.x;
+    return *this;
   }
-  static constexpr value_type id() { return R::one(); }
+  friend AdditiveMonoidOfSemiring operator*(const AdditiveMonoidOfSemiring& a,
+                                            const AdditiveMonoidOfSemiring& b) {
+    return AdditiveMonoidOfSemiring{a} *= b;
+  }
+  static AdditiveMonoidOfSemiring identity() { return S::zero(); }
+
+  const S& unwrap() const { return x; }
+  S& unwrap() { return x; }
+
+ private:
+  S x;
+};
+
+template <Semiring S>
+class MultiplicativeMonoidOfSemiring {
+ public:
+  MultiplicativeMonoidOfSemiring(): x{S::one()} {}
+  MultiplicativeMonoidOfSemiring(const S& x): x{x} {}
+
+  MultiplicativeMonoidOfSemiring& operator*=(
+      const MultiplicativeMonoidOfSemiring& a) {
+    x *= a.x;
+    return *this;
+  }
+  friend MultiplicativeMonoidOfSemiring operator*(
+      const MultiplicativeMonoidOfSemiring& a,
+      const MultiplicativeMonoidOfSemiring& b) {
+    return MultiplicativeMonoidOfSemiring{a} *= b;
+  }
+  static MultiplicativeMonoidOfSemiring identity() { return S::one(); }
+
+  const S& unwrap() const { return x; }
+  S& unwrap() { return x; }
+
+ private:
+  S x;
 };
