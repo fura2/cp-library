@@ -13,4 +13,4 @@
 
 ## 2026.7.4
 
-`FoldableQueue(std::vector<M>&& v)`, `void push(M&& x)` も削除した。
+Monoid コンセプトの仕様変更に合わせて大幅に書き直した。
