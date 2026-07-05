@@ -1,7 +1,11 @@
 #pragma once
 
 #include <iostream>
+#include <utility>
 #include <vector>
+
+template <typename T, typename... Args>
+T input(Args&&... args);
 
 template <typename T>
 struct Input {
@@ -12,21 +16,31 @@ struct Input {
   }
 };
 
+template <typename T, typename U>
+struct Input<std::pair<T, U>> {
+  static std::pair<T, U> read() {
+    T x = input<T>();
+    U y = input<U>();
+    return {x, y};
+  }
+};
+
 template <typename T>
 struct Input<std::vector<T>> {
   static std::vector<T> read(int n) {
-    std::vector<T> v(n);
+    std::vector<T> v;
+    v.reserve(n);
     for (int i = 0; i < n; ++i) {
-      std::cin >> v[i];
+      v.push_back(input<T>());
     }
     return v;
   }
 
   static std::vector<T> read(int n, int offset) {
-    std::vector<T> v(n);
+    std::vector<T> v;
+    v.reserve(n);
     for (int i = 0; i < n; ++i) {
-      std::cin >> v[i];
-      v[i] -= offset;
+      v.push_back(input<T>() - offset);
     }
     return v;
   }

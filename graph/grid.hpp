@@ -73,6 +73,12 @@ class Grid {
     for (int i = 0; i < G.h; ++i) output(G.data[i]);
   }
 
+  friend std::string pretty(const Grid& G) {
+    std::string s;
+    for (int i = 0; i < G.h; ++i) s += "\n" + G.data[i];
+    return s;
+  }
+
  private:
   friend struct Input<Grid>;
 
@@ -84,9 +90,7 @@ template <>
 struct Input<Grid> {
   static Grid read(int h, int w) {
     Grid G(h, w);
-    for (int i = 0; i < h; ++i) {
-      G.data[i] = input<std::string>();
-    }
+    G.data = input<std::vector<std::string>>(h);
     return G;
   }
 };
