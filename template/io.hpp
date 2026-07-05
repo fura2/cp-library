@@ -21,6 +21,15 @@ struct Input<std::vector<T>> {
     }
     return v;
   }
+
+  static std::vector<T> read(int n, int offset) {
+    std::vector<T> v(n);
+    for (int i = 0; i < n; ++i) {
+      std::cin >> v[i];
+      v[i] -= offset;
+    }
+    return v;
+  }
 };
 
 template <typename T, typename... Args>
