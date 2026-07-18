@@ -16,23 +16,23 @@ class FoldableQueue {
 
   template <typename T>
     requires std::constructible_from<M, const T&>
-  explicit FoldableQueue(const std::vector<T>& v)
+  explicit FoldableQueue(const std::vector<T>& a)
       : cum_front{M::identity()}, cum_back{M::identity()} {
-    stk_back.reserve(v.size());
-    for (const T& x: v) {
+    stk_back.reserve(a.size());
+    for (const T& x: a) {
       const M& y = stk_back.emplace_back(x);
-      cum_back *= y;
+      cum_back = cum_back * y;
     }
   }
 
   template <typename T>
     requires std::constructible_from<M, T&&>
-  explicit FoldableQueue(std::vector<T>&& v)
+  explicit FoldableQueue(std::vector<T>&& a)
       : cum_front{M::identity()}, cum_back{M::identity()} {
-    stk_back.reserve(v.size());
-    for (T& x: v) {
+    stk_back.reserve(a.size());
+    for (T& x: a) {
       const M& y = stk_back.emplace_back(std::move(x));
-      cum_back *= y;
+      cum_back = cum_back * y;
     }
   }
 
@@ -57,7 +57,7 @@ class FoldableQueue {
     requires std::constructible_from<M, T&&>
   void push(T&& x) {
     const M& y = stk_back.emplace_back(std::forward<T>(x));
-    cum_back *= y;
+    cum_back = cum_back * y;
   }
 
   template <typename R>
@@ -75,7 +75,7 @@ class FoldableQueue {
   template <typename... Args>
   const M& emplace(Args&&... args) {
     const M& x = stk_back.emplace_back(std::forward<Args>(args)...);
-    cum_back *= x;
+    cum_back = cum_back * x;
     return x;
   }
 
@@ -102,12 +102,12 @@ class FoldableQueue {
     }
   {
     std::string s = "[";
-    for (std::size_t i = 0; i < q.stk_front.size(); ++i) {
+    for (auto i = 0uz; i < q.stk_front.size(); ++i) {
       s += (i == 0 ? "" : ", ") +
            pretty(q.stk_front[q.stk_front.size() - i - 1]);
     }
     s += " | ";
-    for (std::size_t i = 0; i < q.stk_back.size(); ++i) {
+    for (auto i = 0uz; i < q.stk_back.size(); ++i) {
       s += (i == 0 ? "" : ", ") + pretty(q.stk_back[i]);
     }
     s += "]";

@@ -9,9 +9,6 @@ concept Semiring = requires {
 } && requires(const S& a, const S& b) {
   { a + b } -> std::same_as<S>;
   { a * b } -> std::same_as<S>;
-} && requires(S a, const S& b) {
-  { a += b } -> std::same_as<S&>;
-  { a *= b } -> std::same_as<S&>;
 };
 
 template <Semiring S>
