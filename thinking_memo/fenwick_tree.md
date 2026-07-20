@@ -1,4 +1,4 @@
-### 2026.7.18
+## 2026.7.18
 
 lower_bound と upper_bound 以外の機能を持った Fenwick tree を前のライブラリから移植した。これらは ACL に合わせて max_right, min_left の形式に書き換えるかもしれない。
 

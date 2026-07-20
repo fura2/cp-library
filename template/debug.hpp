@@ -118,7 +118,7 @@ inline std::string pretty(double x) { return std::to_string(x); }
 
 inline std::string pretty(long double x) { return std::to_string(x); }
 
-inline std::string pretty(bool b) { return b ? "⊤" : "⊥"; }
+inline std::string pretty(bool b) { return b ? "T" : "F"; }
 
 inline std::string pretty(char c) {
   if (c == '\0') return "'\\0'";

@@ -70,6 +70,20 @@ class FenwickTree {
     }
   */
 
+  friend std::string pretty(const FenwickTree& f) {
+    if constexpr (AbelianGroup<M> && requires(const M& x) {
+                    { pretty(x) } -> std::same_as<std::string>;
+                  }) {
+      std::string s = "[";
+      for (auto i = 0uz; i < f.size(); ++i) {
+        s += (i == 0 ? "" : ", ") + pretty(f.fold(i, i + 1));
+      }
+      s += "]";
+      return s;
+    }
+    return "[" + std::to_string(f.size()) + " element(s)]";
+  }
+
  private:
   std::size_t n;
   std::vector<M> a;

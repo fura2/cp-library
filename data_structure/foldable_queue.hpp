@@ -96,22 +96,18 @@ class FoldableQueue {
 
   M fold() const { return cum_front.back() * cum_back; }
 
-  friend std::string pretty(const FoldableQueue& q)
-    requires requires(const M& x) {
-      { pretty(x) } -> std::same_as<std::string>;
+  friend std::string pretty(const FoldableQueue& q) {
+    if constexpr (requires(const M& x) {
+                    { pretty(x) } -> std::same_as<std::string>;
+                  }) {
+      std::string s = "[";
+      for (auto i = 0uz; i < q.size(); ++i) {
+        s += (i == 0 ? "" : ", ") + pretty(q[i]);
+      }
+      s += "]";
+      return s;
     }
-  {
-    std::string s = "[";
-    for (auto i = 0uz; i < q.stk_front.size(); ++i) {
-      s += (i == 0 ? "" : ", ") +
-           pretty(q.stk_front[q.stk_front.size() - i - 1]);
-    }
-    s += " | ";
-    for (auto i = 0uz; i < q.stk_back.size(); ++i) {
-      s += (i == 0 ? "" : ", ") + pretty(q.stk_back[i]);
-    }
-    s += "]";
-    return s;
+    return "[" + std::to_string(q.size()) + " element(s)]";
   }
 
  private:
