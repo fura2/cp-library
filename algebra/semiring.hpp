@@ -29,11 +29,13 @@ class SemiringImpl {
   constexpr SemiringImpl(const T& x): x{x} {}
   constexpr SemiringImpl(T&& x): x{std::move(x)} {}
 
-  constexpr SemiringImpl operator+(const SemiringImpl& s) const {
-    return SemiringImpl{Add(x, s.x)};
+  friend constexpr SemiringImpl operator+(const SemiringImpl& s,
+                                          const SemiringImpl& t) {
+    return SemiringImpl{Add(s.x, t.x)};
   }
-  constexpr SemiringImpl operator*(const SemiringImpl& s) const {
-    return SemiringImpl{Mul(x, s.x)};
+  friend constexpr SemiringImpl operator*(const SemiringImpl& s,
+                                          const SemiringImpl& t) {
+    return SemiringImpl{Mul(s.x, t.x)};
   }
   static constexpr SemiringImpl zero() { return SemiringImpl{Zero()}; }
   static constexpr SemiringImpl one() { return SemiringImpl{One()}; }

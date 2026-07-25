@@ -28,8 +28,9 @@ class MonoidImpl {
   constexpr MonoidImpl(const T& x): x{x} {}
   constexpr MonoidImpl(T&& x): x{std::move(x)} {}
 
-  constexpr MonoidImpl operator*(const MonoidImpl& m) const {
-    return MonoidImpl{Op(x, m.x)};
+  friend constexpr MonoidImpl operator*(const MonoidImpl& m,
+                                        const MonoidImpl& n) {
+    return MonoidImpl{Op(m.x, n.x)};
   }
   static constexpr MonoidImpl identity() { return MonoidImpl{Id()}; }
 

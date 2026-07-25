@@ -33,14 +33,14 @@ class RingImpl {
   constexpr RingImpl(T&& x): x{std::move(x)} {}
 
   constexpr RingImpl operator-() const { return RingImpl{Neg(x)}; }
-  constexpr RingImpl operator+(const RingImpl& r) const {
-    return RingImpl{Add(x, r.x)};
+  friend constexpr RingImpl operator+(const RingImpl& r, const RingImpl& s) {
+    return RingImpl{Add(r.x, s.x)};
   }
-  constexpr RingImpl operator-(const RingImpl& r) const {
-    return RingImpl{Add(x, Neg(r.x))};
+  friend constexpr RingImpl operator-(const RingImpl& r, const RingImpl& s) {
+    return RingImpl{Add(r.x, Neg(s.x))};
   }
-  constexpr RingImpl operator*(const RingImpl& r) const {
-    return RingImpl{Mul(x, r.x)};
+  friend constexpr RingImpl operator*(const RingImpl& r, const RingImpl& s) {
+    return RingImpl{Mul(r.x, s.x)};
   }
   static constexpr RingImpl zero() { return RingImpl{Zero()}; }
   static constexpr RingImpl one() { return RingImpl{One()}; }

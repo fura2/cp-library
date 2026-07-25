@@ -13,9 +13,9 @@ class AdditiveMonoidOfSemiring {
   constexpr AdditiveMonoidOfSemiring(const S& s): s{s} {}
   constexpr AdditiveMonoidOfSemiring(S&& s): s{std::move(s)} {}
 
-  constexpr AdditiveMonoidOfSemiring operator*(
-      const AdditiveMonoidOfSemiring& m) const {
-    return AdditiveMonoidOfSemiring{s + m.s};
+  friend constexpr AdditiveMonoidOfSemiring operator*(
+      const AdditiveMonoidOfSemiring& m, const AdditiveMonoidOfSemiring& n) {
+    return AdditiveMonoidOfSemiring{m.s + n.s};
   }
   static constexpr AdditiveMonoidOfSemiring identity() {
     return AdditiveMonoidOfSemiring{S::zero()};

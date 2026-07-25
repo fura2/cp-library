@@ -13,8 +13,9 @@ class AdditiveGroupOfRing {
   constexpr AdditiveGroupOfRing(const R& r): r{r} {}
   constexpr AdditiveGroupOfRing(R&& r): r{std::move(r)} {}
 
-  constexpr AdditiveGroupOfRing operator*(const AdditiveGroupOfRing& g) const {
-    return AdditiveGroupOfRing{r + g.r};
+  friend constexpr AdditiveGroupOfRing operator*(const AdditiveGroupOfRing& g,
+                                                 const AdditiveGroupOfRing& h) {
+    return AdditiveGroupOfRing{g.r + h.r};
   }
   static constexpr AdditiveGroupOfRing identity() {
     return AdditiveGroupOfRing{R::zero()};

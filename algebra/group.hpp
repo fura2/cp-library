@@ -31,8 +31,8 @@ class GroupImpl {
   constexpr GroupImpl(const T& x): x{x} {}
   constexpr GroupImpl(T&& x): x{std::move(x)} {}
 
-  constexpr GroupImpl operator*(const GroupImpl& g) const {
-    return GroupImpl{Op(x, g.x)};
+  friend constexpr GroupImpl operator*(const GroupImpl& g, const GroupImpl& h) {
+    return GroupImpl{Op(g.x, h.x)};
   }
   static constexpr GroupImpl identity() { return GroupImpl{Id()}; }
 

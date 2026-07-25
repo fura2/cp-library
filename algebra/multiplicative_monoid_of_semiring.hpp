@@ -13,9 +13,10 @@ class MultiplicativeMonoidOfSemiring {
   constexpr MultiplicativeMonoidOfSemiring(const S& s): s{s} {}
   constexpr MultiplicativeMonoidOfSemiring(S&& s): s{std::move(s)} {}
 
-  constexpr MultiplicativeMonoidOfSemiring operator*(
-      const MultiplicativeMonoidOfSemiring& m) const {
-    return MultiplicativeMonoidOfSemiring{s * m.s};
+  friend constexpr MultiplicativeMonoidOfSemiring operator*(
+      const MultiplicativeMonoidOfSemiring& m,
+      const MultiplicativeMonoidOfSemiring& n) {
+    return MultiplicativeMonoidOfSemiring{m.s * n.s};
   }
   static constexpr MultiplicativeMonoidOfSemiring identity() {
     return MultiplicativeMonoidOfSemiring{S::one()};

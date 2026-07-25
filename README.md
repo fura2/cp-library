@@ -17,7 +17,7 @@ Now migrating from https://github.com/fura2/competitive-programming-library
   - ここで include している template/template.hpp には競技プログラミング特有のイディオムがまとめられている。ライブラリの他の部分はこのヘッダを include せず、C++ 的にある程度きれいな書き方で実装されている。
 - ライブラリ作成の過程で考えたことは thinking_memo 以下にまとめる。
 
-## コーディングスタイル
+## コーディング規約
 
 - [.clang-format](.clang-format) に基づいてフォーマットする。
 - include はヘッダごとに必要十分な量を書く (template.hpp 以外)。
@@ -25,3 +25,4 @@ Now migrating from https://github.com/fura2/competitive-programming-library
 - 1 引数のコンストラクタには explicit を指定する。ただし、以下の例外を含む。
   - mint のようなプリミティブな扱いをするデータ型には指定しない。
   - コピーコンストラクタ、ムーブコンストラクタには指定しない。
+- + や * などの二項演算は friend 関数として定義する。
