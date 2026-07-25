@@ -15,11 +15,13 @@ template <typename M>
 concept CommutativeMonoid = Monoid<M>;
 
 template <typename T, auto Op, auto Id>
-  requires requires {
-    { Id() } -> std::same_as<T>;
-  } && requires(const T& a, const T& b) {
-    { Op(a, b) } -> std::same_as<T>;
-  }
+  requires(
+      requires {
+        { Id() } -> std::same_as<T>;
+      } &&
+      requires(const T& a, const T& b) {
+        { Op(a, b) } -> std::same_as<T>;
+      })
 class MonoidImpl {
  public:
   constexpr MonoidImpl(): x{Id()} {}
