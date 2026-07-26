@@ -20,6 +20,13 @@ struct FixedSquareMatrix {
   constexpr explicit FixedSquareMatrix(const matrix_type& mat): mat{mat} {}
   constexpr explicit FixedSquareMatrix(matrix_type&& mat)
       : mat{std::move(mat)} {}
+  constexpr FixedSquareMatrix(const S (&a)[N][N]) {
+    for (auto i = 0uz; i < N; ++i) {
+      for (auto j = 0uz; j < N; ++j) {
+        mat[i][j] = a[i][j];
+      }
+    }
+  }
 
   constexpr row_type& operator[](std::size_t i) { return mat[i]; }
   constexpr const row_type& operator[](std::size_t i) const { return mat[i]; }
