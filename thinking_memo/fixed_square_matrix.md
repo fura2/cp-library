@@ -22,6 +22,6 @@ constexpr FixedSquareMatrix(const S (&a)[N][N])
 ```
 とマッチしている。このコンストラクタ無しで
 ```cpp
-constexpr explicit FixedSquareMatrix(matrix_type&& mat)
+constexpr FixedSquareMatrix(matrix_type&& mat)
 ```
-(から explicit を消したもの) とマッチさせようとすると、C++ の微妙な仕様との兼ね合いで、`A{{{{0, 1}, {2, 3}}}}` のように波括弧をさらに一段挟む必要がある。
+とマッチさせようとすると、C++ の微妙な仕様との兼ね合いで、`A{{{{0, 1}, {2, 3}}}}` のように波括弧をさらに一段挟む必要がある。

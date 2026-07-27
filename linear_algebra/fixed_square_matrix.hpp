@@ -17,9 +17,8 @@ struct FixedSquareMatrix {
   constexpr FixedSquareMatrix() {
     for (auto& row: mat) row.fill(S::zero());
   }
-  constexpr explicit FixedSquareMatrix(const matrix_type& mat): mat{mat} {}
-  constexpr explicit FixedSquareMatrix(matrix_type&& mat)
-      : mat{std::move(mat)} {}
+  constexpr FixedSquareMatrix(const matrix_type& mat): mat{mat} {}
+  constexpr FixedSquareMatrix(matrix_type&& mat): mat{std::move(mat)} {}
   constexpr FixedSquareMatrix(const S (&a)[N][N]) {
     for (auto i = 0uz; i < N; ++i) {
       for (auto j = 0uz; j < N; ++j) {
