@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cassert>
+#include <iterator>
+#include <string>
 #include <utility>
 #include <vector>
 
@@ -7,13 +10,12 @@
 
 class mint {
   static const int MOD = 998244353;
-  int x;
 
  public:
   mint(): x{0} {}
-  mint(long long y) {
-    x = y % MOD;
-    if (x < 0) x += MOD;
+  mint(long long x) {
+    this->x = x % MOD;
+    if (this->x < 0) this->x += MOD;
   }
 
   mint& operator+=(const mint& m) {
@@ -30,20 +32,21 @@ class mint {
     x = static_cast<long long>(x) * m.x % MOD;
     return *this;
   }
-  mint& operator/=(const mint& m) { return *this *= inverse(m); }
-  friend mint operator+(const mint& m, const mint& n) { return mint(m) += n; }
-  friend mint operator-(const mint& m, const mint& n) { return mint(m) -= n; }
-  friend mint operator*(const mint& m, const mint& n) { return mint(m) *= n; }
-  friend mint operator/(const mint& m, const mint& n) { return mint(m) /= n; }
-  mint operator-() const { return -x; }
+  mint& operator/=(const mint& m) { return *this *= m.inverse(); }
+  friend mint operator+(const mint& m, const mint& n) { return mint{m} += n; }
+  friend mint operator-(const mint& m, const mint& n) { return mint{m} -= n; }
+  friend mint operator*(const mint& m, const mint& n) { return mint{m} *= n; }
+  friend mint operator/(const mint& m, const mint& n) { return mint{m} /= n; }
+  mint operator-() const { return mint{-x}; }
 
-  friend mint operator+(long long x, const mint& m) { return mint(x) + m; }
-  friend mint operator-(long long x, const mint& m) { return mint(x) - m; }
-  friend mint operator*(long long x, const mint& m) { return mint(x) * m; }
-  friend mint operator/(long long x, const mint& m) { return mint(x) / m; }
+  friend mint operator+(long long x, const mint& m) { return mint{x} + m; }
+  friend mint operator-(long long x, const mint& m) { return mint{x} - m; }
+  friend mint operator*(long long x, const mint& m) { return mint{x} * m; }
+  friend mint operator/(long long x, const mint& m) { return mint{x} / m; }
 
-  friend mint inverse(const mint& m) {
-    int a = m.x, b = MOD, u = 1, v = 0;
+  mint inverse() const {
+    assert(x != 0);
+    int a = x, b = MOD, u = 1, v = 0;
     while (b > 0) {
       int t = a / b;
       a -= t * b;
@@ -57,6 +60,11 @@ class mint {
   int unwrap() const { return x; }
 
   friend void output(const mint& m) { output(m.x); }
+
+  friend std::string pretty(const mint& m) { return std::to_string(m.x); }
+
+ private:
+  int x;
 };
 
 template <>
@@ -64,37 +72,39 @@ struct Input<mint> {
   static mint read() { return mint(input<long long>()); }
 };
 
-mint pow(mint m, long long k) {
+inline mint pow(mint m, long long k) {
   mint res = 1;
   for (; k > 0; k >>= 1, m *= m)
     if (k & 1) res *= m;
   return res;
 }
 
-mint factorial(int n) {
+inline mint factorial(int n) {
+  assert(n >= 0);
   static std::vector<mint> memo = {1};
-  if (memo.size() <= n) {
+  if (std::ssize(memo) <= n) {
     int k = memo.size();
     memo.resize(n + 1);
-    for (; k <= n; k++) memo[k] = memo[k - 1] * k;
+    for (; k <= n; ++k) memo[k] = memo[k - 1] * k;
   }
   return memo[n];
 }
 
-mint factorial_inverse(int n) {
+inline mint factorial_inverse(int n) {
+  assert(n >= 0);
   static std::vector<mint> memo = {1};
-  if (memo.size() <= n) {
+  if (std::ssize(memo) <= n) {
     int k = memo.size();
     memo.resize(n + 1);
-    memo[n] = inverse(factorial(n));
+    memo[n] = factorial(n).inverse();
     for (int i = n; i > k; i--) memo[i - 1] = memo[i] * i;
   }
   return memo[n];
 }
 
-mint choose(int n, int k, int type = 0) {
-  if (k == 0) return 1;
-  if (n < k) return 0;
+inline mint choose(int n, int k, int type = 0) {
+  assert(n >= 0);
+  if (k < 0 || n < k) return 0;
   if (type == 0) {
     return factorial(n) * factorial_inverse(k) * factorial_inverse(n - k);
   }
@@ -106,6 +116,9 @@ mint choose(int n, int k, int type = 0) {
   }
 }
 
-mint multichoose(int n, int k, int type = 0) {
+inline mint multichoose(int n, int k, int type = 0) {
+  assert(n >= 0);
+  assert(k >= 0);
+  if (n == 0 && k == 0) return 1;
   return choose(n + k - 1, k, type);
 }
