@@ -87,7 +87,7 @@ template <>
 struct Input<Grid> {
   static Grid read(int h, int w) {
     Grid G(h, w);
-    G.data = input<std::vector<std::string>>(h);
+    G.data = Input<std::vector<std::string>>::read(h);
     return G;
   }
 };

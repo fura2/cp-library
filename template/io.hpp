@@ -4,9 +4,6 @@
 #include <utility>
 #include <vector>
 
-template <typename T, typename... Args>
-T input(Args&&... args);
-
 template <typename T>
 struct Input {
   static T read() {
@@ -18,7 +15,9 @@ struct Input {
 
 template <typename T, typename U>
 struct Input<std::pair<T, U>> {
-  static std::pair<T, U> read() { return std::pair{input<T>(), input<U>()}; }
+  static std::pair<T, U> read() {
+    return std::pair{Input<T>::read(), Input<U>::read()};
+  }
 };
 
 template <typename T>
@@ -27,7 +26,7 @@ struct Input<std::vector<T>> {
     std::vector<T> v;
     v.reserve(n);
     for (int i = 0; i < n; ++i) {
-      v.push_back(input<T>());
+      v.push_back(Input<T>::read());
     }
     return v;
   }
@@ -36,7 +35,7 @@ struct Input<std::vector<T>> {
     std::vector<T> v;
     v.reserve(n);
     for (int i = 0; i < n; ++i) {
-      v.push_back(input<T>() - offset);
+      v.push_back(Input<T>::read() - offset);
     }
     return v;
   }

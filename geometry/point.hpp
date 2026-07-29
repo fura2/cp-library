@@ -32,7 +32,9 @@ struct Point {
 
 template <>
 struct Input<Point> {
-  static Point read() { return Point{input<long long>(), input<long long>()}; }
+  static Point read() {
+    return Point{Input<long long>::read(), Input<long long>::read()};
+  }
 };
 
 template <>

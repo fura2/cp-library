@@ -67,7 +67,7 @@ class mint {
 
 template <>
 struct Input<mint> {
-  static mint read() { return mint{input<long long>()}; }
+  static mint read() { return mint{Input<long long>::read()}; }
 };
 
 template <>
