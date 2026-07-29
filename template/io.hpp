@@ -18,11 +18,7 @@ struct Input {
 
 template <typename T, typename U>
 struct Input<std::pair<T, U>> {
-  static std::pair<T, U> read() {
-    T x = input<T>();
-    U y = input<U>();
-    return {x, y};
-  }
+  static std::pair<T, U> read() { return std::pair{input<T>(), input<U>()}; }
 };
 
 template <typename T>
@@ -51,31 +47,37 @@ T input(Args&&... args) {
   return Input<T>::read(std::forward<Args>(args)...);
 }
 
-inline void newline() {
+template <typename T>
+struct Output {
+  static void write(const T& x) { std::cout << x; }
+};
+
+template <typename T, typename U>
+struct Output<std::pair<T, U>> {
+  static void write(const std::pair<T, U>& p) {
+    Output<T>::write(p.first);
+    std::cout << " ";
+    Output<U>::write(p.second);
+  }
+};
+
+template <typename T>
+struct Output<std::vector<T>> {
+  static void write(const std::vector<T>& v) {
+    for (int i = 0; const auto& x: v) {
+      if (i > 0) std::cout << " ";
+      Output<T>::write(x);
+      ++i;
+    }
+  }
+};
+
+template <typename T>
+void output(const T& x) {
+  Output<T>::write(x);
 #ifdef LOCAL
   std::cout << std::endl;
 #else
   std::cout << "\n";
 #endif
-}
-
-template <typename T>
-void output(const T& x) {
-  std::cout << x;
-  newline();
-}
-
-template <typename T, typename U>
-void output(const std::pair<T, U>& p) {
-  std::cout << p.first << " " << p.second;
-  newline();
-}
-
-template <typename T>
-void output(const std::vector<T>& v) {
-  for (int i = 0; const auto& x: v) {
-    std::cout << (i == 0 ? "" : " ") << x;
-    ++i;
-  }
-  newline();
 }

@@ -59,8 +59,6 @@ class mint {
 
   int unwrap() const { return x; }
 
-  friend void output(const mint& m) { output(m.x); }
-
   friend std::string pretty(const mint& m) { return std::to_string(m.x); }
 
  private:
@@ -70,6 +68,11 @@ class mint {
 template <>
 struct Input<mint> {
   static mint read() { return mint{input<long long>()}; }
+};
+
+template <>
+struct Output<mint> {
+  static void write(const mint& m) { Output<int>::write(m.unwrap()); }
 };
 
 inline mint pow(mint m, long long k) {

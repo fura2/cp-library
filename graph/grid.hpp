@@ -2,6 +2,7 @@
 
 #include <array>
 #include <cstddef>
+#include <iostream>
 #include <string>
 #include <utility>
 #include <vector>
@@ -69,10 +70,6 @@ class Grid {
     return res;
   }
 
-  friend void output(const Grid& G) {
-    for (int i = 0; i < G.h; ++i) output(G.data[i]);
-  }
-
   friend std::string pretty(const Grid& G) {
     std::string s;
     for (int i = 0; i < G.h; ++i) s += "\n" + G.data[i];
@@ -92,5 +89,15 @@ struct Input<Grid> {
     Grid G(h, w);
     G.data = input<std::vector<std::string>>(h);
     return G;
+  }
+};
+
+template <>
+struct Output<Grid> {
+  static void write(const Grid& G) {
+    for (int i = 0; i < G.height(); ++i) {
+      if (i > 0) std::cout << "\n";
+      Output<std::string>::write(G[i]);
+    }
   }
 };

@@ -25,8 +25,6 @@ struct Point {
   }
   Point operator-() const { return Point{-x, -y}; }
 
-  friend void output(const Point& p) { output(std::pair{p.x, p.y}); }
-
   friend std::string pretty(const Point& p) {
     return "(" + std::to_string(p.x) + ", " + std::to_string(p.y) + ")";
   }
@@ -35,6 +33,13 @@ struct Point {
 template <>
 struct Input<Point> {
   static Point read() { return Point{input<long long>(), input<long long>()}; }
+};
+
+template <>
+struct Output<Point> {
+  static void write(const Point& p) {
+    Output<std::pair<long long, long long>>::write({p.x, p.y});
+  }
 };
 
 inline constexpr long long dot(const Point& p, const Point& q) {
