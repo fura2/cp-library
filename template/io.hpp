@@ -65,6 +65,12 @@ void output(const T& x) {
   newline();
 }
 
+template <typename T, typename U>
+void output(const std::pair<T, U>& p) {
+  std::cout << p.first << " " << p.second;
+  newline();
+}
+
 template <typename T>
 void output(const std::vector<T>& v) {
   for (int i = 0; const auto& x: v) {
