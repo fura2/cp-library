@@ -1,5 +1,6 @@
 #pragma once
 
+#include <bit>
 #include <cassert>
 #include <concepts>
 #include <cstddef>
@@ -38,37 +39,72 @@ class FenwickTree {
   }
 
   M fold() const { return fold(n); }
+
   M fold(std::size_t r) const {
     assert(r <= n);
     M res = M::identity();
     for (; r > 0; r -= r & -r) res = a[r] * res;
     return res;
   }
+
   M fold(std::size_t l, std::size_t r) const
     requires AbelianGroup<M>
   {
     assert(l <= r && r <= n);
     return fold(l).inverse() * fold(r);
   }
-  /*
-    int lower_bound(G val) const {
-      if (!(G{} < val)) return 0;
-      std::size_t x = 0, k;
-      for (k = 1; k <= a.size(); k <<= 1);
-      for (k >>= 1; k > 0; k >>= 1)
-        if (x + k <= a.size() && a[x + k - 1] < val) val -= a[x + k - 1], x +=
-    k; return x;
+
+  template <typename F>
+  std::size_t max_right(F f) const
+    requires std::predicate<F&, M>
+  {
+    assert(f(M::identity()));
+    std::size_t x = 0;
+    M cum = M::identity();
+    for (auto k = std::bit_floor(n); k > 0; k >>= 1) {
+      if (x + k <= n && f(cum * a[x + k])) {
+        cum = cum * a[x + k];
+        x += k;
+      }
     }
-    int upper_bound(G val) const {
-      if (val < G{}) return 0;
-      std::size_t x = 0, k;
-      for (k = 1; k <= a.size(); k <<= 1);
-      for (k >>= 1; k > 0; k >>= 1)
-        if (x + k <= a.size() && !(val < a[x + k - 1]))
-          val -= a[x + k - 1], x += k;
-      return x;
+    return x;
+  }
+
+  template <typename F>
+  std::size_t max_right(std::size_t l, F f) const
+    requires AbelianGroup<M> && std::predicate<F&, M>
+  {
+    assert(f(M::identity()));
+    std::size_t x = 0;
+    M inv = fold(l).inverse(), cum = M::identity();
+    for (auto k = std::bit_floor(n); k > 0; k >>= 1) {
+      if (x + k <= l || (x + k <= n && f(inv * cum * a[x + k]))) {
+        cum = cum * a[x + k];
+        x += k;
+      }
     }
-  */
+    return x;
+  }
+
+  template <typename F>
+  std::size_t min_left(std::size_t r, F f) const
+    requires AbelianGroup<M> && std::predicate<F&, M>
+  {
+    assert(f(M::identity()));
+
+    M total = fold(r);
+    if (f(total)) return 0;
+
+    std::size_t x = 0;
+    M cum = M::identity();
+    for (auto k = std::bit_floor(r); k > 0; k >>= 1) {
+      if (x + k <= r && !f((cum * a[x + k]).inverse() * total)) {
+        cum = cum * a[x + k];
+        x += k;
+      }
+    }
+    return x + 1;
+  }
 
   friend std::string pretty(const FenwickTree& f) {
     if constexpr (AbelianGroup<M> && requires(const M& x) {
