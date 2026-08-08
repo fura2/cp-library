@@ -48,7 +48,7 @@ class FenwickTree {
   }
 
   M fold(std::size_t l, std::size_t r) const
-    requires AbelianGroup<M>
+    requires Group<M>
   {
     assert(l <= r && r <= n);
     return fold(l).inverse() * fold(r);
@@ -72,7 +72,7 @@ class FenwickTree {
 
   template <typename F>
   std::size_t max_right(std::size_t l, F f) const
-    requires AbelianGroup<M> && std::predicate<F&, M>
+    requires Group<M> && std::predicate<F&, M>
   {
     assert(f(M::identity()));
     std::size_t x = 0;
@@ -88,7 +88,7 @@ class FenwickTree {
 
   template <typename F>
   std::size_t min_left(std::size_t r, F f) const
-    requires AbelianGroup<M> && std::predicate<F&, M>
+    requires Group<M> && std::predicate<F&, M>
   {
     assert(f(M::identity()));
 
@@ -107,7 +107,7 @@ class FenwickTree {
   }
 
   friend std::string pretty(const FenwickTree& f) {
-    if constexpr (AbelianGroup<M> && requires(const M& x) {
+    if constexpr (Group<M> && requires(const M& x) {
                     { pretty(x) } -> std::same_as<std::string>;
                   }) {
       std::string s = "[";

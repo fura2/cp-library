@@ -33,3 +33,7 @@ F.max_right([&](const auto& v) { return v.unwrap() <= thresh; })
 のように unwrap を書く。
 
 参考文献 : https://hos.ac/slides/20140319_bit.pdf
+
+## 2026.8.9
+
+アーベル群を仮定するメソッドのコンセプト指定を `AbelianGroup<M>` から `Group<M>` に変更した。可換性は全体で仮定しているので、追加の仮定だけを指定する方針。この次に実装する予定の SparseTable でも同様の扱いをする。

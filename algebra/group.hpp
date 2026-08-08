@@ -11,9 +11,6 @@ concept Group = Monoid<G> && requires(const G& a) {
   { a.inverse() } -> std::same_as<G>;
 };
 
-template <typename G>
-concept AbelianGroup = Group<G>;
-
 template <typename T, auto Op, auto Id, auto Inv>
   requires(
       requires {
