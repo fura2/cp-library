@@ -4,11 +4,11 @@
 #include <string>
 #include <utility>
 
+#include "algebra/semigroup.hpp"
+
 template <typename M>
-concept Monoid = requires {
+concept Monoid = Semigroup<M> && requires {
   { M::identity() } -> std::same_as<M>;
-} && requires(const M& a, const M& b) {
-  { a * b } -> std::same_as<M>;
 };
 
 template <typename M>
