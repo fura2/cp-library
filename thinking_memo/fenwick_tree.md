@@ -37,3 +37,5 @@ F.max_right([&](const auto& v) { return v.unwrap() <= thresh; })
 ## 2026.8.9
 
 アーベル群を仮定するメソッドのコンセプト指定を `AbelianGroup<M>` から `Group<M>` に変更した。可換性は全体で仮定しているので、追加の仮定だけを指定する方針。この次に実装する予定の SparseTable でも同様の扱いをする。
+
+また、Group を仮定して set, get を追加した。メソッド名は ACL の segtree に合わせた。

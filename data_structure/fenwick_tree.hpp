@@ -30,6 +30,20 @@ class FenwickTree {
 
   std::size_t size() const { return n; }
 
+  M get(std::size_t i) const
+    requires Group<M>
+  {
+    assert(i < n);
+    return fold(i, i + 1);
+  }
+
+  template <typename T>
+    requires Group<M> && std::constructible_from<M, const T&>
+  void set(std::size_t i, const T& v) {
+    assert(i < n);
+    apply(i, get(i).inverse() * M{v});
+  }
+
   template <typename T>
     requires std::constructible_from<M, const T&>
   void apply(std::size_t i, const T& v) {
