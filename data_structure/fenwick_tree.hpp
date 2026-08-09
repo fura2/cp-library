@@ -12,11 +12,11 @@
 template <CommutativeMonoid M>
 class FenwickTree {
  public:
-  FenwickTree(std::size_t n = 0): n{n}, a(n + 1, M::identity()) {}
+  explicit FenwickTree(std::size_t n): n{n}, a(n + 1, M::identity()) {}
 
   template <typename T>
     requires std::constructible_from<M, const T&>
-  FenwickTree(const std::vector<T>& a): n{a.size()} {
+  explicit FenwickTree(const std::vector<T>& a): n{a.size()} {
     this->a.reserve(n + 1);
     this->a.push_back(M::identity());
     for (const auto& x: a) {

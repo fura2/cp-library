@@ -9,6 +9,9 @@ concept Semigroup = requires(const M& a, const M& b) {
   { a * b } -> std::same_as<M>;
 };
 
+template <typename M>
+concept IdempotentSemigroup = Semigroup<M>;
+
 template <typename T, auto Op>
   requires requires(const T& a, const T& b) {
     { Op(a, b) } -> std::same_as<T>;
