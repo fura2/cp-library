@@ -69,11 +69,21 @@ struct Output<std::vector<T>> {
       ++i;
     }
   }
+
+  static void write(const std::vector<T>& v, int offset)
+    requires requires(const T& x, int n) { x + n; }
+  {
+    for (int i = 0; const auto& x: v) {
+      if (i > 0) std::cout << " ";
+      Output<T>::write(x + offset);
+      ++i;
+    }
+  }
 };
 
-template <typename T>
-void output(const T& x) {
-  Output<T>::write(x);
+template <typename T, typename... Args>
+void output(const T& x, Args&&... args) {
+  Output<T>::write(x, std::forward<Args>(args)...);
 #ifdef LOCAL
   std::cout << std::endl;
 #else
