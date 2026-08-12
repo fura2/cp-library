@@ -12,20 +12,16 @@ template <Monoid M>
 class SegmentTree {
  public:
   explicit SegmentTree(std::size_t n)
-      : n{n},
-        dep{n == 0 ? 0 : std::bit_width(n - 1)},
-        a(1uz << (dep + 1), M::identity()) {}
+      : n{n}, sz{std::bit_ceil(n)}, a(2 * sz, M::identity()) {}
 
   template <typename T>
     requires std::constructible_from<M, const T&>
   explicit SegmentTree(const std::vector<T>& a)
-      : n{a.size()},
-        dep{n == 0 ? 0 : std::bit_width(n - 1)},
-        a(1uz << (dep + 1), M::identity()) {
+      : n{a.size()}, sz{std::bit_ceil(n)}, a(2 * sz, M::identity()) {
     for (auto i = 0uz; i < n; ++i) {
-      this->a[(1uz << dep) + i] = M{a[i]};
+      this->a[sz + i] = M{a[i]};
     }
-    for (auto i = (1uz << dep) - 1; i > 0; --i) {
+    for (auto i = sz - 1; i > 0; --i) {
       this->a[i] = this->a[i << 1] * this->a[(i << 1) | 1];
     }
   }
@@ -34,14 +30,14 @@ class SegmentTree {
 
   const M& get(std::size_t i) const {
     assert(i < n);
-    return a[(1uz << dep) + i];
+    return a[sz + i];
   }
 
   template <typename T>
     requires std::constructible_from<M, const T&>
   void set(std::size_t i, const T& v) {
     assert(i < n);
-    i += 1uz << dep;
+    i += sz;
     a[i] = M{v};
     while (i > 1) {
       i >>= 1;
@@ -49,36 +45,67 @@ class SegmentTree {
     }
   }
 
-  M fold() const { return fold(0, n); }
+  M fold() const { return a[1]; }
 
   M fold(std::size_t l, std::size_t r) const {
-    assert(l <= r && r <= n);
+    assert(l <= r);
+    assert(r <= n);
     M lcum = M::identity(), rcum = M::identity();
-    l += 1uz << dep;
-    r += 1uz << dep;
+    l += sz;
+    r += sz;
     while (l < r) {
-      if (l & 1) lcum = lcum * a[l++];
-      if (r & 1) rcum = a[--r] * rcum;
+      if (l & 1) {
+        lcum = lcum * a[l];
+        ++l;
+      }
+      if (r & 1) {
+        --r;
+        rcum = a[r] * rcum;
+      }
       l >>= 1;
       r >>= 1;
     }
     return lcum * rcum;
   }
 
-  // // TODO
-  // template <typename F>
-  // std::size_t max_right(std::size_t l, F f) const
-  //   requires std::predicate<F&, M>
-  // {
-  //   assert(f(M::identity()));
-  //   std::size_t x = 0;
-  //   return x;
-  // }
+  template <typename F>
+  std::size_t max_right(std::size_t l, F f) const
+    requires std::predicate<F&, M>
+  {
+    assert(l <= n);
+    assert(f(M::identity()));
+
+    if (l == n) return n;
+
+    auto i = sz + l;
+    M cum = M::identity();
+    while (true) {
+      while ((i & 1) == 0) i >>= 1;
+
+      if (!f(cum * a[i])) {
+        while (i < sz) {
+          i <<= 1;
+          if (f(cum * a[i])) {
+            cum = cum * a[i];
+            ++i;
+          }
+        }
+        return i - sz;
+      }
+
+      cum = cum * a[i];
+
+      if (std::has_single_bit(i + 1)) break;
+      ++i;
+    }
+    return n;
+  }
 
   // template <typename F>
   // std::size_t min_left(std::size_t r, F f) const
   //   requires std::predicate<F&, M>
   // {
+  //   assert(r <= n);
   //   assert(f(M::identity()));
   //   std::size_t x = 0;
   //   return x + 1;
@@ -99,7 +126,6 @@ class SegmentTree {
   }
 
  private:
-  std::size_t n;
-  int dep;
+  std::size_t n, sz;
   std::vector<M> a;
 };

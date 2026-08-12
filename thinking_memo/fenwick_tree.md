@@ -24,8 +24,6 @@ ABC458 D で使う機会があったので max_right, min_left を実装。具�
 - `max_right(l, f)` : ACL の `segtree::max_right` と同様。群を仮定。
 - `min_left(r, f)` : ACL の `segtree::min_left` と同様。群を仮定。
 
-ただし、いずれも場合も、ACL よりわずかに強い `f(id) = true` を仮定する。アルゴリズム上必要なわけではないが、これを仮定しておく方がきれいな定式化に見える。
-
 f の型は `M → bool`。M がたとえば int から構築可能であったとしても、`int → bool` を f に指定することはできない。なぜなら、`int → bool` から `M → bool` を作るには `M → int` が必要であって、そのための `M::unwrap()` はモノイドのコンセプトに含めない仕様にしたため。大人しく呼び出し側で
 ```cpp
 F.max_right([&](const auto& v) { return v.unwrap() <= thresh; })

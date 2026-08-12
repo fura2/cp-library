@@ -64,7 +64,8 @@ class FenwickTree {
   M fold(std::size_t l, std::size_t r) const
     requires Group<M>
   {
-    assert(l <= r && r <= n);
+    assert(l <= r);
+    assert(r <= n);
     return fold(l).inverse() * fold(r);
   }
 
@@ -88,6 +89,7 @@ class FenwickTree {
   std::size_t max_right(std::size_t l, F f) const
     requires Group<M> && std::predicate<F&, M>
   {
+    assert(l <= n);
     assert(f(M::identity()));
     std::size_t x = 0;
     M inv = fold(l).inverse(), cum = M::identity();
@@ -104,6 +106,7 @@ class FenwickTree {
   std::size_t min_left(std::size_t r, F f) const
     requires Group<M> && std::predicate<F&, M>
   {
+    assert(r <= n);
     assert(f(M::identity()));
 
     M total = fold(r);
