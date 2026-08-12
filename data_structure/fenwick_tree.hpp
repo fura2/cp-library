@@ -126,7 +126,7 @@ class FenwickTree {
                   }) {
       std::string s = "[";
       for (auto i = 0uz; i < f.size(); ++i) {
-        s += (i == 0 ? "" : ", ") + pretty(f.fold(i, i + 1));
+        s += (i == 0 ? "" : ", ") + pretty(f.get(i));
       }
       s += "]";
       return s;
