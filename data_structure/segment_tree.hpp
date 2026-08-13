@@ -101,15 +101,38 @@ class SegmentTree {
     return n;
   }
 
-  // template <typename F>
-  // std::size_t min_left(std::size_t r, F f) const
-  //   requires std::predicate<F&, M>
-  // {
-  //   assert(r <= n);
-  //   assert(f(M::identity()));
-  //   std::size_t x = 0;
-  //   return x + 1;
-  // }
+  template <typename F>
+  std::size_t min_left(std::size_t r, F f) const
+    requires std::predicate<F&, M>
+  {
+    assert(r <= n);
+    assert(f(M::identity()));
+
+    if (r == 0) return 0;
+
+    auto i = sz + r - 1;
+    M cum = M::identity();
+    while (true) {
+      while (i > 1 && (i & 1)) i >>= 1;
+
+      if (!f(a[i] * cum)) {
+        while (i < sz) {
+          i = (i << 1) | 1;
+          if (f(a[i] * cum)) {
+            cum = a[i] * cum;
+            --i;
+          }
+        }
+        return i + 1 - sz;
+      }
+
+      cum = a[i] * cum;
+
+      if (std::has_single_bit(i)) break;
+      --i;
+    }
+    return 0;
+  }
 
   friend std::string pretty(const SegmentTree& S) {
     if constexpr (requires(const M& x) {
