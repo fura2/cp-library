@@ -1,6 +1,6 @@
 #pragma once
 
-#include "algebra/ring.hpp"
+#include "algebra/ring_impl.hpp"
 
 using LintRing = RingImpl<long long,
                           [](long long a, long long b) { return a + b; },

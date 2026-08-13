@@ -3,6 +3,7 @@
 #include <cstddef>
 
 #include "algebra/ring.hpp"
+#include "algebra/ring_impl.hpp"
 #include "linear_algebra/fixed_square_matrix.hpp"
 
 namespace matrix_ring_detail {

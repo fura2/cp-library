@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-#include "algebra/monoid.hpp"
+#include "algebra/monoid_impl.hpp"
 #include "template/constant.hpp"
 
 using IntMaxMonoid = MonoidImpl<int,

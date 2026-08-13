@@ -3,6 +3,7 @@
 #include <cstddef>
 
 #include "algebra/semiring.hpp"
+#include "algebra/semiring_impl.hpp"
 #include "linear_algebra/fixed_square_matrix.hpp"
 
 namespace matrix_semiring_detail {

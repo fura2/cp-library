@@ -1,6 +1,6 @@
 #pragma once
 
-#include "algebra/ring.hpp"
+#include "algebra/ring_impl.hpp"
 #include "mint/mint.hpp"
 
 using MintRing = RingImpl<mint,

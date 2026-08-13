@@ -2,7 +2,7 @@
 
 #include <algorithm>
 
-#include "algebra/semiring.hpp"
+#include "algebra/semiring_impl.hpp"
 #include "template/constant.hpp"
 
 using MinPlusSemiring =

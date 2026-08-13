@@ -1,6 +1,6 @@
 #pragma once
 
-#include "algebra/ring.hpp"
+#include "algebra/ring_impl.hpp"
 
 using IntRing = RingImpl<int,
                          [](int a, int b) { return a + b; },
