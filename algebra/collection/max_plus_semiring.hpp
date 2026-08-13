@@ -1,13 +1,11 @@
 #pragma once
 
-#include <algorithm>
-
 #include "algebra/semiring_impl.hpp"
 #include "template/constant.hpp"
 
 using MaxPlusSemiring =
     SemiringImpl<long long,
-                 [](long long a, long long b) { return std::max(a, b); },
+                 [](long long a, long long b) { return b > a ? b : a; },
                  [](long long a, long long b) {
                    if (a == -LINF || b == -LINF) return -LINF;
                    return a + b;
