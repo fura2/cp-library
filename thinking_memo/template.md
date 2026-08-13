@@ -9,3 +9,8 @@ using ulint = unsigned long long;
 
 昨日の変更で main 関数まで template.hpp に含めるようにしたが、MULTI_TESTCASE を外から指定する方式とヘッダのプリコンパイルが相性が悪いことに気づいた。
 main 関数まわりだけを main.hpp として切り出して対応することにした。
+
+## 2026.8.14
+
+1 行目にこの cp-library リポジトリの URL を載せた。
+提出したコードからライブラリを辿れるようにする意図。
