@@ -113,7 +113,9 @@ inline std::string pretty(unsigned long long x) { return std::to_string(x); }
 
 inline std::string pretty(float x) { return std::to_string(x); }
 
-inline std::string pretty(double x) { return std::to_string(x); }
+inline std::string pretty(double x) {
+  return x == DINF ? "∞" : x == -DINF ? "-∞" : std::to_string(x);
+}
 
 inline std::string pretty(long double x) { return std::to_string(x); }
 
