@@ -1,5 +1,5 @@
-// https://github.com/fura2/cp-library
 #pragma once
+// https://github.com/fura2/cp-library
 
 #include <bits/stdc++.h>
 
