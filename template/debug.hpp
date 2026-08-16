@@ -4,6 +4,7 @@
 #include <cstddef>
 #include <deque>
 #include <iostream>
+#include <list>
 #include <map>
 #include <optional>
 #include <set>
@@ -58,6 +59,9 @@ std::string pretty(const std::vector<T, Allocator>& v);
 
 template <typename T, typename Allocator>
 std::string pretty(const std::deque<T, Allocator>& d);
+
+template <typename T, typename Allocator>
+std::string pretty(const std::list<T, Allocator>& l);
 
 template <typename Key, typename Compare, typename Allocator>
 std::string pretty(const std::set<Key, Compare, Allocator>& s);
@@ -194,6 +198,17 @@ template <typename T, typename Allocator>
 std::string pretty(const std::deque<T, Allocator>& d) {
   std::string s = "[";
   for (int i = 0; const auto& e: d) {
+    s += (i == 0 ? "" : ", ") + pretty(e);
+    ++i;
+  }
+  s += "]";
+  return s;
+}
+
+template <typename T, typename Allocator>
+std::string pretty(const std::list<T, Allocator>& l) {
+  std::string s = "[";
+  for (int i = 0; const auto& e: l) {
     s += (i == 0 ? "" : ", ") + pretty(e);
     ++i;
   }
