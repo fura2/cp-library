@@ -26,3 +26,5 @@ Now migrating from https://github.com/fura2/competitive-programming-library
   - mint のようなプリミティブな扱いをするデータ型には指定しない。
   - コピーコンストラクタ、ムーブコンストラクタには指定しない。
 - `+` や `*` などの二項演算は friend 関数として定義する。
+- requires は、`template<...>` がある宣言については前置、なければ後置で書く。
+  - 可能な限り前置にしたいという気持ち。

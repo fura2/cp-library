@@ -71,9 +71,8 @@ class FenwickTree {
   }
 
   template <typename F>
-  std::size_t max_right(F f) const
     requires std::predicate<F&, M>
-  {
+  std::size_t max_right(F f) const {
     assert(f(M::identity()));
     std::size_t x = 0;
     M cum = M::identity();
@@ -87,9 +86,8 @@ class FenwickTree {
   }
 
   template <typename F>
-  std::size_t max_right(std::size_t l, F f) const
     requires Group<M> && std::predicate<F&, M>
-  {
+  std::size_t max_right(std::size_t l, F f) const {
     assert(l <= n);
     assert(f(M::identity()));
     std::size_t x = 0;
@@ -104,9 +102,8 @@ class FenwickTree {
   }
 
   template <typename F>
-  std::size_t min_left(std::size_t r, F f) const
     requires Group<M> && std::predicate<F&, M>
-  {
+  std::size_t min_left(std::size_t r, F f) const {
     assert(r <= n);
     assert(f(M::identity()));
 
