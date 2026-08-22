@@ -50,10 +50,11 @@ inline void no() { yesno(false); }
 inline const auto io_setup = [] {
   std::ios::sync_with_stdio(false);
   std::cin.tie(nullptr);
-  std::cout << std::fixed << std::setprecision(10);
+  std::cout << std::fixed << std::setprecision(12);
   return 0;
 }();
 
+using uint = unsigned int;
 using lint = long long;
 using ulint = unsigned long long;
 

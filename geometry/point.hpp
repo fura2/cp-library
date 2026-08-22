@@ -8,6 +8,24 @@
 struct Point {
   long long x, y;
 
+  Point(): x{}, y{} {}
+  Point(long long x, long long y): x{x}, y{y} {}
+
+  Point& operator+=(const Point& p) {
+    x += p.x;
+    y += p.y;
+    return *this;
+  }
+  Point& operator-=(const Point& p) {
+    x -= p.x;
+    y -= p.y;
+    return *this;
+  }
+  Point& operator*=(long long c) {
+    x *= c;
+    y *= c;
+    return *this;
+  }
   friend Point operator+(const Point& p, const Point& q) {
     return Point{p.x + q.x, p.y + q.y};
   }
@@ -19,9 +37,6 @@ struct Point {
   }
   friend Point operator*(const Point& p, long long c) {
     return Point{p.x * c, p.y * c};
-  }
-  friend Point operator/(const Point& p, long long c) {
-    return Point{p.x / c, p.y / c};
   }
   Point operator-() const { return Point{-x, -y}; }
 
