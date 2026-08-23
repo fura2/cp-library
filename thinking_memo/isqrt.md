@@ -19,5 +19,5 @@ $n\in\mathbb{Z}_{\ge0}$ に対して $\lfloor\sqrt n\rfloor$ を計算する関�
 
 $\lfloor\sqrt n\rfloor+1$ のケースではコード中の `r * r` がオーバフローしうるようにも見えるが、実際には `LLONG_MAX` $=2^{63}-1$ は次の平方数まで遠いので、この付近の $n$ に対しては $r=\lfloor\sqrt n\rfloor$ となっていて、`r * r` は long long の範囲内に収まる。
 
-参考文献
+#### 参考文献
 - [1] https://rsk0315.hatenablog.com/entry/2023/11/07/221428
