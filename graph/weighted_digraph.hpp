@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "graph/weighted_edge.hpp"
+#include "template/io.hpp"
 
 template <typename T>
 class WeightedDigraph {
@@ -44,4 +45,18 @@ class WeightedDigraph {
   int n, m;
   std::vector<std::vector<int>> G;
   std::vector<edge_type> E;
+};
+
+template <typename T>
+struct Input<WeightedDigraph<T>> {
+  static WeightedDigraph<T> read(int n, int m, int offset = 0) {
+    WeightedDigraph<T> G{n, m};
+    for (int i = 0; i < m; ++i) {
+      auto from = Input<int>::read() - offset;
+      auto to = Input<int>::read() - offset;
+      auto cost = Input<T>::read();
+      G.add_edge(from, to, cost);
+    }
+    return G;
+  }
 };

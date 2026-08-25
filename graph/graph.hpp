@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "graph/edge.hpp"
+#include "template/io.hpp"
 
 class Graph {
  public:
@@ -45,4 +46,17 @@ class Graph {
   int n, m;
   std::vector<std::vector<int>> G;
   std::vector<edge_type> E;
+};
+
+template <>
+struct Input<Graph> {
+  static Graph read(int n, int m, int offset = 0) {
+    Graph G{n, m};
+    for (int i = 0; i < m; ++i) {
+      auto u = Input<int>::read() - offset;
+      auto v = Input<int>::read() - offset;
+      G.add_edge(u, v);
+    }
+    return G;
+  }
 };

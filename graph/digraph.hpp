@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "graph/edge.hpp"
+#include "template/io.hpp"
 
 class Digraph {
  public:
@@ -43,4 +44,17 @@ class Digraph {
   int n, m;
   std::vector<std::vector<int>> G;
   std::vector<edge_type> E;
+};
+
+template <>
+struct Input<Digraph> {
+  static Digraph read(int n, int m, int offset = 0) {
+    Digraph G{n, m};
+    for (int i = 0; i < m; ++i) {
+      auto from = Input<int>::read() - offset;
+      auto to = Input<int>::read() - offset;
+      G.add_edge(from, to);
+    }
+    return G;
+  }
 };

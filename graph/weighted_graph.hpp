@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "graph/weighted_edge.hpp"
+#include "template/io.hpp"
 
 template <typename T>
 class WeightedGraph {
@@ -46,4 +47,18 @@ class WeightedGraph {
   int n, m;
   std::vector<std::vector<int>> G;
   std::vector<edge_type> E;
+};
+
+template <typename T>
+struct Input<WeightedGraph<T>> {
+  static WeightedGraph<T> read(int n, int m, int offset = 0) {
+    WeightedGraph<T> G{n, m};
+    for (int i = 0; i < m; ++i) {
+      auto u = Input<int>::read() - offset;
+      auto v = Input<int>::read() - offset;
+      auto cost = Input<T>::read();
+      G.add_edge(u, v, cost);
+    }
+    return G;
+  }
 };
