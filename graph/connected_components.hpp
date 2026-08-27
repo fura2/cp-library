@@ -5,6 +5,7 @@
 #include <vector>
 
 #include "graph/incidence_graph.hpp"
+
 template <typename GraphT>
   requires IncidenceGraph<GraphT> && Undirected<GraphT>
 std::vector<std::vector<int>> connected_components(const GraphT& G) {
