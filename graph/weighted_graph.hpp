@@ -11,6 +11,7 @@ template <typename T>
 class WeightedGraph {
  public:
   using edge_type = WeightedEdge<T>;
+  static constexpr bool directed = false;
 
   explicit WeightedGraph(int n): n{n}, m{0}, G(n) {}
   explicit WeightedGraph(int n, int m): n{n}, m{0}, G(n) { E.reserve(2 * m); }

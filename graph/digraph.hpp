@@ -10,6 +10,7 @@
 class Digraph {
  public:
   using edge_type = Edge;
+  static constexpr bool directed = true;
 
   explicit Digraph(int n): n{n}, m{0}, G(n) {}
   explicit Digraph(int n, int m): n{n}, m{0}, G(n) { E.reserve(m); }

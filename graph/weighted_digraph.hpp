@@ -11,6 +11,7 @@ template <typename T>
 class WeightedDigraph {
  public:
   using edge_type = WeightedEdge<T>;
+  static constexpr bool directed = true;
 
   explicit WeightedDigraph(int n): n{n}, m{0}, G(n) {}
   explicit WeightedDigraph(int n, int m): n{n}, m{0}, G(n) { E.reserve(m); }
