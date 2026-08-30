@@ -25,6 +25,7 @@ Now migrating from https://github.com/fura2/competitive-programming-library
 - 1 引数のコンストラクタには explicit を指定する。ただし、以下の例外を含む。
   - mint のようなプリミティブな扱いをするデータ型には指定しない。
   - コピーコンストラクタ、ムーブコンストラクタには指定しない。
+  - `std::initializer_list` 型を引数とするコンストラクタには指定しない。
 - `+` や `*` などの二項演算は friend 関数として定義する。
 - requires は、`template<...>` がある宣言については前置、なければ後置で書く。
   - 可能な限り前置にしたいという気持ち。
