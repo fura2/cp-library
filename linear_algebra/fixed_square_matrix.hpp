@@ -70,19 +70,22 @@ struct FixedSquareMatrix {
     }
     return *this = std::move(b);
   }
-  friend constexpr FixedSquareMatrix operator+(const FixedSquareMatrix& a,
+  friend constexpr FixedSquareMatrix operator+(FixedSquareMatrix a,
                                                const FixedSquareMatrix& b) {
-    return FixedSquareMatrix{a} += b;
+    a += b;
+    return a;
   }
-  friend constexpr FixedSquareMatrix operator-(const FixedSquareMatrix& a,
+  friend constexpr FixedSquareMatrix operator-(FixedSquareMatrix a,
                                                const FixedSquareMatrix& b)
     requires Ring<S>
   {
-    return FixedSquareMatrix{a} -= b;
+    a -= b;
+    return a;
   }
-  friend constexpr FixedSquareMatrix operator*(const FixedSquareMatrix& a,
+  friend constexpr FixedSquareMatrix operator*(FixedSquareMatrix a,
                                                const FixedSquareMatrix& b) {
-    return FixedSquareMatrix{a} *= b;
+    a *= b;
+    return a;
   }
   friend constexpr FixedSquareMatrix operator*(const S& c,
                                                const FixedSquareMatrix& a) {

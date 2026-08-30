@@ -26,17 +26,21 @@ struct Point {
     y *= c;
     return *this;
   }
-  friend Point operator+(const Point& p, const Point& q) {
-    return Point{p.x + q.x, p.y + q.y};
+  friend Point operator+(Point p, const Point& q) {
+    p += q;
+    return p;
   }
-  friend Point operator-(const Point& p, const Point& q) {
-    return Point{p.x - q.x, p.y - q.y};
+  friend Point operator-(Point p, const Point& q) {
+    p -= q;
+    return p;
   }
-  friend Point operator*(long long c, const Point& p) {
-    return Point{c * p.x, c * p.y};
+  friend Point operator*(long long c, Point p) {
+    p *= c;
+    return p;
   }
-  friend Point operator*(const Point& p, long long c) {
-    return Point{p.x * c, p.y * c};
+  friend Point operator*(Point p, long long c) {
+    p *= c;
+    return p;
   }
   Point operator-() const { return Point{-x, -y}; }
 

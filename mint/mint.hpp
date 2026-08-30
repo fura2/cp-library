@@ -33,10 +33,22 @@ class mint {
     return *this;
   }
   mint& operator/=(const mint& m) { return *this *= m.inverse(); }
-  friend mint operator+(const mint& m, const mint& n) { return mint{m} += n; }
-  friend mint operator-(const mint& m, const mint& n) { return mint{m} -= n; }
-  friend mint operator*(const mint& m, const mint& n) { return mint{m} *= n; }
-  friend mint operator/(const mint& m, const mint& n) { return mint{m} /= n; }
+  friend mint operator+(mint m, const mint& n) {
+    m += n;
+    return m;
+  }
+  friend mint operator-(mint m, const mint& n) {
+    m -= n;
+    return m;
+  }
+  friend mint operator*(mint m, const mint& n) {
+    m *= n;
+    return m;
+  }
+  friend mint operator/(mint m, const mint& n) {
+    m /= n;
+    return m;
+  }
   mint operator-() const { return mint{-x}; }
 
   friend mint operator+(long long x, const mint& m) { return mint{x} + m; }

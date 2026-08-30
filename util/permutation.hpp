@@ -43,7 +43,7 @@ class Permutation {
     int n = p.size();
     std::vector<int> inner(n);
     for (int i = 0; i < n; ++i) inner[i] = p[q[i]];
-    Permutation r{inner};
+    Permutation r{std::move(inner)};
     r.sgn = p.sgn * q.sgn;
     return r;
   }
