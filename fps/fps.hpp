@@ -47,6 +47,8 @@ class FormalPowerSeries {
     }
   }
 
+  int precision() const { return n; }
+
   FormalPowerSeries& operator+=(const FormalPowerSeries& f) {
     truncate(f.n);
     int k = std::min<int>(n, f.a.size());
@@ -61,6 +63,23 @@ class FormalPowerSeries {
     for (int i = 0; i < k; ++i) a[i] -= f.a[i];
     return *this;
   }
+  FormalPowerSeries& operator*=(const FormalPowerSeries& f) {
+    truncate(f.n);
+    if (a.empty() || f.a.empty()) {
+      a.clear();
+      return *this;
+    }
+
+    int k = std::min<int>(n, a.size() + f.a.size() - 1);
+    std::vector<R> b(k);
+    for (int i = 0, ki = std::min<int>(a.size(), k); i < ki; ++i) {
+      for (int j = 0, kj = std::min<int>(f.a.size(), k - i); j < kj; ++j) {
+        b[i + j] += a[i] * f.a[j];
+      }
+    }
+    a = std::move(b);
+    return *this;
+  }
 
   friend FormalPowerSeries operator+(FormalPowerSeries f,
                                      const FormalPowerSeries& g) {
@@ -70,6 +89,11 @@ class FormalPowerSeries {
   friend FormalPowerSeries operator-(FormalPowerSeries f,
                                      const FormalPowerSeries& g) {
     f -= g;
+    return f;
+  }
+  friend FormalPowerSeries operator*(FormalPowerSeries f,
+                                     const FormalPowerSeries& g) {
+    f *= g;
     return f;
   }
 
