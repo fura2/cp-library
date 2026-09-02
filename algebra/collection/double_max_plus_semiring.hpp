@@ -5,7 +5,7 @@
 
 using DoubleMaxPlusSemiring =
     SemiringImpl<double,
-                 [](double a, double b) { return b > a ? b : a; },
+                 [](double a, double b) { return a < b ? b : a; },
                  [](double a, double b) {
                    if (a == -DINF || b == -DINF) return -DINF;
                    return a + b;

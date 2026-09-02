@@ -1,8 +1,6 @@
 #pragma once
 
-#include "algebra/monoid_impl.hpp"
+#include "algebra/collection/max_monoid.hpp"
 #include "template/constant.hpp"
 
-using IntMaxMonoid = MonoidImpl<int,
-                                [](int a, int b) { return b > a ? b : a; },
-                                []() { return -INF; }>;
+using IntMaxMonoid = MaxMonoid<int, []() { return -INF; }>;

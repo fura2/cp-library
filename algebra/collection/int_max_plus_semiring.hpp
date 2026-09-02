@@ -5,7 +5,7 @@
 
 using IntMaxPlusSemiring =
     SemiringImpl<int,
-                 [](int a, int b) { return b > a ? b : a; },
+                 [](int a, int b) { return a < b ? b : a; },
                  [](int a, int b) {
                    if (a == -INF || b == -INF) return -INF;
                    return a + b;
