@@ -14,11 +14,9 @@ template <typename T, auto NegInf>
   }
 using ArgmaxMonoid = MonoidImpl<std::pair<T, int>,
                                 [](const auto& a, const auto& b) {
-                                  if (a.first < b.first) return b;
-                                  if (b.first < a.first) return a;
-                                  return b.second < a.second ? b : a;
+                                  return a.first < b.first ? b : a;
                                 },
-                                []() { return std::pair{NegInf(), INF}; }>;
+                                []() { return std::pair{NegInf(), -1}; }>;
 
 using IntArgmaxMonoid = ArgmaxMonoid<int, []() { return -INF; }>;
 using LintArgmaxMonoid = ArgmaxMonoid<long long, []() { return -LINF; }>;
