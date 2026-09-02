@@ -1,9 +1,6 @@
 #pragma once
 
-#include "algebra/monoid_impl.hpp"
+#include "algebra/collection/min_monoid.hpp"
 #include "template/constant.hpp"
 
-using DoubleMinMonoid =
-    MonoidImpl<double,
-               [](double a, double b) { return b < a ? b : a; },
-               []() { return DINF; }>;
+using DoubleMinMonoid = MinMonoid<double, []() { return DINF; }>;

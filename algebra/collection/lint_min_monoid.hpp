@@ -1,9 +1,6 @@
 #pragma once
 
-#include "algebra/monoid_impl.hpp"
+#include "algebra/collection/min_monoid.hpp"
 #include "template/constant.hpp"
 
-using LintMinMonoid =
-    MonoidImpl<long long,
-               [](long long a, long long b) { return b < a ? b : a; },
-               []() { return LINF; }>;
+using LintMinMonoid = MinMonoid<long long, []() { return LINF; }>;

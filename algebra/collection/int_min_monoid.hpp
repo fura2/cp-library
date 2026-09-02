@@ -1,8 +1,6 @@
 #pragma once
 
-#include "algebra/monoid_impl.hpp"
+#include "algebra/collection/min_monoid.hpp"
 #include "template/constant.hpp"
 
-using IntMinMonoid = MonoidImpl<int,
-                                [](int a, int b) { return b < a ? b : a; },
-                                []() { return INF; }>;
+using IntMinMonoid = MinMonoid<int, []() { return INF; }>;
