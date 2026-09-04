@@ -30,7 +30,8 @@ F.max_right([&](const auto& v) { return v.unwrap() <= thresh; })
 ```
 のように unwrap を書く。
 
-参考文献 : https://hos.ac/slides/20140319_bit.pdf
+#### 参考文献
+- https://hos.ac/slides/20140319_bit.pdf
 
 ## 2026.8.9
 

@@ -5,7 +5,7 @@
 
 class EratosthenesSieve {
  public:
-  EratosthenesSieve(int n): n{n}, table((n + 1) / 2, true) {
+  explicit EratosthenesSieve(int n): n{n}, table((n + 1) / 2, true) {
     if (n >= 1) table[0] = false;
     for (int i = 3; i * i <= n; i += 2) {
       if (!table[i / 2]) continue;
