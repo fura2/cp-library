@@ -57,6 +57,17 @@ class UnionFind {
     return res;
   }
 
+  std::vector<int> group(int u) const {
+    assert(0 <= u && u < std::ssize(p));
+    std::vector<int> res;
+    res.reserve(size(u));
+    int r = find(u);
+    for (int v = 0; v < std::ssize(p); ++v) {
+      if (find(v) == r) res.emplace_back(v);
+    }
+    return res;
+  }
+
  private:
   int n;
   mutable std::vector<int> p;
