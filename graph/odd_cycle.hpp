@@ -1,13 +1,15 @@
 #pragma once
 
 #include <iterator>
+#include <utility>
 #include <vector>
 
 #include "graph/incidence_graph.hpp"
 
 template <typename GraphT>
   requires IncidenceGraph<GraphT> && Undirected<GraphT>
-std::vector<typename GraphT::edge_type> odd_cycle(const GraphT& G) {
+std::pair<bool, std::vector<typename GraphT::edge_type>> odd_cycle(
+    const GraphT& G) {
   int n = G.num_vertices();
 
   std::vector<int> color(n, -1);
@@ -37,7 +39,7 @@ std::vector<typename GraphT::edge_type> odd_cycle(const GraphT& G) {
   };
 
   for (int u = 0; u < n; ++u) {
-    if (color[u] == -1 && dfs(dfs, u, 0)) return cycle;
+    if (color[u] == -1 && dfs(dfs, u, 0)) return {true, std::move(cycle)};
   }
-  return {};
+  return {false, {}};
 }
