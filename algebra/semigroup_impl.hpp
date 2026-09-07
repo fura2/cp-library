@@ -10,11 +10,11 @@ template <typename T, auto Op>
   }
 class SemigroupImpl {
  public:
-  constexpr SemigroupImpl(const T& x): x{x} {}
-  constexpr SemigroupImpl(T&& x): x{std::move(x)} {}
+  SemigroupImpl(const T& x): x{x} {}
+  SemigroupImpl(T&& x): x{std::move(x)} {}
 
-  friend constexpr SemigroupImpl operator*(const SemigroupImpl& m,
-                                           const SemigroupImpl& n) {
+  friend SemigroupImpl operator*(const SemigroupImpl& m,
+                                 const SemigroupImpl& n) {
     return SemigroupImpl{Op(m.x, n.x)};
   }
 

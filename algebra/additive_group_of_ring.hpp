@@ -9,20 +9,18 @@
 template <Ring R>
 class AdditiveGroupOfRing {
  public:
-  constexpr AdditiveGroupOfRing(): r{R::zero()} {}
-  constexpr AdditiveGroupOfRing(const R& r): r{r} {}
-  constexpr AdditiveGroupOfRing(R&& r): r{std::move(r)} {}
+  AdditiveGroupOfRing(): r{R::zero()} {}
+  AdditiveGroupOfRing(const R& r): r{r} {}
+  AdditiveGroupOfRing(R&& r): r{std::move(r)} {}
 
-  friend constexpr AdditiveGroupOfRing operator*(const AdditiveGroupOfRing& g,
-                                                 const AdditiveGroupOfRing& h) {
+  friend AdditiveGroupOfRing operator*(const AdditiveGroupOfRing& g,
+                                       const AdditiveGroupOfRing& h) {
     return AdditiveGroupOfRing{g.r + h.r};
   }
-  static constexpr AdditiveGroupOfRing identity() {
+  static AdditiveGroupOfRing identity() {
     return AdditiveGroupOfRing{R::zero()};
   }
-  constexpr AdditiveGroupOfRing inverse() const {
-    return AdditiveGroupOfRing{-r};
-  }
+  AdditiveGroupOfRing inverse() const { return AdditiveGroupOfRing{-r}; }
 
   decltype(auto) unwrap() const
     requires requires(const R& r) { r.unwrap(); }

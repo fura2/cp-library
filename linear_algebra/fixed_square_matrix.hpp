@@ -14,12 +14,12 @@ struct FixedSquareMatrix {
   using row_type = std::array<S, N>;
   using matrix_type = std::array<row_type, N>;
 
-  constexpr FixedSquareMatrix() {
+  FixedSquareMatrix() {
     for (auto& row: mat) row.fill(S::zero());
   }
-  constexpr FixedSquareMatrix(const matrix_type& mat): mat{mat} {}
-  constexpr FixedSquareMatrix(matrix_type&& mat): mat{std::move(mat)} {}
-  constexpr FixedSquareMatrix(const S (&a)[N][N]) {
+  FixedSquareMatrix(const matrix_type& mat): mat{mat} {}
+  FixedSquareMatrix(matrix_type&& mat): mat{std::move(mat)} {}
+  FixedSquareMatrix(const S (&a)[N][N]) {
     for (auto i = 0uz; i < N; ++i) {
       for (auto j = 0uz; j < N; ++j) {
         mat[i][j] = a[i][j];
@@ -27,10 +27,10 @@ struct FixedSquareMatrix {
     }
   }
 
-  constexpr row_type& operator[](std::size_t i) { return mat[i]; }
-  constexpr const row_type& operator[](std::size_t i) const { return mat[i]; }
+  row_type& operator[](std::size_t i) { return mat[i]; }
+  const row_type& operator[](std::size_t i) const { return mat[i]; }
 
-  constexpr FixedSquareMatrix operator-() const
+  FixedSquareMatrix operator-() const
     requires Ring<S>
   {
     FixedSquareMatrix a;
@@ -41,7 +41,7 @@ struct FixedSquareMatrix {
     }
     return a;
   }
-  constexpr FixedSquareMatrix& operator+=(const FixedSquareMatrix& a) {
+  FixedSquareMatrix& operator+=(const FixedSquareMatrix& a) {
     for (auto i = 0uz; i < N; ++i) {
       for (auto j = 0uz; j < N; ++j) {
         mat[i][j] = mat[i][j] + a.mat[i][j];
@@ -49,7 +49,7 @@ struct FixedSquareMatrix {
     }
     return *this;
   }
-  constexpr FixedSquareMatrix& operator-=(const FixedSquareMatrix& a)
+  FixedSquareMatrix& operator-=(const FixedSquareMatrix& a)
     requires Ring<S>
   {
     for (auto i = 0uz; i < N; ++i) {
@@ -59,7 +59,7 @@ struct FixedSquareMatrix {
     }
     return *this;
   }
-  constexpr FixedSquareMatrix& operator*=(const FixedSquareMatrix& a) {
+  FixedSquareMatrix& operator*=(const FixedSquareMatrix& a) {
     FixedSquareMatrix b{};
     for (auto i = 0uz; i < N; ++i) {
       for (auto k = 0uz; k < N; ++k) {
@@ -70,25 +70,24 @@ struct FixedSquareMatrix {
     }
     return *this = std::move(b);
   }
-  friend constexpr FixedSquareMatrix operator+(FixedSquareMatrix a,
-                                               const FixedSquareMatrix& b) {
+  friend FixedSquareMatrix operator+(FixedSquareMatrix a,
+                                     const FixedSquareMatrix& b) {
     a += b;
     return a;
   }
-  friend constexpr FixedSquareMatrix operator-(FixedSquareMatrix a,
-                                               const FixedSquareMatrix& b)
+  friend FixedSquareMatrix operator-(FixedSquareMatrix a,
+                                     const FixedSquareMatrix& b)
     requires Ring<S>
   {
     a -= b;
     return a;
   }
-  friend constexpr FixedSquareMatrix operator*(FixedSquareMatrix a,
-                                               const FixedSquareMatrix& b) {
+  friend FixedSquareMatrix operator*(FixedSquareMatrix a,
+                                     const FixedSquareMatrix& b) {
     a *= b;
     return a;
   }
-  friend constexpr FixedSquareMatrix operator*(const S& c,
-                                               const FixedSquareMatrix& a) {
+  friend FixedSquareMatrix operator*(const S& c, const FixedSquareMatrix& a) {
     FixedSquareMatrix b{};
     for (auto i = 0uz; i < N; ++i) {
       for (auto j = 0uz; j < N; ++j) {
@@ -97,8 +96,7 @@ struct FixedSquareMatrix {
     }
     return b;
   }
-  friend constexpr FixedSquareMatrix operator*(const FixedSquareMatrix& a,
-                                               const S& c) {
+  friend FixedSquareMatrix operator*(const FixedSquareMatrix& a, const S& c) {
     FixedSquareMatrix b{};
     for (auto i = 0uz; i < N; ++i) {
       for (auto j = 0uz; j < N; ++j) {
@@ -108,14 +106,14 @@ struct FixedSquareMatrix {
     return b;
   }
 
-  friend constexpr bool operator==(const FixedSquareMatrix& a,
-                                   const FixedSquareMatrix& b) = default;
+  friend bool operator==(const FixedSquareMatrix& a,
+                         const FixedSquareMatrix& b) = default;
 
   const matrix_type& unwrap() const { return mat; }
   matrix_type& unwrap() { return mat; }
 
-  static constexpr FixedSquareMatrix zero() { return FixedSquareMatrix{}; }
-  static constexpr FixedSquareMatrix identity() {
+  static FixedSquareMatrix zero() { return FixedSquareMatrix{}; }
+  static FixedSquareMatrix identity() {
     FixedSquareMatrix id{};
     for (auto i = 0uz; i < N; ++i) id[i][i] = S::one();
     return id;

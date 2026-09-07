@@ -17,16 +17,16 @@ template <typename T, auto Op, auto Id, auto Inv>
       })
 class GroupImpl {
  public:
-  constexpr GroupImpl(): x{Id()} {}
-  constexpr GroupImpl(const T& x): x{x} {}
-  constexpr GroupImpl(T&& x): x{std::move(x)} {}
+  GroupImpl(): x{Id()} {}
+  GroupImpl(const T& x): x{x} {}
+  GroupImpl(T&& x): x{std::move(x)} {}
 
-  friend constexpr GroupImpl operator*(const GroupImpl& g, const GroupImpl& h) {
+  friend GroupImpl operator*(const GroupImpl& g, const GroupImpl& h) {
     return GroupImpl{Op(g.x, h.x)};
   }
-  static constexpr GroupImpl identity() { return GroupImpl{Id()}; }
+  static GroupImpl identity() { return GroupImpl{Id()}; }
 
-  constexpr GroupImpl inverse() const { return GroupImpl{Inv(x)}; }
+  GroupImpl inverse() const { return GroupImpl{Inv(x)}; }
 
   const T& unwrap() const { return x; }
   T& unwrap() { return x; }

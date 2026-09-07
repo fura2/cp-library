@@ -63,10 +63,10 @@ struct Output<Point> {
   }
 };
 
-constexpr long long dot(const Point& p, const Point& q) {
+inline long long dot(const Point& p, const Point& q) {
   return p.x * q.x + p.y * q.y;
 }
 
-constexpr long long cross(const Point& p, const Point& q) {
+inline long long cross(const Point& p, const Point& q) {
   return p.x * q.y - p.y * q.x;
 }

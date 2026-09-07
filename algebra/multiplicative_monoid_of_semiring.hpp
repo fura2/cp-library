@@ -9,16 +9,16 @@
 template <Semiring S>
 class MultiplicativeMonoidOfSemiring {
  public:
-  constexpr MultiplicativeMonoidOfSemiring(): s{S::one()} {}
-  constexpr MultiplicativeMonoidOfSemiring(const S& s): s{s} {}
-  constexpr MultiplicativeMonoidOfSemiring(S&& s): s{std::move(s)} {}
+  MultiplicativeMonoidOfSemiring(): s{S::one()} {}
+  MultiplicativeMonoidOfSemiring(const S& s): s{s} {}
+  MultiplicativeMonoidOfSemiring(S&& s): s{std::move(s)} {}
 
-  friend constexpr MultiplicativeMonoidOfSemiring operator*(
+  friend MultiplicativeMonoidOfSemiring operator*(
       const MultiplicativeMonoidOfSemiring& m,
       const MultiplicativeMonoidOfSemiring& n) {
     return MultiplicativeMonoidOfSemiring{m.s * n.s};
   }
-  static constexpr MultiplicativeMonoidOfSemiring identity() {
+  static MultiplicativeMonoidOfSemiring identity() {
     return MultiplicativeMonoidOfSemiring{S::one()};
   }
 

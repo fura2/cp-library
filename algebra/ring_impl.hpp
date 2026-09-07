@@ -19,22 +19,22 @@ template <typename T, auto Add, auto Mul, auto Zero, auto One, auto Neg>
       })
 class RingImpl {
  public:
-  constexpr RingImpl(): x{Zero()} {}
-  constexpr RingImpl(const T& x): x{x} {}
-  constexpr RingImpl(T&& x): x{std::move(x)} {}
+  RingImpl(): x{Zero()} {}
+  RingImpl(const T& x): x{x} {}
+  RingImpl(T&& x): x{std::move(x)} {}
 
-  constexpr RingImpl operator-() const { return RingImpl{Neg(x)}; }
-  friend constexpr RingImpl operator+(const RingImpl& r, const RingImpl& s) {
+  RingImpl operator-() const { return RingImpl{Neg(x)}; }
+  friend RingImpl operator+(const RingImpl& r, const RingImpl& s) {
     return RingImpl{Add(r.x, s.x)};
   }
-  friend constexpr RingImpl operator-(const RingImpl& r, const RingImpl& s) {
+  friend RingImpl operator-(const RingImpl& r, const RingImpl& s) {
     return RingImpl{Add(r.x, Neg(s.x))};
   }
-  friend constexpr RingImpl operator*(const RingImpl& r, const RingImpl& s) {
+  friend RingImpl operator*(const RingImpl& r, const RingImpl& s) {
     return RingImpl{Mul(r.x, s.x)};
   }
-  static constexpr RingImpl zero() { return RingImpl{Zero()}; }
-  static constexpr RingImpl one() { return RingImpl{One()}; }
+  static RingImpl zero() { return RingImpl{Zero()}; }
+  static RingImpl one() { return RingImpl{One()}; }
 
   const T& unwrap() const { return x; }
   T& unwrap() { return x; }

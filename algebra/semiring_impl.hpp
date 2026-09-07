@@ -16,20 +16,18 @@ template <typename T, auto Add, auto Mul, auto Zero, auto One>
       })
 class SemiringImpl {
  public:
-  constexpr SemiringImpl(): x{Zero()} {}
-  constexpr SemiringImpl(const T& x): x{x} {}
-  constexpr SemiringImpl(T&& x): x{std::move(x)} {}
+  SemiringImpl(): x{Zero()} {}
+  SemiringImpl(const T& x): x{x} {}
+  SemiringImpl(T&& x): x{std::move(x)} {}
 
-  friend constexpr SemiringImpl operator+(const SemiringImpl& s,
-                                          const SemiringImpl& t) {
+  friend SemiringImpl operator+(const SemiringImpl& s, const SemiringImpl& t) {
     return SemiringImpl{Add(s.x, t.x)};
   }
-  friend constexpr SemiringImpl operator*(const SemiringImpl& s,
-                                          const SemiringImpl& t) {
+  friend SemiringImpl operator*(const SemiringImpl& s, const SemiringImpl& t) {
     return SemiringImpl{Mul(s.x, t.x)};
   }
-  static constexpr SemiringImpl zero() { return SemiringImpl{Zero()}; }
-  static constexpr SemiringImpl one() { return SemiringImpl{One()}; }
+  static SemiringImpl zero() { return SemiringImpl{Zero()}; }
+  static SemiringImpl one() { return SemiringImpl{One()}; }
 
   const T& unwrap() const { return x; }
   T& unwrap() { return x; }

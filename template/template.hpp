@@ -30,16 +30,16 @@
 // clang-format on
 
 template <typename T>
-constexpr int bit(T x, unsigned int k) {
+int bit(T x, unsigned int k) {
   return (x >> k) & 1;
 }
 
 template <typename T>
-constexpr bool chmax(T& a, const T& b) {
+bool chmax(T& a, const T& b) {
   return a < b ? a = b, true : false;
 }
 template <typename T>
-constexpr bool chmin(T& a, const T& b) {
+bool chmin(T& a, const T& b) {
   return b < a ? a = b, true : false;
 }
 

@@ -14,15 +14,14 @@ template <typename T, auto Op, auto Id>
       })
 class MonoidImpl {
  public:
-  constexpr MonoidImpl(): x{Id()} {}
-  constexpr MonoidImpl(const T& x): x{x} {}
-  constexpr MonoidImpl(T&& x): x{std::move(x)} {}
+  MonoidImpl(): x{Id()} {}
+  MonoidImpl(const T& x): x{x} {}
+  MonoidImpl(T&& x): x{std::move(x)} {}
 
-  friend constexpr MonoidImpl operator*(const MonoidImpl& m,
-                                        const MonoidImpl& n) {
+  friend MonoidImpl operator*(const MonoidImpl& m, const MonoidImpl& n) {
     return MonoidImpl{Op(m.x, n.x)};
   }
-  static constexpr MonoidImpl identity() { return MonoidImpl{Id()}; }
+  static MonoidImpl identity() { return MonoidImpl{Id()}; }
 
   const T& unwrap() const { return x; }
   T& unwrap() { return x; }

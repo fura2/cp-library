@@ -9,15 +9,15 @@
 template <Semiring S>
 class AdditiveMonoidOfSemiring {
  public:
-  constexpr AdditiveMonoidOfSemiring(): s{S::zero()} {}
-  constexpr AdditiveMonoidOfSemiring(const S& s): s{s} {}
-  constexpr AdditiveMonoidOfSemiring(S&& s): s{std::move(s)} {}
+  AdditiveMonoidOfSemiring(): s{S::zero()} {}
+  AdditiveMonoidOfSemiring(const S& s): s{s} {}
+  AdditiveMonoidOfSemiring(S&& s): s{std::move(s)} {}
 
-  friend constexpr AdditiveMonoidOfSemiring operator*(
-      const AdditiveMonoidOfSemiring& m, const AdditiveMonoidOfSemiring& n) {
+  friend AdditiveMonoidOfSemiring operator*(const AdditiveMonoidOfSemiring& m,
+                                            const AdditiveMonoidOfSemiring& n) {
     return AdditiveMonoidOfSemiring{m.s + n.s};
   }
-  static constexpr AdditiveMonoidOfSemiring identity() {
+  static AdditiveMonoidOfSemiring identity() {
     return AdditiveMonoidOfSemiring{S::zero()};
   }
 
