@@ -3,7 +3,6 @@
 #include <bit>
 #include <cassert>
 #include <concepts>
-#include <cstddef>
 #include <string>
 #include <vector>
 
@@ -12,14 +11,16 @@
 template <Monoid M>
 class SegmentTree {
  public:
-  explicit SegmentTree(std::size_t n)
-      : n{n}, sz{std::bit_ceil(n)}, a(2 * sz, M::identity()) {}
+  explicit SegmentTree(int n)
+      : n{n}, sz(std::bit_ceil<unsigned int>(n)), a(2 * sz, M::identity()) {}
 
   template <typename T>
     requires std::constructible_from<M, const T&>
   explicit SegmentTree(const std::vector<T>& a)
-      : n{a.size()}, sz{std::bit_ceil(n)}, a(2 * sz, M::identity()) {
-    for (auto i = 0uz; i < n; ++i) {
+      : n(a.size()),
+        sz(std::bit_ceil<unsigned int>(n)),
+        a(2 * sz, M::identity()) {
+    for (auto i = 0; i < n; ++i) {
       this->a[sz + i] = M{a[i]};
     }
     for (auto i = sz - 1; i > 0; --i) {
@@ -27,17 +28,17 @@ class SegmentTree {
     }
   }
 
-  std::size_t size() const { return n; }
+  int size() const { return n; }
 
-  const M& get(std::size_t i) const {
-    assert(i < n);
+  const M& get(int i) const {
+    assert(0 <= i && i < n);
     return a[sz + i];
   }
 
   template <typename T>
     requires std::constructible_from<M, const T&>
-  void set(std::size_t i, const T& v) {
-    assert(i < n);
+  void set(int i, const T& v) {
+    assert(0 <= i && i < n);
     i += sz;
     a[i] = M{v};
     while (i > 1) {
@@ -48,9 +49,8 @@ class SegmentTree {
 
   M fold() const { return a[1]; }
 
-  M fold(std::size_t l, std::size_t r) const {
-    assert(l <= r);
-    assert(r <= n);
+  M fold(int l, int r) const {
+    assert(0 <= l && l <= r && r <= n);
     M lcum = M::identity(), rcum = M::identity();
     l += sz;
     r += sz;
@@ -71,8 +71,8 @@ class SegmentTree {
 
   template <typename F>
     requires std::predicate<F&, M>
-  std::size_t max_right(std::size_t l, F f) const {
-    assert(l <= n);
+  int max_right(int l, F f) const {
+    assert(0 <= l && l <= n);
     assert(f(M::identity()));
 
     if (l == n) return n;
@@ -95,7 +95,7 @@ class SegmentTree {
 
       cum = cum * a[i];
 
-      if (std::has_single_bit(i + 1)) break;
+      if (std::has_single_bit<unsigned int>(i + 1)) break;
       ++i;
     }
     return n;
@@ -103,8 +103,8 @@ class SegmentTree {
 
   template <typename F>
     requires std::predicate<F&, M>
-  std::size_t min_left(std::size_t r, F f) const {
-    assert(r <= n);
+  int min_left(int r, F f) const {
+    assert(0 <= r && r <= n);
     assert(f(M::identity()));
 
     if (r == 0) return 0;
@@ -127,7 +127,7 @@ class SegmentTree {
 
       cum = a[i] * cum;
 
-      if (std::has_single_bit(i)) break;
+      if (std::has_single_bit<unsigned int>(i)) break;
       --i;
     }
     return 0;
@@ -138,7 +138,7 @@ class SegmentTree {
                     { pretty(x) } -> std::same_as<std::string>;
                   }) {
       std::string s = "[";
-      for (auto i = 0uz; i < S.size(); ++i) {
+      for (auto i = 0; i < S.size(); ++i) {
         s += (i == 0 ? "" : ", ") + pretty(S.get(i));
       }
       s += "]";
@@ -148,6 +148,6 @@ class SegmentTree {
   }
 
  private:
-  std::size_t n, sz;
+  int n, sz;
   std::vector<M> a;
 };

@@ -1,7 +1,6 @@
 #pragma once
 
 #include <array>
-#include <cstddef>
 #include <iostream>
 #include <string>
 #include <utility>
@@ -16,7 +15,7 @@ class Grid {
   static constexpr std::array<int, 8> dx8 = {0, -1, -1, -1, 0, 1, 1, 1};
   static constexpr std::array<int, 8> dy8 = {1, 1, 0, -1, -1, -1, 0, 1};
 
-  template <typename std::size_t N>
+  template <int N>
   struct Neighbors {
     const std::pair<int, int>* begin() const { return data.data(); }
     const std::pair<int, int>* end() const { return data.data() + size; }
@@ -24,7 +23,7 @@ class Grid {
    private:
     friend class Grid;
 
-    std::size_t size = 0;
+    int size = 0;
     std::array<std::pair<int, int>, N> data{};
   };
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include <cstddef>
 #include <cstdint>
 #include <unordered_set>
 
@@ -27,7 +26,7 @@ class ZobristHashSet {
     return false;
   }
 
-  std::size_t size() const { return data.size(); }
+  int size() const { return data.size(); }
 
   bool contains(const T& val) const { return data.contains(val); }
 

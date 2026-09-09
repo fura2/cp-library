@@ -3,7 +3,6 @@
 #include <bit>
 #include <cassert>
 #include <concepts>
-#include <cstddef>
 #include <string>
 #include <vector>
 
@@ -13,70 +12,69 @@
 template <CommutativeMonoid M>
 class FenwickTree {
  public:
-  explicit FenwickTree(std::size_t n): n{n}, a(n + 1, M::identity()) {}
+  explicit FenwickTree(int n): n{n}, a(n + 1, M::identity()) {}
 
   template <typename T>
     requires std::constructible_from<M, const T&>
-  explicit FenwickTree(const std::vector<T>& a): n{a.size()} {
+  explicit FenwickTree(const std::vector<T>& a): n(a.size()) {
     this->a.reserve(n + 1);
     this->a.push_back(M::identity());
     for (const auto& x: a) {
       this->a.emplace_back(x);
     }
-    for (auto i = 1uz; i <= n; ++i) {
+    for (auto i = 1; i <= n; ++i) {
       auto j = i + (i & -i);
       if (j <= n) (this->a)[j] = (this->a)[j] * (this->a)[i];
     }
   }
 
-  std::size_t size() const { return n; }
+  int size() const { return n; }
 
-  M get(std::size_t i) const
+  M get(int i) const
     requires Group<M>
   {
-    assert(i < n);
+    assert(0 <= i && i < n);
     return fold(i, i + 1);
   }
 
   template <typename T>
     requires Group<M> && std::constructible_from<M, const T&>
-  void set(std::size_t i, const T& v) {
-    assert(i < n);
+  void set(int i, const T& v) {
+    assert(0 <= i && i < n);
     apply(i, get(i).inverse() * M{v});
   }
 
   template <typename T>
     requires std::constructible_from<M, const T&>
-  void apply(std::size_t i, const T& v) {
-    assert(i < n);
+  void apply(int i, const T& v) {
+    assert(0 <= i && i < n);
     M m{v};
     for (++i; i < n + 1; i += i & -i) a[i] = a[i] * m;
   }
 
   M fold() const { return fold(n); }
 
-  M fold(std::size_t r) const {
-    assert(r <= n);
+  M fold(int r) const {
+    assert(0 <= r && r <= n);
     M res = M::identity();
     for (; r > 0; r -= r & -r) res = a[r] * res;
     return res;
   }
 
-  M fold(std::size_t l, std::size_t r) const
+  M fold(int l, int r) const
     requires Group<M>
   {
-    assert(l <= r);
-    assert(r <= n);
+    assert(0 <= l && l <= r && r <= n);
     return fold(l).inverse() * fold(r);
   }
 
   template <typename F>
     requires std::predicate<F&, M>
-  std::size_t max_right(F f) const {
+  int max_right(F f) const {
     assert(f(M::identity()));
-    std::size_t x = 0;
+    int x = 0;
     M cum = M::identity();
-    for (auto k = std::bit_floor(n); k > 0; k >>= 1) {
+    for (int k = std::bit_floor<unsigned int>(n); k > 0; k >>= 1) {
       if (x + k <= n && f(cum * a[x + k])) {
         cum = cum * a[x + k];
         x += k;
@@ -87,12 +85,12 @@ class FenwickTree {
 
   template <typename F>
     requires Group<M> && std::predicate<F&, M>
-  std::size_t max_right(std::size_t l, F f) const {
-    assert(l <= n);
+  int max_right(int l, F f) const {
+    assert(0 <= l && l <= n);
     assert(f(M::identity()));
-    std::size_t x = 0;
+    int x = 0;
     M inv = fold(l).inverse(), cum = M::identity();
-    for (auto k = std::bit_floor(n); k > 0; k >>= 1) {
+    for (int k = std::bit_floor<unsigned int>(n); k > 0; k >>= 1) {
       if (x + k <= l || (x + k <= n && f(inv * cum * a[x + k]))) {
         cum = cum * a[x + k];
         x += k;
@@ -103,16 +101,16 @@ class FenwickTree {
 
   template <typename F>
     requires Group<M> && std::predicate<F&, M>
-  std::size_t min_left(std::size_t r, F f) const {
-    assert(r <= n);
+  int min_left(int r, F f) const {
+    assert(0 <= r && r <= n);
     assert(f(M::identity()));
 
     M total = fold(r);
     if (f(total)) return 0;
 
-    std::size_t x = 0;
+    int x = 0;
     M cum = M::identity();
-    for (auto k = std::bit_floor(r); k > 0; k >>= 1) {
+    for (int k = std::bit_floor<unsigned int>(r); k > 0; k >>= 1) {
       if (x + k <= r && !f((cum * a[x + k]).inverse() * total)) {
         cum = cum * a[x + k];
         x += k;
@@ -121,21 +119,21 @@ class FenwickTree {
     return x + 1;
   }
 
-  friend std::string pretty(const FenwickTree& f) {
+  friend std::string pretty(const FenwickTree& F) {
     if constexpr (Group<M> && requires(const M& x) {
                     { pretty(x) } -> std::same_as<std::string>;
                   }) {
       std::string s = "[";
-      for (auto i = 0uz; i < f.size(); ++i) {
-        s += (i == 0 ? "" : ", ") + pretty(f.get(i));
+      for (auto i = 0; i < F.size(); ++i) {
+        s += (i == 0 ? "" : ", ") + pretty(F.get(i));
       }
       s += "]";
       return s;
     }
-    return "[" + std::to_string(f.size()) + " element(s)]";
+    return "[" + std::to_string(F.size()) + " element(s)]";
   }
 
  private:
-  std::size_t n;
+  int n;
   std::vector<M> a;
 };

@@ -2,7 +2,6 @@
 
 #include <cassert>
 #include <concepts>
-#include <cstddef>
 #include <functional>
 #include <queue>
 #include <ranges>
@@ -23,7 +22,7 @@ class AddableHeap {
 
   bool empty() const { return pq.empty(); }
 
-  std::size_t size() const { return pq.size(); }
+  int size() const { return pq.size(); }
 
   void push(const T& x) { pq.push(x - offset); }
 

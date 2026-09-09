@@ -1,14 +1,13 @@
 #pragma once
 
 #include <cassert>
-#include <cstddef>
 #include <numeric>
 #include <utility>
 #include <vector>
 
 class Permutation {
  public:
-  explicit Permutation(std::size_t n): p(n), sgn{1} {
+  explicit Permutation(int n): p(n), sgn{1} {
     std::ranges::iota(p, 0);
     q = p;
   }
@@ -18,14 +17,15 @@ class Permutation {
     for (int i = 0; i < n; ++i) q[this->p[i]] = i;
   }
 
-  std::size_t size() const { return p.size(); }
+  int size() const { return p.size(); }
 
-  int operator[](std::size_t i) const {
-    assert(i < p.size());
+  int operator[](int i) const {
+    assert(0 <= i && i < size());
     return p[i];
   }
-  int preimage(std::size_t i) const {
-    assert(i < p.size());
+
+  int preimage(int i) const {
+    assert(0 <= i && i < size());
     return q[i];
   }
 
@@ -68,17 +68,17 @@ class Permutation {
 
   void invert() { std::swap(p, q); }
 
-  void swap(std::size_t i, std::size_t j) {
-    assert(i < p.size());
-    assert(j < p.size());
+  void swap(int i, int j) {
+    assert(0 <= i && i < size());
+    assert(0 <= j && j < size());
     if (i == j) return;
     std::swap(q[p[i]], q[p[j]]);
     std::swap(p[i], p[j]);
     sgn *= -1;
   }
 
-  std::vector<int> cycle(std::size_t i) const {
-    assert(i < p.size());
+  std::vector<int> cycle(int i) const {
+    assert(0 <= i && i < size());
     std::vector<int> C;
     auto u = i;
     do {

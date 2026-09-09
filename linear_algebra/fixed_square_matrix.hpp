@@ -2,14 +2,13 @@
 
 #include <array>
 #include <concepts>
-#include <cstddef>
 #include <string>
 #include <utility>
 
 #include "algebra/ring.hpp"
 #include "algebra/semiring.hpp"
 
-template <std::size_t N, Semiring S>
+template <int N, Semiring S>
 struct FixedSquareMatrix {
   using row_type = std::array<S, N>;
   using matrix_type = std::array<row_type, N>;
@@ -20,30 +19,30 @@ struct FixedSquareMatrix {
   FixedSquareMatrix(const matrix_type& mat): mat{mat} {}
   FixedSquareMatrix(matrix_type&& mat): mat{std::move(mat)} {}
   FixedSquareMatrix(const S (&a)[N][N]) {
-    for (auto i = 0uz; i < N; ++i) {
-      for (auto j = 0uz; j < N; ++j) {
+    for (auto i = 0; i < N; ++i) {
+      for (auto j = 0; j < N; ++j) {
         mat[i][j] = a[i][j];
       }
     }
   }
 
-  row_type& operator[](std::size_t i) { return mat[i]; }
-  const row_type& operator[](std::size_t i) const { return mat[i]; }
+  row_type& operator[](int i) { return mat[i]; }
+  const row_type& operator[](int i) const { return mat[i]; }
 
   FixedSquareMatrix operator-() const
     requires Ring<S>
   {
     FixedSquareMatrix a;
-    for (auto i = 0uz; i < N; ++i) {
-      for (auto j = 0uz; j < N; ++j) {
+    for (auto i = 0; i < N; ++i) {
+      for (auto j = 0; j < N; ++j) {
         a.mat[i][j] = -mat[i][j];
       }
     }
     return a;
   }
   FixedSquareMatrix& operator+=(const FixedSquareMatrix& a) {
-    for (auto i = 0uz; i < N; ++i) {
-      for (auto j = 0uz; j < N; ++j) {
+    for (auto i = 0; i < N; ++i) {
+      for (auto j = 0; j < N; ++j) {
         mat[i][j] = mat[i][j] + a.mat[i][j];
       }
     }
@@ -52,8 +51,8 @@ struct FixedSquareMatrix {
   FixedSquareMatrix& operator-=(const FixedSquareMatrix& a)
     requires Ring<S>
   {
-    for (auto i = 0uz; i < N; ++i) {
-      for (auto j = 0uz; j < N; ++j) {
+    for (auto i = 0; i < N; ++i) {
+      for (auto j = 0; j < N; ++j) {
         mat[i][j] = mat[i][j] - a.mat[i][j];
       }
     }
@@ -61,9 +60,9 @@ struct FixedSquareMatrix {
   }
   FixedSquareMatrix& operator*=(const FixedSquareMatrix& a) {
     FixedSquareMatrix b{};
-    for (auto i = 0uz; i < N; ++i) {
-      for (auto k = 0uz; k < N; ++k) {
-        for (auto j = 0uz; j < N; ++j) {
+    for (auto i = 0; i < N; ++i) {
+      for (auto k = 0; k < N; ++k) {
+        for (auto j = 0; j < N; ++j) {
           b.mat[i][j] = b.mat[i][j] + mat[i][k] * a.mat[k][j];
         }
       }
@@ -89,8 +88,8 @@ struct FixedSquareMatrix {
   }
   friend FixedSquareMatrix operator*(const S& c, const FixedSquareMatrix& a) {
     FixedSquareMatrix b{};
-    for (auto i = 0uz; i < N; ++i) {
-      for (auto j = 0uz; j < N; ++j) {
+    for (auto i = 0; i < N; ++i) {
+      for (auto j = 0; j < N; ++j) {
         b.mat[i][j] = c * a.mat[i][j];
       }
     }
@@ -98,8 +97,8 @@ struct FixedSquareMatrix {
   }
   friend FixedSquareMatrix operator*(const FixedSquareMatrix& a, const S& c) {
     FixedSquareMatrix b{};
-    for (auto i = 0uz; i < N; ++i) {
-      for (auto j = 0uz; j < N; ++j) {
+    for (auto i = 0; i < N; ++i) {
+      for (auto j = 0; j < N; ++j) {
         b.mat[i][j] = a.mat[i][j] * c;
       }
     }
@@ -115,7 +114,7 @@ struct FixedSquareMatrix {
   static FixedSquareMatrix zero() { return FixedSquareMatrix{}; }
   static FixedSquareMatrix identity() {
     FixedSquareMatrix id{};
-    for (auto i = 0uz; i < N; ++i) id[i][i] = S::one();
+    for (auto i = 0; i < N; ++i) id[i][i] = S::one();
     return id;
   }
 
@@ -125,9 +124,9 @@ struct FixedSquareMatrix {
     }
   {
     std::string s = "[";
-    for (auto i = 0uz; i < N; ++i) {
+    for (auto i = 0; i < N; ++i) {
       s += (i == 0 ? "" : ", ") + std::string("[");
-      for (auto j = 0uz; j < N; ++j) {
+      for (auto j = 0; j < N; ++j) {
         s += (j == 0 ? "" : ", ") + pretty(a[i][j]);
       }
       s += "]";

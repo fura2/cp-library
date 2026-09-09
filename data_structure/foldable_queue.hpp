@@ -1,7 +1,7 @@
 #pragma once
 
+#include <cassert>
 #include <concepts>
-#include <cstddef>
 #include <ranges>
 #include <string>
 #include <utility>
@@ -38,7 +38,7 @@ class FoldableQueue {
 
   bool empty() const { return stk_front.empty() && stk_back.empty(); }
 
-  std::size_t size() const { return stk_front.size() + stk_back.size(); }
+  int size() const { return stk_front.size() + stk_back.size(); }
 
   const M& front() const {
     return stk_front.empty() ? stk_back.front() : stk_front.back();
@@ -48,9 +48,10 @@ class FoldableQueue {
     return stk_back.empty() ? stk_front.front() : stk_back.back();
   }
 
-  const M& operator[](std::size_t i) const {
-    return i < stk_front.size() ? stk_front[stk_front.size() - i - 1]
-                                : stk_back[i - stk_front.size()];
+  const M& operator[](int i) const {
+    assert(0 <= i && i < size());
+    int n_front = stk_front.size();
+    return i < n_front ? stk_front[n_front - i - 1] : stk_back[i - n_front];
   }
 
   template <typename T>
@@ -96,18 +97,18 @@ class FoldableQueue {
 
   M fold() const { return cum_front.back() * cum_back; }
 
-  friend std::string pretty(const FoldableQueue& q) {
+  friend std::string pretty(const FoldableQueue& Q) {
     if constexpr (requires(const M& x) {
                     { pretty(x) } -> std::same_as<std::string>;
                   }) {
       std::string s = "[";
-      for (auto i = 0uz; i < q.size(); ++i) {
-        s += (i == 0 ? "" : ", ") + pretty(q[i]);
+      for (auto i = 0; i < Q.size(); ++i) {
+        s += (i == 0 ? "" : ", ") + pretty(Q[i]);
       }
       s += "]";
       return s;
     }
-    return "[" + std::to_string(q.size()) + " element(s)]";
+    return "[" + std::to_string(Q.size()) + " element(s)]";
   }
 
  private:
