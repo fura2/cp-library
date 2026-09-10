@@ -20,23 +20,19 @@ class WeightedDigraph {
   int num_edges() const { return m; }
 
   auto operator[](int u) const {
-    assert(u >= 0);
-    assert(u < n);
+    assert(0 <= u && u < n);
     return std::views::transform(
         G[u], [this](int i) -> const edge_type& { return E[i]; });
   }
 
   const edge_type& edge(int i) const {
-    assert(i >= 0);
-    assert(i < m);
+    assert(0 <= i && i < m);
     return E[i];
   }
 
   int add_edge(int from, int to, const T& cost) {
-    assert(from >= 0);
-    assert(from < n);
-    assert(to >= 0);
-    assert(to < n);
+    assert(0 <= from && from < n);
+    assert(0 <= to && to < n);
     G[from].emplace_back(m);
     E.emplace_back(from, to, cost, m);
     return m++;
