@@ -1,5 +1,6 @@
 #pragma once
 
+#include <cstddef>
 #include <iostream>
 #include <utility>
 #include <vector>
@@ -60,6 +61,27 @@ struct Output<std::pair<T, U>> {
   }
 };
 
+template <typename T, std::size_t N>
+struct Output<T[N]> {
+  static void write(const T (&a)[N]) {
+    for (int i = 0; const auto& x: a) {
+      if (i > 0) std::cout << " ";
+      Output<T>::write(x);
+      ++i;
+    }
+  }
+
+  static void write(const T (&a)[N], int offset)
+    requires requires(const T& x, int n) { x + n; }
+  {
+    for (int i = 0; const auto& x: a) {
+      if (i > 0) std::cout << " ";
+      Output<T>::write(x + offset);
+      ++i;
+    }
+  }
+};
+
 template <typename T>
 struct Output<std::vector<T>> {
   static void write(const std::vector<T>& v) {
@@ -90,3 +112,5 @@ void output(const T& x, Args&&... args) {
   std::cout << "\n";
 #endif
 }
+
+inline void output(const char* s) { output<const char*>(s); }
