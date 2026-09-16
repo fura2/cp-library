@@ -27,7 +27,7 @@ class Grid {
     std::array<std::pair<int, int>, N> data{};
   };
 
-  Grid() = default;
+  Grid(): h{0}, w{0} {};
   Grid(int h, int w): h{h}, w{w}, data(h, std::string(w, '.')) {}
 
   std::string& operator[](int i) { return data[i]; }
@@ -67,6 +67,17 @@ class Grid {
       for (int j = 0; j < w; ++j)
         if (data[i][j] == c) ++res;
     return res;
+  }
+
+  void transpose() {
+    std::vector<std::string> data2(w, std::string(h, '?'));
+    for (int i = 0; i < h; ++i) {
+      for (int j = 0; j < w; ++j) {
+        data2[j][i] = data[i][j];
+      }
+    }
+    std::swap(h, w);
+    data = std::move(data2);
   }
 
   friend std::string pretty(const Grid& G) {
