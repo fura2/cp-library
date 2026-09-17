@@ -2,6 +2,7 @@
 
 #include <algorithm>
 #include <cassert>
+#include <utility>
 #include <vector>
 
 class LinearSieve {
@@ -45,6 +46,20 @@ class LinearSieve {
     }
     std::ranges::sort(ds);
     return ds;
+  }
+
+  std::vector<std::pair<int, int>> prime_factorization(int a) const {
+    assert(1 <= a && a <= n);
+    std::vector<std::pair<int, int>> pf;
+    while (a > 1) {
+      int p = lpf[a], e = 0;
+      while (a >= 2 && lpf[a] == p) {
+        a /= p;
+        ++e;
+      }
+      pf.emplace_back(p, e);
+    }
+    return pf;
   }
 
  private:
