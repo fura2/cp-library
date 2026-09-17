@@ -1,4 +1,7 @@
 # cp-library
+
+[![Tests](https://github.com/fura2/cp-library/actions/workflows/tests.yml/badge.svg)](https://github.com/fura2/cp-library/actions/workflows/tests.yml)
+
 Collection of algorithms for competitive programming
 
 Now migrating from https://github.com/fura2/competitive-programming-library
