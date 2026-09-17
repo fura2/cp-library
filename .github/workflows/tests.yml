@@ -1,0 +1,25 @@
+name: Tests
+
+on:
+  push:
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tests:
+    name: GCC 15.2.0 / C++23
+    runs-on: ubuntu-24.04
+    container:
+      image: gcc:15.2.0
+    timeout-minutes: 10
+    env:
+      CXX: g++
+    steps:
+      - uses: actions/checkout@v6
+        with:
+          persist-credentials: false
+      - name: Compile and run tests
+        run: bash tests/run.sh

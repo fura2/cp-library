@@ -1,0 +1,3 @@
+.build.*/
+# Fixtures use these extensions, which the repository-wide rules ignore.
+!*.out
