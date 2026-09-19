@@ -39,7 +39,7 @@ class BinomialTable {
     return table[n][r];
   }
 
-  long long multinomial(std::vector<int>& a) {
+  long long multinomial(const std::vector<int>& a) {
     long long res = 1;
     if (mod != -1) {
       assert(mod <= std::numeric_limits<int>::max());
