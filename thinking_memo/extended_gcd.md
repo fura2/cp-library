@@ -4,6 +4,6 @@ $a,b\in\mathbb{Z}$ に対して、`extended_gcd(a, b)` は $ax+by=\mathrm{gcd}(a
 ここで、$a,b$ が負であっても $\mathrm{gcd}(a,b)\ge0$ であり、また、$\mathrm{gcd}(0,0)=0$ と定める。
 
 一般には $x,y$ の選び方には任意性があるが、次のようにして結果を一意に定めている。
+- $a=0$ のとき、$x=0,y=\mathrm{sgn}(b)$ と選ぶ。
 - $b=0$ のとき、$x=\mathrm{sgn}(a),y=0$ と選ぶ。
-- $b\ne0$ のとき、$0\le x\lt|b|/g$ を満たす唯一の $x,y$ を取る。
-  - $a=0$ のとき $y=\mathrm{sgn}(b)$、$a\ne0$ のとき $|y|\le|a|/g$ が自動的に満たされる。
+- $a\ne0,b\ne0$ のとき、$0\le x\lt|b|/g$ を満たす唯一の $x,y$ を取る。このとき、$|y|\le|a|/g$ が自動的に満たされる。
