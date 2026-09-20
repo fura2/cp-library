@@ -1,15 +1,13 @@
 #pragma once
 
-#include <algorithm>
 #include <cassert>
-#include <utility>
 #include <vector>
 
 class LinearSieve {
  public:
-  explicit LinearSieve(int n): n{n}, lpf(n + 1) {
+  explicit LinearSieve(int n): n{n}, lpf(n + 1, -1) {
     for (int i = 2; i <= n; i++) {
-      if (lpf[i] == 0) {
+      if (lpf[i] == -1) {
         lpf[i] = i;
         ps.emplace_back(i);
       }
@@ -21,46 +19,14 @@ class LinearSieve {
     }
   }
 
-  const std::vector<int>& primes() const { return ps; }
-
   bool is_prime(int a) const {
     assert(0 <= a && a <= n);
-    return a >= 2 && lpf[a] == a;
+    return lpf[a] == a;
   }
 
-  std::vector<int> divisors(int a) const {
-    assert(1 <= a && a <= n);
-    std::vector<int> ds = {1};
-    while (a > 1) {
-      int p = lpf[a], e = 0;
-      while (a >= 2 && lpf[a] == p) {
-        a /= p;
-        ++e;
-      }
-      int m = ds.size();
-      for (int i = 0; i < e; ++i) {
-        for (int j = 0; j < m; ++j) {
-          ds.emplace_back(ds[i * m + j] * p);
-        }
-      }
-    }
-    std::ranges::sort(ds);
-    return ds;
-  }
+  const std::vector<int>& primes() const { return ps; }
 
-  std::vector<std::pair<int, int>> prime_factorization(int a) const {
-    assert(1 <= a && a <= n);
-    std::vector<std::pair<int, int>> pf;
-    while (a > 1) {
-      int p = lpf[a], e = 0;
-      while (a >= 2 && lpf[a] == p) {
-        a /= p;
-        ++e;
-      }
-      pf.emplace_back(p, e);
-    }
-    return pf;
-  }
+  const std::vector<int>& least_prime_factors() const { return lpf; }
 
  private:
   int n;
