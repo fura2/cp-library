@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cassert>
+#include <iterator>
 #include <vector>
 
 #include "number_theory/multiplicative_function.hpp"
@@ -7,6 +9,7 @@
 inline const auto num_divisors_prime_power = [](int, int e) { return e + 1; };
 
 inline int num_divisors(int a, const std::vector<int>& lpf) {
+  assert(1 <= a && a < std::ssize(lpf));
   return multiplicative_function(a, num_divisors_prime_power, lpf);
 }
 
