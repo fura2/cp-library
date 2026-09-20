@@ -10,6 +10,7 @@ int main() {
   assert(one.primes().empty() && !one.is_prime(0) && !one.is_prime(1));
   assert((one.least_prime_factors() == std::vector<int>{-1, -1}));
   assert(two.primes() == std::vector<int>{2} && two.is_prime(2));
+  assert(two.least_prime_factor(2) == 2);
   assert((two.least_prime_factors() == std::vector<int>{-1, -1, 2}));
   assert((LinearSieve{10}.primes() == std::vector<int>{2, 3, 5, 7}));
   assert((LinearSieve{12}.least_prime_factors() ==
@@ -17,6 +18,9 @@ int main() {
   assert(!sieve.is_prime(0) && !sieve.is_prime(1));
   assert(sieve.is_prime(2) && sieve.is_prime(59));
   assert(!sieve.is_prime(49) && !sieve.is_prime(60));
+  assert(sieve.least_prime_factor(49) == 7);
+  assert(sieve.least_prime_factor(59) == 59);
+  assert(sieve.least_prime_factor(60) == 2);
   const auto& lpf = sieve.least_prime_factors();
   assert(lpf.size() == 61);
   assert(lpf[49] == 7 && lpf[59] == 59 && lpf[60] == 2);

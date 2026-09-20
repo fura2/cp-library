@@ -26,6 +26,11 @@ class LinearSieve {
 
   const std::vector<int>& primes() const { return ps; }
 
+  int least_prime_factor(int a) const {
+    assert(2 <= a && a <= n);
+    return lpf[a];
+  }
+
   const std::vector<int>& least_prime_factors() const { return lpf; }
 
  private:
