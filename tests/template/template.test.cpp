@@ -51,8 +51,13 @@ int main() {
   no();
   yesno(true);
   yesno(false);
+  alice();
+  bob();
+  alicebob(true);
+  alicebob(false);
   output(0.5);
-  assert(io.out.str() == "Yes\nNo\nYes\nNo\n0.500000000000\n");
+  assert(io.out.str() ==
+         "Yes\nNo\nYes\nNo\nAlice\nBob\nAlice\nBob\n0.500000000000\n");
   int calls = 0;
   show(++calls);
 #ifdef LOCAL

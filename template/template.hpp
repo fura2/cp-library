@@ -43,9 +43,12 @@ bool chmin(T& a, const T& b) {
   return b < a ? a = b, true : false;
 }
 
-inline void yesno(bool b) { std::cout << (b ? "Yes" : "No") << "\n"; }
+inline void yesno(bool b) { output(b ? "Yes" : "No"); }
 inline void yes() { yesno(true); }
 inline void no() { yesno(false); }
+inline void alicebob(bool b) { output(b ? "Alice" : "Bob"); }
+inline void alice() { alicebob(true); }
+inline void bob() { alicebob(false); }
 
 inline const auto io_setup = [] {
   std::ios::sync_with_stdio(false);
