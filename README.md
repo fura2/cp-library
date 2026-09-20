@@ -38,3 +38,4 @@ Now migrating from https://github.com/fura2/competitive-programming-library
   - 競技プログラミングでは定数式の評価はほとんどしないので、見た目をすっきりさせて認知負荷を減らすことを優先している。
 - size_t は可能な限り使わない。
   - C++ の標準ライブラリに合わせるより、気軽に符号つき整数型を扱えることの方が大切。
+- 関数の戻り値の型が複雑な場合には、積極的に auto による型推論を使う。

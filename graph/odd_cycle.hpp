@@ -8,8 +8,7 @@
 
 template <typename GraphT>
   requires IncidenceGraph<GraphT> && Undirected<GraphT>
-std::pair<bool, std::vector<typename GraphT::edge_type>> odd_cycle(
-    const GraphT& G) {
+auto odd_cycle(const GraphT& G) {
   int n = G.num_vertices();
 
   std::vector<int> color(n, -1);
@@ -39,7 +38,8 @@ std::pair<bool, std::vector<typename GraphT::edge_type>> odd_cycle(
   };
 
   for (int u = 0; u < n; ++u) {
-    if (color[u] == -1 && dfs(dfs, u, 0)) return {true, std::move(cycle)};
+    if (color[u] == -1 && dfs(dfs, u, 0))
+      return std::pair{true, std::move(cycle)};
   }
-  return {false, {}};
+  return std::pair<bool, decltype(cycle)>{false, {}};
 }
