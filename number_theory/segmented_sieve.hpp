@@ -36,9 +36,9 @@ class SegmentedSieve {
     table.assign(r - l + 1, true);
     for (int a = 0; a <= 1; ++a)
       if (l <= a && a <= r) table[a - l] = false;
-    for (int p: ps) {
-      if (1LL * p * p > r) break;
-      for (auto a = std::max((l + p - 1) / p, 1LL * p) * p; a <= r; a += p) {
+    for (long long p: ps) {
+      if (p * p > r) break;
+      for (auto a = std::max((l + p - 1) / p, p) * p; a <= r; a += p) {
         table[a - l] = false;
       }
     }
