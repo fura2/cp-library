@@ -22,37 +22,28 @@ class SegmentedSieve {
 
   bool is_prime(long long a) const {
     assert(l <= a && a <= r);
-    return lpf[a - l] == a;
+    return table[a - l];
   }
 
   const std::vector<long long>& primes() const { return ps; }
 
-  long long least_prime_factor(long long a) const {
-    assert(std::max(l, 2LL) <= a && a <= r);
-    return lpf[a - l];
-  }
-
-  const std::vector<long long>& least_prime_factors() const { return lpf; }
-
  private:
   long long l, r;
-  std::vector<long long> lpf;
+  std::vector<bool> table;
   std::vector<long long> ps;
 
   void build(const std::vector<int>& ps) {
-    lpf.assign(r - l + 1, -1);
+    table.assign(r - l + 1, true);
+    for (int a = 0; a <= 1; ++a)
+      if (l <= a && a <= r) table[a - l] = false;
     for (int p: ps) {
       if (1LL * p * p > r) break;
-      for (auto a = std::max<long long>((l + p - 1) / p, p) * p; a <= r;
-           a += p) {
-        if (lpf[a - l] == -1) lpf[a - l] = p;
+      for (auto a = std::max((l + p - 1) / p, 1LL * p) * p; a <= r; a += p) {
+        table[a - l] = false;
       }
     }
     for (long long a = std::max(l, 2LL); a <= r; ++a) {
-      if (lpf[a - l] == -1) {
-        lpf[a - l] = a;
-        this->ps.emplace_back(a);
-      }
+      if (table[a - l]) this->ps.emplace_back(a);
     }
   }
 };
