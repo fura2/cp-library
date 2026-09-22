@@ -1,6 +1,7 @@
 #include "mint/mint.hpp"
 
 #include <cassert>
+#include <vector>
 
 #include "tests/support/io.hpp"
 
@@ -48,6 +49,30 @@ int main() {
     assert(multichoose(0, 2, type).unwrap() == 0);
     assert(multichoose(3, 0, type).unwrap() == 1);
   }
+
+  std::vector<int> no_parts;
+  std::vector<int> zeros{0, 0, 0};
+  std::vector<int> single{20};
+  std::vector<int> two_parts{4, 3};
+  const std::vector<int> parts{2, 1, 3};
+  std::vector<int> reordered{3, 2, 1};
+  std::vector<int> with_zeros{0, 2, 0, 1, 3, 0};
+  std::vector<int> repeated{3, 3, 3};
+  assert(multinomial(no_parts).unwrap() == 1);
+  assert(multinomial(zeros).unwrap() == 1);
+  assert(multinomial(single).unwrap() == 1);
+  assert(multinomial(two_parts).unwrap() == 35);
+  assert(multinomial(parts).unwrap() == 60);
+  assert(multinomial({2, 1, 3}).unwrap() == 60);
+  assert(multinomial(reordered).unwrap() == 60);
+  assert(multinomial(with_zeros).unwrap() == 60);
+  assert(multinomial(repeated).unwrap() == 1680);
+
+  std::vector<int> ones(20, 1);
+  assert(multinomial(ones).unwrap() == 2432902008176640000LL % mod);
+  std::vector<int> large_parts{20, 20, 20};
+  assert(multinomial(large_parts).unwrap() == 526190592);
+
   assert(pretty(mint{42}) == "42");
   TestIO io{"-1"};
   const auto read = input<mint>();

@@ -137,3 +137,14 @@ inline mint multichoose(int n, int k, int type = 0) {
   if (n == 0 && k == 0) return 1;
   return choose(n + k - 1, k, type);
 }
+
+inline mint multinomial(const std::vector<int>& a) {
+  mint res = 1;
+  int n = a.size(), s = 0;
+  for (int i = 0; i < n; ++i) {
+    assert(a[i] >= 0);
+    s += a[i];
+    res *= choose(s, a[i]);
+  }
+  return res;
+}
