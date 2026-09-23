@@ -3,7 +3,7 @@
 #include "template/debug.hpp"
 // clang-format on
 
-#include "algebra/collection/pair_monoid.hpp"
+#include "algebra/pair_monoid.hpp"
 
 #include <cassert>
 #include <concepts>
