@@ -33,11 +33,11 @@ class AdditiveMonoidOfSemiring {
   }
 
   friend std::string pretty(const AdditiveMonoidOfSemiring& m)
-    requires requires(const AdditiveMonoidOfSemiring& m) {
-      { pretty(m.unwrap()) } -> std::same_as<std::string>;
+    requires requires(const S& s) {
+      { pretty(s) } -> std::same_as<std::string>;
     }
   {
-    return pretty(m.unwrap());
+    return pretty(m.s);
   }
 
  private:

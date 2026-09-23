@@ -13,20 +13,20 @@ class SemigroupImpl {
   SemigroupImpl(const T& x): x{x} {}
   SemigroupImpl(T&& x): x{std::move(x)} {}
 
-  friend SemigroupImpl operator*(const SemigroupImpl& m,
-                                 const SemigroupImpl& n) {
-    return SemigroupImpl{Op(m.x, n.x)};
+  friend SemigroupImpl operator*(const SemigroupImpl& s,
+                                 const SemigroupImpl& t) {
+    return SemigroupImpl{Op(s.x, t.x)};
   }
 
   const T& unwrap() const { return x; }
   T& unwrap() { return x; }
 
-  friend std::string pretty(const SemigroupImpl& m)
-    requires requires(const SemigroupImpl& m) {
-      { pretty(m.unwrap()) } -> std::same_as<std::string>;
+  friend std::string pretty(const SemigroupImpl& s)
+    requires requires(const SemigroupImpl& s) {
+      { pretty(s.unwrap()) } -> std::same_as<std::string>;
     }
   {
-    return pretty(m.unwrap());
+    return pretty(s.unwrap());
   }
 
  private:

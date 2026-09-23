@@ -34,11 +34,11 @@ class AdditiveGroupOfRing {
   }
 
   friend std::string pretty(const AdditiveGroupOfRing& g)
-    requires requires(const AdditiveGroupOfRing& g) {
-      { pretty(g.unwrap()) } -> std::same_as<std::string>;
+    requires requires(const R& r) {
+      { pretty(r) } -> std::same_as<std::string>;
     }
   {
-    return pretty(g.unwrap());
+    return pretty(g.r);
   }
 
  private:
