@@ -24,7 +24,7 @@ Now migrating from https://github.com/fura2/competitive-programming-library
 
 - [.clang-format](.clang-format) に基づいてフォーマットする。
 - include はヘッダごとに必要十分な量を書く。template.hpp と main.hpp は例外。
-- クラス名とコンセプト名は PascalCase、関数名は snake_case とする。
+- クラス名とコンセプト名は PascalCase、関数名と名前空間名は snake_case とする。
 - 1 引数のコンストラクタには explicit を指定する。ただし、以下の例外を含む。
   - mint のようなプリミティブな扱いをするデータ型には指定しない。
   - コピーコンストラクタ、ムーブコンストラクタには指定しない。
