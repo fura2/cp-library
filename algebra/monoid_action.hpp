@@ -11,7 +11,7 @@ concept MonoidAction =
       typename A::action_monoid;
     } && Monoid<typename A::value_monoid> &&
     Monoid<typename A::action_monoid> &&
-    requires(const typename A::value_monoid& x,
+    requires(const typename A::value_monoid& m,
              const typename A::action_monoid& f) {
-      { A::act(x, f) } -> std::same_as<typename A::value_monoid>;
+      { A::act(m, f) } -> std::same_as<typename A::value_monoid>;
     };
