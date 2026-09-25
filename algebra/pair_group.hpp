@@ -9,23 +9,24 @@
 template <Group G, Group H>
 class PairGroup {
  public:
-  PairGroup(): g{G::identity()}, h{H::identity()} {}
+  G first;
+  H second;
+
+  PairGroup(): first{G::identity()}, second{H::identity()} {}
 
   template <typename T, typename U>
     requires std::constructible_from<G, T&&> && std::constructible_from<H, U&&>
-  PairGroup(T&& x, U&& y): g(std::forward<T>(x)), h(std::forward<U>(y)) {}
+  PairGroup(T&& x, U&& y)
+      : first(std::forward<T>(x)), second(std::forward<U>(y)) {}
 
   friend PairGroup operator*(const PairGroup& p, const PairGroup& q) {
-    return PairGroup{p.g * q.g, p.h * q.h};
+    return PairGroup{p.first * q.first, p.second * q.second};
   }
   static PairGroup identity() { return PairGroup{}; }
 
-  PairGroup inverse() const { return PairGroup{g.inverse(), h.inverse()}; }
-
-  const G& first() const { return g; }
-  G& first() { return g; }
-  const H& second() const { return h; }
-  H& second() { return h; }
+  PairGroup inverse() const {
+    return PairGroup{first.inverse(), second.inverse()};
+  }
 
   friend std::string pretty(const PairGroup& p)
     requires requires(const G& g) {
@@ -34,10 +35,6 @@ class PairGroup {
       { pretty(h) } -> std::same_as<std::string>;
     }
   {
-    return "(" + pretty(p.g) + ", " + pretty(p.h) + ")";
+    return "(" + pretty(p.first) + ", " + pretty(p.second) + ")";
   }
-
- private:
-  G g;
-  H h;
 };

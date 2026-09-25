@@ -4,3 +4,4 @@
 #include "algebra/pair_group.hpp"
 
 using LintAddIntAddPairGroup = PairGroup<LintAddGroup, IntAddGroup>;
+using LintAddLintAddPairGroup = PairGroup<LintAddGroup, LintAddGroup>;

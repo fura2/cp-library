@@ -71,12 +71,12 @@ static_assert(!HasPairGroup<int, Sum> && !HasPairGroup<Sum, int>);
 static_assert(std::constructible_from<P, std::vector<int>&, long long>);
 static_assert(!std::constructible_from<P, int, int>);
 static_assert(!std::constructible_from<P, std::vector<int>, std::string>);
-static_assert(std::same_as<decltype(std::declval<P&>().first()), Permutation&>);
-static_assert(std::same_as<decltype(std::declval<const P&>().first()),
+static_assert(std::same_as<decltype((std::declval<P&>().first)), Permutation&>);
+static_assert(std::same_as<decltype((std::declval<const P&>().first)),
                            const Permutation&>);
-static_assert(std::same_as<decltype(std::declval<P&>().second()), Sum&>);
+static_assert(std::same_as<decltype((std::declval<P&>().second)), Sum&>);
 static_assert(
-    std::same_as<decltype(std::declval<const P&>().second()), const Sum&>);
+    std::same_as<decltype((std::declval<const P&>().second)), const Sum&>);
 static_assert(HasPretty<P>);
 static_assert(!HasPretty<PairGroup<Opaque, Sum>>);
 static_assert(!HasPretty<PairGroup<Sum, Opaque>>);
@@ -91,7 +91,7 @@ void check_construction() {
   const PermPair copied{left, right};
   assert((left == std::vector<int>{1, 2, 0}));
   assert((right == std::vector<int>{2, 0, 1}));
-  assert(copied.first().unwrap() == left && copied.second().unwrap() == right);
+  assert(copied.first.unwrap() == left && copied.second.unwrap() == right);
 
   const PermPair mixed_left{left, std::vector<int>{0, 2, 1}};
   const PermPair mixed_right{std::vector<int>{0, 2, 1}, right};
@@ -100,14 +100,14 @@ void check_construction() {
   assert(pretty(mixed_left) == "([1, 2, 0], [0, 2, 1])");
   assert(pretty(mixed_right) == "([0, 2, 1], [2, 0, 1])");
   const PermPair const_left{fixed, right}, const_right{left, fixed};
-  assert(const_left.first().unwrap() == fixed);
-  assert(const_right.second().unwrap() == fixed);
+  assert(const_left.first.unwrap() == fixed);
+  assert(const_right.second.unwrap() == fixed);
 
   // Parenthesized initialization permits the same conversions as the
   // constraint.
   const P converted{left, 3LL};
-  assert(converted.first().unwrap() == left);
-  assert(converted.second().unwrap() == 3);
+  assert(converted.first.unwrap() == left);
+  assert(converted.second.unwrap() == 3);
 }
 
 void check_noncommutative_operations() {
@@ -117,8 +117,8 @@ void check_noncommutative_operations() {
   assert(pretty(a * b) == "([1, 2, 0], [2, 0, 1])");
   assert(pretty(b * a) == "([2, 0, 1], [1, 2, 0])");
   const auto equal = [](const PermPair& x, const PermPair& y) {
-    return x.first().unwrap() == y.first().unwrap() &&
-           x.second().unwrap() == y.second().unwrap();
+    return x.first.unwrap() == y.first.unwrap() &&
+           x.second.unwrap() == y.second.unwrap();
   };
   const std::vector<PermPair> values{e, a, b, a * b};
   for (const PermPair& x: values) {
@@ -167,8 +167,8 @@ int main() {
   assert(pretty(a.inverse()) == "([2, 0, 1], -3)");
 
   P copied{a};
-  copied.first().unwrap() = {0, 2, 1};
-  copied.second().unwrap() = 9;
+  copied.first.unwrap() = {0, 2, 1};
+  copied.second.unwrap() = 9;
   assert(pretty(std::as_const(copied)) == "([0, 2, 1], 9)");
   assert(pretty(a) == "([1, 2, 0], 3)");
   copied = b;
@@ -183,5 +183,5 @@ int main() {
   assert(pretty(nested * nested.inverse()) == "(([0, 1, 2], 0), 0)");
   assert(pretty(std::vector<P>{a, b}) == "[([1, 2, 0], 3), ([1, 0, 2], -2)]");
   const PairGroup<Opaque, Sum> opaque{Opaque{}, 3};
-  assert((opaque * opaque.inverse()).second().unwrap() == 0);
+  assert((opaque * opaque.inverse()).second.unwrap() == 0);
 }

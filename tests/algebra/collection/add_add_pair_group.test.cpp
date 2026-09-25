@@ -8,6 +8,7 @@
 #include "data_structure/fenwick_tree.hpp"
 
 using P = LintAddIntAddPairGroup;
+using Q = LintAddLintAddPairGroup;
 using M = PairMonoid<LintAddGroup, IntAddGroup>;
 
 template <typename T>
@@ -15,15 +16,17 @@ concept HasRangeFold =
     requires(const FenwickTree<T>& tree) { tree.fold(0, 0); };
 
 static_assert(std::same_as<P, PairGroup<LintAddGroup, IntAddGroup>>);
-static_assert(Group<P> && !Group<M>);
-static_assert(HasRangeFold<P> && !HasRangeFold<M>);
+static_assert(std::same_as<Q, PairGroup<LintAddGroup, LintAddGroup>>);
+static_assert(Group<P> && Group<Q> && !Group<M>);
+static_assert(HasRangeFold<P> && HasRangeFold<Q> && !HasRangeFold<M>);
 
-void check(const P& p, long long first, int second) {
-  assert(p.first().unwrap() == first);
-  assert(p.second().unwrap() == second);
+template <Group G>
+void check(const G& p, long long first, long long second) {
+  assert(p.first.unwrap() == first);
+  assert(p.second.unwrap() == second);
 }
 
-int main() {
+void check_lint_int() {
   const P a{3'000'000'000LL, 1}, b{4'000'000'000LL, 2};
   check(P{}, 0, 0);
   check(P::identity(), 0, 0);
@@ -46,4 +49,31 @@ int main() {
   check(tree.fold(), 2'000'000'000LL, 6);
   const FenwickTree<P> empty{0};
   check(empty.fold(0, 0), 0, 0);
+}
+
+void check_lint_lint() {
+  // Both components exceed the 32-bit signed integer range.
+  const Q a{3'000'000'000LL, -4'000'000'000LL};
+  const Q b{5'000'000'000LL, 6'000'000'000LL};
+  check(Q{}, 0, 0);
+  check(Q::identity(), 0, 0);
+  check(a * b, 8'000'000'000LL, 2'000'000'000LL);
+  check(a.inverse(), -3'000'000'000LL, 4'000'000'000LL);
+  check(a * a.inverse(), 0, 0);
+  check(a.inverse() * a, 0, 0);
+
+  FenwickTree<Q> tree{std::vector<Q>{a, b}};
+  check(tree.fold(), 8'000'000'000LL, 2'000'000'000LL);
+  check(tree.fold(1, 2), 5'000'000'000LL, 6'000'000'000LL);
+  check(tree.fold(1, 1), 0, 0);
+  tree.set(0, Q{-7'000'000'000LL, 9'000'000'000LL});
+  check(tree.get(0), -7'000'000'000LL, 9'000'000'000LL);
+  check(tree.fold(), -2'000'000'000LL, 15'000'000'000LL);
+  tree.apply(1, Q{6'000'000'000LL, -3'000'000'000LL});
+  check(tree.fold(), 4'000'000'000LL, 12'000'000'000LL);
+}
+
+int main() {
+  check_lint_int();
+  check_lint_lint();
 }

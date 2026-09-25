@@ -55,12 +55,12 @@ static_assert(!HasPairMonoid<int, Sum> && !HasPairMonoid<Sum, int>);
 static_assert(std::constructible_from<P, const char*, long long>);
 static_assert(!std::constructible_from<P, int, int>);
 static_assert(!std::constructible_from<P, std::string, std::string>);
-static_assert(std::same_as<decltype(std::declval<P&>().first()), Concat&>);
+static_assert(std::same_as<decltype((std::declval<P&>().first)), Concat&>);
 static_assert(
-    std::same_as<decltype(std::declval<const P&>().first()), const Concat&>);
-static_assert(std::same_as<decltype(std::declval<P&>().second()), Sum&>);
+    std::same_as<decltype((std::declval<const P&>().first)), const Concat&>);
+static_assert(std::same_as<decltype((std::declval<P&>().second)), Sum&>);
 static_assert(
-    std::same_as<decltype(std::declval<const P&>().second()), const Sum&>);
+    std::same_as<decltype((std::declval<const P&>().second)), const Sum&>);
 static_assert(HasPretty<P>);
 static_assert(!HasPretty<PairMonoid<Opaque, Sum>>);
 static_assert(!HasPretty<PairMonoid<Sum, Opaque>>);
@@ -74,26 +74,26 @@ void check_construction() {
   const std::string fixed = "fixed";
   const TextPair copied{left, right};
   assert(left == "left" && right == "right");
-  assert(copied.first().unwrap() == "left");
-  assert(copied.second().unwrap() == "right");
+  assert(copied.first.unwrap() == "left");
+  assert(copied.second.unwrap() == "right");
 
   const TextPair mixed_left{left, std::string{"temporary"}};
   const TextPair mixed_right{std::string{"temporary"}, right};
   assert(left == "left" && right == "right");
-  assert(mixed_left.first().unwrap() == "left");
-  assert(mixed_left.second().unwrap() == "temporary");
-  assert(mixed_right.first().unwrap() == "temporary");
-  assert(mixed_right.second().unwrap() == "right");
+  assert(mixed_left.first.unwrap() == "left");
+  assert(mixed_left.second.unwrap() == "temporary");
+  assert(mixed_right.first.unwrap() == "temporary");
+  assert(mixed_right.second.unwrap() == "right");
   const TextPair const_left{fixed, right}, const_right{left, fixed};
-  assert(const_left.first().unwrap() == "fixed");
-  assert(const_right.second().unwrap() == "fixed");
+  assert(const_left.first.unwrap() == "fixed");
+  assert(const_right.second.unwrap() == "fixed");
 
   // Construction uses the same parenthesized initialization as the constraint.
   const P converted{"text", 3LL};
   const PairMonoid<Sum, Sum> numbers{4LL, 5LL};
-  assert(converted.first().unwrap() == "text");
-  assert(converted.second().unwrap() == 3);
-  assert(numbers.first().unwrap() == 4 && numbers.second().unwrap() == 5);
+  assert(converted.first.unwrap() == "text");
+  assert(converted.second.unwrap() == 3);
+  assert(numbers.first.unwrap() == 4 && numbers.second.unwrap() == 5);
 }
 
 void check_noncommutative_operations() {
@@ -105,8 +105,8 @@ void check_noncommutative_operations() {
     for (const TextPair& y: values) {
       for (const TextPair& z: values) {
         const TextPair left = (x * y) * z, right = x * (y * z);
-        assert(left.first().unwrap() == right.first().unwrap());
-        assert(left.second().unwrap() == right.second().unwrap());
+        assert(left.first.unwrap() == right.first.unwrap());
+        assert(left.second.unwrap() == right.second.unwrap());
       }
     }
   }
@@ -116,9 +116,9 @@ void check_move_only() {
   using Q = PairMonoid<MoveOnly, MoveOnly>;
   const Q a{MoveOnly{2}, MoveOnly{3}}, b{MoveOnly{5}, MoveOnly{7}};
   const Q e{};
-  assert(*e.first().value == 0 && *e.second().value == 0);
+  assert(*e.first.value == 0 && *e.second.value == 0);
   const Q product = a * b;
-  assert(*product.first().value == 7 && *product.second().value == 10);
+  assert(*product.first.value == 7 && *product.second.value == 10);
   assert(pretty(product) == "(7, 10)");
   assert(pretty(e) == "(0, 0)");
   assert(pretty(a * Q::identity()) == "(2, 3)");
@@ -131,18 +131,18 @@ int main() {
   check_move_only();
 
   const P a{"ab", 2}, b{"cd", 3}, e = P::identity();
-  assert(e.first().unwrap().empty() && e.second().unwrap() == 0);
+  assert(e.first.unwrap().empty() && e.second.unwrap() == 0);
   assert(pretty(P{}) == "(\"\", 0)");
   assert(pretty(a * e) == pretty(a) && pretty(e * a) == pretty(a));
   const P product = a * b;
-  assert(product.first().unwrap() == "abcd" && product.second().unwrap() == 5);
+  assert(product.first.unwrap() == "abcd" && product.second.unwrap() == 5);
 
   P copied{a};
-  copied.first().unwrap() = "changed";
-  copied.second().unwrap() = 9;
-  assert(std::as_const(copied).first().unwrap() == "changed");
-  assert(std::as_const(copied).second().unwrap() == 9);
-  assert(a.first().unwrap() == "ab" && a.second().unwrap() == 2);
+  copied.first.unwrap() = "changed";
+  copied.second.unwrap() = 9;
+  assert(std::as_const(copied).first.unwrap() == "changed");
+  assert(std::as_const(copied).second.unwrap() == 9);
+  assert(a.first.unwrap() == "ab" && a.second.unwrap() == 2);
   copied = b;
   assert(pretty(copied) == pretty(b));
   P moved{std::move(copied)};
@@ -156,7 +156,7 @@ int main() {
   assert(pretty(nested * Nested::identity()) == pretty(nested));
   assert(pretty(std::vector<P>{e, a}) == "[(\"\", 0), (\"ab\", 2)]");
   const PairMonoid<Opaque, Sum> opaque{};
-  assert((opaque * opaque).second().unwrap() == 0);
+  assert((opaque * opaque).second.unwrap() == 0);
 
   SegmentTree<P> tree(std::vector<P>{a, b});
   assert(pretty(tree.fold()) == "(\"abcd\", 5)");
