@@ -3,7 +3,9 @@
 #include <cassert>
 #include <vector>
 
+#include "algebra/collection/max_monoid.hpp"
 #include "algebra/collection/min_monoid.hpp"
+#include "algebra/pair_monoid.hpp"
 #include "algebra/semigroup_impl.hpp"
 
 using Minimum = SemigroupImpl<int, [](int a, int b) { return a < b ? a : b; }>;
@@ -22,4 +24,16 @@ int main() {
   const SparseTable<Minimum> semigroup{values};
   assert(semigroup.fold(0, 5).unwrap() == 1);
   assert(semigroup.fold(0, 3).unwrap() == 2);
+
+  using Bounds = PairMonoid<IntMinMonoid, IntMaxMonoid>;
+  const SparseTable<Bounds> bounds({{4, 4}, {1, 1}, {7, 7}});
+  assert(bounds.size() == 3);
+  assert(bounds.fold(0, 2).first.unwrap() == 1);
+  assert(bounds.fold(0, 2).second.unwrap() == 4);
+  assert(bounds.fold(1, 3).first.unwrap() == 1);
+  assert(bounds.fold(1, 3).second.unwrap() == 7);
+  const SparseTable<Bounds> empty_bounds({});
+  assert(empty_bounds.size() == 0);
+  assert(empty_bounds.fold(0, 0).first.unwrap() == INF);
+  assert(empty_bounds.fold(0, 0).second.unwrap() == -INF);
 }

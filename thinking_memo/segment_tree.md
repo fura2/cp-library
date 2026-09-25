@@ -61,3 +61,17 @@ $f(A[l,x+d))=\text{false}$ なるノード $i$ が見つかった。このとき
     if (std::has_single_bit(i + 1)) break;
     ++i;
 ```
+
+## 2026.9.25
+
+メンバ関数 `set` は
+```cpp
+  template <typename T>
+    requires std::constructible_from<M, const T&>
+  void set(int i, const T& v)
+```
+と宣言されていたが、これにデフォルト引数  `T = M` を指定する。
+従来版では、`M` が `PairMonoid` のような二つ以上の引数から構築される場合に、`set(i, {10, 20})` がコンパイルエラーになる (`set(i, M{10, 20})` と書く必要がある) という煩わしさがあった。
+デフォルト引数を指定すると、`T` の推論に失敗した場合には `T = M` が採用され、期待通りの挙動になる。
+
+同じコミットで、類似する他のいくつかのメンバ関数についても同様の対応をした。

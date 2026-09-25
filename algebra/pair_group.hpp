@@ -14,7 +14,7 @@ class PairGroup {
 
   PairGroup(): first{G::identity()}, second{H::identity()} {}
 
-  template <typename T, typename U>
+  template <typename T = G, typename U = H>
     requires std::constructible_from<G, T&&> && std::constructible_from<H, U&&>
   PairGroup(T&& x, U&& y)
       : first(std::forward<T>(x)), second(std::forward<U>(y)) {}

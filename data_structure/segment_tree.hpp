@@ -14,7 +14,7 @@ class SegmentTree {
   explicit SegmentTree(int n)
       : n{n}, sz(std::bit_ceil<unsigned int>(n)), a(2 * sz, M::identity()) {}
 
-  template <typename T>
+  template <typename T = M>
     requires std::constructible_from<M, const T&>
   explicit SegmentTree(const std::vector<T>& a)
       : n(a.size()),
@@ -35,7 +35,7 @@ class SegmentTree {
     return a[sz + i];
   }
 
-  template <typename T>
+  template <typename T = M>
     requires std::constructible_from<M, const T&>
   void set(int i, const T& v) {
     assert(0 <= i && i < n);

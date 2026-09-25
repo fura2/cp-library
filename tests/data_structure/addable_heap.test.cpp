@@ -26,6 +26,18 @@ int main() {
   heap.pop();
   assert(heap.empty());
 
+  heap.push_range({5, -2, 5});
+  heap.push_range({});
+  assert(heap.size() == 3 && heap.top() == -2);
+  heap.add_all(2);
+  assert(heap.top() == 0);
+  heap.pop();
+  assert(heap.top() == 7);
+  heap.pop();
+  assert(heap.top() == 7);
+  heap.pop();
+  assert(heap.empty());
+
   const std::vector<int> values = {3, 1, 4};
   AddableMinHeap<int> copied{values};
   assert(copied.top() == 1);

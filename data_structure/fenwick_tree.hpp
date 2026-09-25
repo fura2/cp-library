@@ -14,7 +14,7 @@ class FenwickTree {
  public:
   explicit FenwickTree(int n): n{n}, a(n + 1, M::identity()) {}
 
-  template <typename T>
+  template <typename T = M>
     requires std::constructible_from<M, const T&>
   explicit FenwickTree(const std::vector<T>& a): n(a.size()) {
     this->a.reserve(n + 1);
@@ -37,14 +37,14 @@ class FenwickTree {
     return fold(i, i + 1);
   }
 
-  template <typename T>
+  template <typename T = M>
     requires Group<M> && std::constructible_from<M, const T&>
   void set(int i, const T& v) {
     assert(0 <= i && i < n);
     apply(i, get(i).inverse() * M{v});
   }
 
-  template <typename T>
+  template <typename T = M>
     requires std::constructible_from<M, const T&>
   void apply(int i, const T& v) {
     assert(0 <= i && i < n);

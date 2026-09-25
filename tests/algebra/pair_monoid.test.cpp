@@ -94,6 +94,13 @@ void check_construction() {
   assert(converted.first.unwrap() == "text");
   assert(converted.second.unwrap() == 3);
   assert(numbers.first.unwrap() == 4 && numbers.second.unwrap() == 5);
+
+  const PairMonoid<P, P> nested{{"ab", 2}, {"cd", 3}};
+  assert(pretty(nested) == "((\"ab\", 2), (\"cd\", 3))");
+  const PairMonoid<P, Sum> default_left{{"ab", 2}, 3LL};
+  const PairMonoid<Sum, P> default_right{4LL, {"cd", 5}};
+  assert(pretty(default_left) == "((\"ab\", 2), 3)");
+  assert(pretty(default_right) == "(4, (\"cd\", 5))");
 }
 
 void check_noncommutative_operations() {

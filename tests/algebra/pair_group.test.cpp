@@ -108,6 +108,15 @@ void check_construction() {
   const P converted{left, 3LL};
   assert(converted.first.unwrap() == left);
   assert(converted.second.unwrap() == 3);
+
+  using Numbers = PairGroup<Sum, Sum>;
+  const PairGroup<Numbers, Numbers> nested{{1, 2}, {3, 4}};
+  assert(pretty(nested) == "((1, 2), (3, 4))");
+  assert(pretty(nested.inverse()) == "((-1, -2), (-3, -4))");
+  const PairGroup<Numbers, Sum> default_left{{1, 2}, 3LL};
+  const PairGroup<Sum, Numbers> default_right{4LL, {5, 6}};
+  assert(pretty(default_left) == "((1, 2), 3)");
+  assert(pretty(default_right) == "(4, (5, 6))");
 }
 
 void check_noncommutative_operations() {

@@ -2,6 +2,7 @@
 
 #include <cassert>
 #include <concepts>
+#include <initializer_list>
 #include <ranges>
 #include <string>
 #include <utility>
@@ -14,7 +15,7 @@ class FoldableQueue {
  public:
   FoldableQueue(): cum_front{M::identity()}, cum_back{M::identity()} {}
 
-  template <typename T>
+  template <typename T = M>
     requires std::constructible_from<M, const T&>
   explicit FoldableQueue(const std::vector<T>& a)
       : cum_front{M::identity()}, cum_back{M::identity()} {
@@ -25,7 +26,7 @@ class FoldableQueue {
     }
   }
 
-  template <typename T>
+  template <typename T = M>
     requires std::constructible_from<M, T&&>
   explicit FoldableQueue(std::vector<T>&& a)
       : cum_front{M::identity()}, cum_back{M::identity()} {
@@ -54,14 +55,14 @@ class FoldableQueue {
     return i < n_front ? stk_front[n_front - i - 1] : stk_back[i - n_front];
   }
 
-  template <typename T>
+  template <typename T = M>
     requires std::constructible_from<M, T&&>
   void push(T&& x) {
     const M& y = stk_back.emplace_back(std::forward<T>(x));
     cum_back = cum_back * y;
   }
 
-  template <typename R>
+  template <typename R = std::initializer_list<M>>
     requires std::ranges::input_range<R> &&
              std::constructible_from<M, std::ranges::range_reference_t<R>>
   void push_range(R&& rg) {

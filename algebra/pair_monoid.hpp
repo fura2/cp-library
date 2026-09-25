@@ -14,7 +14,7 @@ class PairMonoid {
 
   PairMonoid(): first{M::identity()}, second{N::identity()} {}
 
-  template <typename T, typename U>
+  template <typename T = M, typename U = N>
     requires std::constructible_from<M, T&&> && std::constructible_from<N, U&&>
   PairMonoid(T&& x, U&& y)
       : first(std::forward<T>(x)), second(std::forward<U>(y)) {}

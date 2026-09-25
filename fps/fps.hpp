@@ -16,7 +16,7 @@ class FormalPowerSeries {
  public:
   explicit FormalPowerSeries(int n = inf): n{n} { assert(n >= 0); }
 
-  template <typename T>
+  template <typename T = R>
     requires std::constructible_from<R, const T&>
   explicit FormalPowerSeries(const std::vector<T>& a, int n = inf): n{n} {
     assert(n >= 0);
@@ -33,7 +33,7 @@ class FormalPowerSeries {
     if (std::ssize(this->a) > n) this->a.resize(n);
   }
 
-  template <typename T>
+  template <typename T = R>
     requires std::constructible_from<R, const T&>
   FormalPowerSeries(std::initializer_list<T> a, int n = inf): n{n} {
     assert(n >= 0);

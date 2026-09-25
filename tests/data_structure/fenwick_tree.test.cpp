@@ -3,6 +3,7 @@
 #include <cassert>
 #include <vector>
 
+#include "algebra/collection/add_add_pair_group.hpp"
 #include "algebra/collection/add_group.hpp"
 #include "algebra/collection/max_monoid.hpp"
 
@@ -52,4 +53,15 @@ int main() {
   assert(maximum.max_right(
              [](const IntMaxMonoid& x) { return x.unwrap() <= 5; }) == 2);
   assert(pretty(maximum) == "[3 element(s)]");
+
+  FenwickTree<LintAddIntAddPairGroup> pairs({{1, 10}, {2, 20}, {3, 30}});
+  assert(pairs.size() == 3);
+  assert(pairs.fold().first.unwrap() == 6);
+  assert(pairs.fold().second.unwrap() == 60);
+  pairs.apply(1, {4, -5});
+  assert(pairs.get(1).first.unwrap() == 6);
+  assert(pairs.get(1).second.unwrap() == 15);
+  pairs.set(0, {-1, 7});
+  assert(pairs.fold().first.unwrap() == 8);
+  assert(pairs.fold().second.unwrap() == 52);
 }

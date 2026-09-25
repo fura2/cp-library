@@ -3,6 +3,7 @@
 #include <cassert>
 #include <concepts>
 #include <functional>
+#include <initializer_list>
 #include <queue>
 #include <ranges>
 #include <utility>
@@ -26,7 +27,7 @@ class AddableHeap {
 
   void push(const T& x) { pq.push(x - offset); }
 
-  template <typename R>
+  template <typename R = std::initializer_list<T>>
     requires std::ranges::input_range<R> &&
              std::constructible_from<T, std::ranges::range_reference_t<R>>
   void push_range(R&& rg) {

@@ -11,7 +11,7 @@
 template <IdempotentSemigroup S>
 class SparseTable {
  public:
-  template <typename T>
+  template <typename T = S>
     requires std::constructible_from<S, const T&>
   explicit SparseTable(const std::vector<T>& a): n(a.size()) {
     if (n == 0) return;
