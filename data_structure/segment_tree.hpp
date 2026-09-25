@@ -47,7 +47,7 @@ class SegmentTree {
     }
   }
 
-  M fold() const { return a[1]; }
+  const M& fold() const { return a[1]; }
 
   M fold(int l, int r) const {
     assert(0 <= l && l <= r && r <= n);
