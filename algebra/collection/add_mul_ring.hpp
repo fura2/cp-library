@@ -3,12 +3,18 @@
 #include "algebra/ring_impl.hpp"
 
 template <typename T, auto Zero, auto One>
-  requires requires(const T& a) {
-    { -a } -> std::same_as<T>;
-  } && requires(const T& a, const T& b) {
-    { a + b } -> std::same_as<T>;
-    { a * b } -> std::same_as<T>;
-  }
+  requires(
+              requires {
+                { Zero() } -> std::same_as<T>;
+                { One() } -> std::same_as<T>;
+              } &&
+              requires(const T& a, const T& b) {
+                { a + b } -> std::same_as<T>;
+                { a * b } -> std::same_as<T>;
+              } &&
+              requires(const T& a) {
+                { -a } -> std::same_as<T>;
+              })
 using AddMulRing = RingImpl<T,
                             [](const T& a, const T& b) { return a + b; },
                             [](const T& a, const T& b) { return a * b; },

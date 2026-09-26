@@ -1,6 +1,6 @@
 #pragma once
 
-#include "algebra/collection/mint_ring.hpp"
-#include "algebra/multiplicative_monoid_of_semiring.hpp"
+#include "algebra/collection/mul_monoid.hpp"
+#include "mint/mint.hpp"
 
-using MintMulMonoid = MultiplicativeMonoidOfSemiring<MintRing>;
+using MintMulMonoid = MulMonoid<mint, []() { return mint(1); }>;

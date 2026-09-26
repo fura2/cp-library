@@ -6,6 +6,7 @@
 template <typename T, auto NegInf, auto Zero>
   requires requires {
     { NegInf() } -> std::same_as<T>;
+    { Zero() } -> std::same_as<T>;
   } && requires(const T& a, const T& b) {
     { a < b } -> std::same_as<bool>;
     { a + b } -> std::same_as<T>;

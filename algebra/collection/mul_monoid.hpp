@@ -1,8 +1,24 @@
 #pragma once
 
-#include "algebra/collection/add_mul_ring.hpp"
-#include "algebra/multiplicative_monoid_of_semiring.hpp"
+#include "algebra/monoid_impl.hpp"
 
-using IntMulMonoid = MultiplicativeMonoidOfSemiring<IntRing>;
-using LintMulMonoid = MultiplicativeMonoidOfSemiring<LintRing>;
-using DoubleMulMonoid = MultiplicativeMonoidOfSemiring<DoubleRing>;
+namespace mul_monoid_detail {
+
+template <typename T>
+inline constexpr auto mul = [](const T& a, const T& b) -> T { return a * b; };
+
+}  // namespace mul_monoid_detail
+
+template <typename T, auto One>
+  requires(
+              requires {
+                { One() } -> std::same_as<T>;
+              } &&
+              requires(const T& a, const T& b) {
+                { a * b } -> std::same_as<T>;
+              })
+using MulMonoid = MonoidImpl<T, mul_monoid_detail::mul<T>, One>;
+
+using IntMulMonoid = MulMonoid<int, []() { return 1; }>;
+using LintMulMonoid = MulMonoid<long long, []() { return 1LL; }>;
+using DoubleMulMonoid = MulMonoid<double, []() { return 1.0; }>;

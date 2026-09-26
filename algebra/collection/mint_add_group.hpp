@@ -1,6 +1,6 @@
 #pragma once
 
-#include "algebra/additive_group_of_ring.hpp"
-#include "algebra/collection/mint_ring.hpp"
+#include "algebra/collection/add_group.hpp"
+#include "mint/mint.hpp"
 
-using MintAddGroup = AdditiveGroupOfRing<MintRing>;
+using MintAddGroup = AddGroup<mint, []() { return mint(0); }>;

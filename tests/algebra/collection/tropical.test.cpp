@@ -4,6 +4,24 @@
 #include "algebra/collection/max_plus_semiring.hpp"
 #include "algebra/collection/min_plus_semiring.hpp"
 
+template <typename T, auto Inf, auto Zero>
+concept ValidMinPlus = requires { typename MinPlusSemiring<T, Inf, Zero>; };
+
+template <typename T, auto NegInf, auto Zero>
+concept ValidMaxPlus = requires { typename MaxPlusSemiring<T, NegInf, Zero>; };
+
+inline constexpr auto inf = []() { return INF; };
+inline constexpr auto neg_inf = []() { return -INF; };
+inline constexpr auto zero = []() { return 0; };
+inline constexpr auto lint_zero = []() { return 0LL; };
+
+static_assert(ValidMinPlus<int, inf, zero>);
+static_assert(ValidMaxPlus<int, neg_inf, zero>);
+static_assert(!ValidMinPlus<int, inf, lint_zero>);
+static_assert(!ValidMaxPlus<int, neg_inf, lint_zero>);
+static_assert(!ValidMinPlus<int, lint_zero, zero>);
+static_assert(!ValidMaxPlus<int, lint_zero, zero>);
+
 template <typename S>
 void check(int expected_add) {
   using T = std::remove_cvref_t<decltype(S{}.unwrap())>;
