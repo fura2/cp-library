@@ -59,9 +59,11 @@ class LazySegmentTree {
     return fold(1, 0, sz, l, r);
   }
 
-  void apply(int l, int r, const F& f) {
+  template <typename T = F>
+    requires std::constructible_from<F, const T&>
+  void apply(int l, int r, const T& v) {
     assert(0 <= l && l <= r && r <= n);
-    apply(1, 0, sz, l, r, f);
+    apply(1, 0, sz, l, r, v);
   }
 
   template <typename G>
@@ -108,17 +110,19 @@ class LazySegmentTree {
   }
 
   // 不変条件: この関数の実行後はつねに f[u] == id
-  void apply(int u, int a, int b, int l, int r, const F& f_) {
+  template <typename T = F>
+    requires std::constructible_from<F, const T&>
+  void apply(int u, int a, int b, int l, int r, const T& v) {
     propagate(u);
     if (b <= l || r <= a) return;
     if (l <= a && b <= r) {
-      f[u] = f_;
+      f[u] = F{v};
       propagate(u);
       return;
     }
     int c = (a + b) / 2;
-    apply(2 * u, a, c, l, r, f_);
-    apply(2 * u + 1, c, b, l, r, f_);
+    apply(2 * u, a, c, l, r, v);
+    apply(2 * u + 1, c, b, l, r, v);
     m[u] = m[2 * u] * m[2 * u + 1];
   }
 
