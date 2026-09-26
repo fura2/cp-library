@@ -1,6 +1,9 @@
 #pragma once
 
 #include <bit>
+#include <cassert>
+#include <concepts>
+#include <string>
 #include <vector>
 
 #include "algebra/monoid_action.hpp"
@@ -11,37 +14,98 @@ class LazySegmentTree {
   using F = A::action_monoid;
 
  public:
-  LazySegmentTree(int n): e{M::identity()}, id{F::identity()} {
-    this->n = std::bit_ceil<unsigned int>(n);
-    m.assign(2 * this->n, e);
-    f.assign(2 * this->n, id);
-  }
+  explicit LazySegmentTree(int n)
+      : n{n},
+        sz(std::bit_ceil<unsigned int>(n)),
+        m(2 * sz, M::identity()),
+        f(2 * sz, F::identity()) {}
 
-  LazySegmentTree(const std::vector<M>& v)
-      : e{M::identity()}, id{F::identity()} {
-    n = std::bit_ceil(v.size());
-    m.assign(2 * n, e);
-    f.assign(2 * n, id);
-    for (int i = 0; i < v.size(); ++i) {
-      m[n + i] = v[i];
+  template <typename T = M>
+    requires std::constructible_from<M, const T&>
+  explicit LazySegmentTree(const std::vector<T>& a)
+      : n(a.size()),
+        sz(std::bit_ceil<unsigned int>(n)),
+        m(2 * sz, M::identity()),
+        f(2 * sz, F::identity()) {
+    for (int i = 0; i < n; ++i) {
+      m[sz + i] = M{a[i]};
     }
-    for (int i = n - 1; i >= 1; i--) {
+    for (int i = sz - 1; i > 0; --i) {
       m[i] = m[i << 1] * m[(i << 1) | 1];
     }
   }
 
-  void apply(int l, int r, const F& f) { apply(1, 0, n, l, r, f); }
+  int size() const { return n; }
 
-  const M& fold() const { return m[1]; }
+  const M& get(int i) const {
+    assert(0 <= i && i < n);
+    // TODO
+  }
 
-  M fold(int l, int r) { return fold(1, 0, n, l, r); }
+  template <typename T = M>
+    requires std::constructible_from<M, const T&>
+  void set(int i, const T& v) {
+    assert(0 <= i && i < n);
+    // TODO
+  }
+
+  const M& fold() const {
+    // TODO
+    return m[1];
+  }
+
+  M fold(int l, int r) const {
+    assert(0 <= l && l <= r && r <= n);
+    return fold(1, 0, sz, l, r);
+  }
+
+  void apply(int l, int r, const F& f) {
+    assert(0 <= l && l <= r && r <= n);
+    apply(1, 0, sz, l, r, f);
+  }
+
+  template <typename G>
+    requires std::predicate<G&, M>
+  int max_right(int l, G g) const {
+    assert(0 <= l && l <= n);
+    assert(g(M::identity()));
+    // TODO
+  }
+
+  template <typename G>
+    requires std::predicate<G&, M>
+  int min_left(int r, G g) const {
+    assert(0 <= r && r <= n);
+    assert(g(M::identity()));
+    // TODO
+  }
+
+  friend std::string pretty(const LazySegmentTree& S) {
+    if constexpr (requires(const M& x) {
+                    { pretty(x) } -> std::same_as<std::string>;
+                  }) {
+      std::string s = "[";
+      for (int i = 0; i < S.size(); ++i) {
+        s += (i == 0 ? "" : ", ") + pretty(S.get(i));
+      }
+      s += "]";
+      return s;
+    }
+    return "[" + std::to_string(S.size()) + " element(s)]";
+  }
 
  private:
-  int n;
-  std::vector<M> m;
-  std::vector<F> f;
-  const M e;
-  const F id;
+  int n, sz;
+  mutable std::vector<M> m;
+  mutable std::vector<F> f;
+
+  M fold(int u, int a, int b, int l, int r) const {
+    propagate(u);
+    if (b <= l || r <= a) return M::identity();
+    if (l <= a && b <= r) return m[u];
+    int c = (a + b) / 2;
+    return fold(2 * u, a, c, l, r) * fold(2 * u + 1, c, b, l, r);
+  }
 
   // 不変条件: この関数の実行後はつねに f[u] == id
   void apply(int u, int a, int b, int l, int r, const F& f_) {
@@ -58,22 +122,14 @@ class LazySegmentTree {
     m[u] = m[2 * u] * m[2 * u + 1];
   }
 
-  M fold(int u, int a, int b, int l, int r) {
-    propagate(u);
-    if (b <= l || r <= a) return e;
-    if (l <= a && b <= r) return m[u];
-    int c = (a + b) / 2;
-    return fold(2 * u, a, c, l, r) * fold(2 * u + 1, c, b, l, r);
-  }
-
-  void propagate(int u) {
-    // if (f[u] == id) return;
-    if (f[u].unwrap() == id.unwrap()) return;  // TODO: あとで直す
+  void propagate(int u) const {
+    // if (f[u] == F::identity()) return;
+    if (f[u].unwrap() == F::identity().unwrap()) return;  // TODO: あとで直す
     m[u] = A::act(m[u], f[u]);
-    if (u < n) {
+    if (u < sz) {
       f[2 * u] = f[2 * u] * f[u];
       f[2 * u + 1] = f[2 * u + 1] * f[u];
     }
-    f[u] = id;
+    f[u] = F::identity();
   }
 };

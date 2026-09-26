@@ -20,10 +20,10 @@ class SegmentTree {
       : n(a.size()),
         sz(std::bit_ceil<unsigned int>(n)),
         a(2 * sz, M::identity()) {
-    for (auto i = 0; i < n; ++i) {
+    for (int i = 0; i < n; ++i) {
       this->a[sz + i] = M{a[i]};
     }
-    for (auto i = sz - 1; i > 0; --i) {
+    for (int i = sz - 1; i > 0; --i) {
       this->a[i] = this->a[i << 1] * this->a[(i << 1) | 1];
     }
   }
@@ -77,7 +77,7 @@ class SegmentTree {
 
     if (l == n) return n;
 
-    auto i = sz + l;
+    int i = sz + l;
     M cum = M::identity();
     while (true) {
       while ((i & 1) == 0) i >>= 1;
@@ -109,7 +109,7 @@ class SegmentTree {
 
     if (r == 0) return 0;
 
-    auto i = sz + r - 1;
+    int i = sz + r - 1;
     M cum = M::identity();
     while (true) {
       while (i > 1 && (i & 1)) i >>= 1;
@@ -138,7 +138,7 @@ class SegmentTree {
                     { pretty(x) } -> std::same_as<std::string>;
                   }) {
       std::string s = "[";
-      for (auto i = 0; i < S.size(); ++i) {
+      for (int i = 0; i < S.size(); ++i) {
         s += (i == 0 ? "" : ", ") + pretty(S.get(i));
       }
       s += "]";

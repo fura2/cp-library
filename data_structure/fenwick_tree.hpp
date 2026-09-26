@@ -22,8 +22,8 @@ class FenwickTree {
     for (const auto& x: a) {
       this->a.emplace_back(x);
     }
-    for (auto i = 1; i <= n; ++i) {
-      auto j = i + (i & -i);
+    for (int i = 1; i <= n; ++i) {
+      int j = i + (i & -i);
       if (j <= n) (this->a)[j] = (this->a)[j] * (this->a)[i];
     }
   }
@@ -124,7 +124,7 @@ class FenwickTree {
                     { pretty(x) } -> std::same_as<std::string>;
                   }) {
       std::string s = "[";
-      for (auto i = 0; i < F.size(); ++i) {
+      for (int i = 0; i < F.size(); ++i) {
         s += (i == 0 ? "" : ", ") + pretty(F.get(i));
       }
       s += "]";
