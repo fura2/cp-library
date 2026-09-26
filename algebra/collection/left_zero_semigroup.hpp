@@ -4,9 +4,10 @@
 
 namespace left_zero_semigroup_impl {
 
-inline constexpr auto op = [](const auto& a, const auto&) { return a; };
+template <typename T>
+inline constexpr auto op = [](const T& a, const T&) { return a; };
 
 }  // namespace left_zero_semigroup_impl
 
 template <typename T>
-using LeftZeroSemigroup = SemigroupImpl<T, left_zero_semigroup_impl::op>;
+using LeftZeroSemigroup = SemigroupImpl<T, left_zero_semigroup_impl::op<T>>;

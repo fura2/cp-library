@@ -6,9 +6,11 @@
 
 namespace first_monoid_impl {
 
-inline constexpr auto op = [](const auto& a, const auto& b) {
-  return a.has_value() ? a : b;
-};
+template <typename T>
+inline constexpr auto op =
+    [](const std::optional<T>& a, const std::optional<T>& b) {
+      return a.has_value() ? a : b;
+    };
 
 template <typename T>
 inline constexpr auto id = []() -> std::optional<T> { return std::nullopt; };
@@ -17,5 +19,5 @@ inline constexpr auto id = []() -> std::optional<T> { return std::nullopt; };
 
 template <typename T>
 using FirstMonoid = MonoidImpl<std::optional<T>,
-                               first_monoid_impl::op,
+                               first_monoid_impl::op<T>,
                                first_monoid_impl::id<T>>;
