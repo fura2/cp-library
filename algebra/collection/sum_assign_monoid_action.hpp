@@ -5,7 +5,7 @@
 #include "algebra/monoid_action_impl.hpp"
 #include "algebra/pair_monoid.hpp"
 
-namespace add_assign_monoid_action_detail {
+namespace sum_assign_monoid_action_detail {
 
 template <typename T>
 using ValueMonoid = PairMonoid<AddMonoid<T>, AddMonoid<int>>;
@@ -22,10 +22,10 @@ inline constexpr auto act =
                  : m;
     };
 
-}  // namespace add_assign_monoid_action_detail
+}  // namespace sum_assign_monoid_action_detail
 
 template <typename T>
-using AddAssignMonoidAction =
-    MonoidActionImpl<add_assign_monoid_action_detail::ValueMonoid<T>,
-                     add_assign_monoid_action_detail::ActionMonoid<T>,
-                     add_assign_monoid_action_detail::act<T>>;
+using SumAssignMonoidAction =
+    MonoidActionImpl<sum_assign_monoid_action_detail::ValueMonoid<T>,
+                     sum_assign_monoid_action_detail::ActionMonoid<T>,
+                     sum_assign_monoid_action_detail::act<T>>;

@@ -1,4 +1,4 @@
-#include "algebra/collection/add_assign_monoid_action.hpp"
+#include "algebra/collection/sum_assign_monoid_action.hpp"
 
 #include <cassert>
 #include <concepts>
@@ -11,7 +11,7 @@
 #include "data_structure/lazy_segment_tree.hpp"
 
 template <typename T>
-concept ValidAddAssign = requires { typename AddAssignMonoidAction<T>; };
+concept ValidAddAssign = requires { typename SumAssignMonoidAction<T>; };
 
 template <>
 inline constexpr auto id_zero<long double> = []() { return 0.0L; };
@@ -121,15 +121,15 @@ void check_tree() {
 }
 
 void check_numeric_types() {
-  using L = AddAssignMonoidAction<long long>;
-  using D = AddAssignMonoidAction<double>;
+  using L = SumAssignMonoidAction<long long>;
+  using D = SumAssignMonoidAction<double>;
   check_value(
       L::act(L::value_monoid{0LL, 3}, L::action_monoid{3'000'000'000LL}),
       9'000'000'000LL,
       3);
   check_value(D::act(D::value_monoid{0.0, 3}, D::action_monoid{0.25}), 0.75, 3);
 
-  using A = AddAssignMonoidAction<mint>;
+  using A = SumAssignMonoidAction<mint>;
   using M = A::value_monoid;
   using F = A::action_monoid;
   static_assert(MonoidAction<A>);
@@ -143,12 +143,12 @@ void check_numeric_types() {
 }
 
 int main() {
-  check_action<AddAssignMonoidAction<int>>();
-  check_action<AddAssignMonoidAction<long long>>();
-  check_action<AddAssignMonoidAction<double>>();
-  check_action<AddAssignMonoidAction<long double>>();
-  check_tree<AddAssignMonoidAction<int>>();
-  check_tree<AddAssignMonoidAction<long long>>();
-  check_tree<AddAssignMonoidAction<double>>();
+  check_action<SumAssignMonoidAction<int>>();
+  check_action<SumAssignMonoidAction<long long>>();
+  check_action<SumAssignMonoidAction<double>>();
+  check_action<SumAssignMonoidAction<long double>>();
+  check_tree<SumAssignMonoidAction<int>>();
+  check_tree<SumAssignMonoidAction<long long>>();
+  check_tree<SumAssignMonoidAction<double>>();
   check_numeric_types();
 }
