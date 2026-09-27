@@ -15,6 +15,7 @@ inline std::vector<int> divisors(int a, const std::vector<int>& lpf) {
       ++e;
     }
     int m = ds.size();
+    ds.reserve((1 + e) * m);
     for (int i = 0; i < e; ++i) {
       for (int j = 0; j < m; ++j) {
         ds.emplace_back(ds[i * m + j] * p);
