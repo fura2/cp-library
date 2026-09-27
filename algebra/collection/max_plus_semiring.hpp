@@ -1,29 +1,30 @@
 #pragma once
 
+#include <concepts>
+
+#include "algebra/collection/id.hpp"
+#include "algebra/collection/op.hpp"
 #include "algebra/semiring_impl.hpp"
-#include "template/constant.hpp"
 
-template <typename T, auto NegInf, auto Zero>
+namespace max_plus_semiring_detail {
+
+template <typename T>
   requires requires {
-    { NegInf() } -> std::same_as<T>;
-    { Zero() } -> std::same_as<T>;
+    { id_neg_inf<T>() } -> std::same_as<T>;
   } && requires(const T& a, const T& b) {
-    { a < b } -> std::same_as<bool>;
     { a + b } -> std::same_as<T>;
+    { a == b } -> std::same_as<bool>;
   }
-using MaxPlusSemiring =
-    SemiringImpl<T,
-                 [](const T& a, const T& b) { return a < b ? b : a; },
-                 [](const T& a, const T& b) {
-                   if (a == NegInf() || b == NegInf()) return NegInf();
-                   return a + b;
-                 },
-                 NegInf,
-                 Zero>;
+inline constexpr auto op = [](const T& a, const T& b) -> T {
+  if (a == id_neg_inf<T>() || b == id_neg_inf<T>()) return id_neg_inf<T>();
+  return a + b;
+};
 
-using IntMaxPlusSemiring =
-    MaxPlusSemiring<int, []() { return -INF; }, []() { return 0; }>;
-using LintMaxPlusSemiring =
-    MaxPlusSemiring<long long, []() { return -LINF; }, []() { return 0LL; }>;
-using DoubleMaxPlusSemiring =
-    MaxPlusSemiring<double, []() { return -DINF; }, []() { return 0.0; }>;
+}  // namespace max_plus_semiring_detail
+
+template <typename T>
+using MaxPlusSemiring = SemiringImpl<T,
+                                     op_max<T>,
+                                     max_plus_semiring_detail::op<T>,
+                                     id_neg_inf<T>,
+                                     id_zero<T>>;

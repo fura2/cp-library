@@ -48,7 +48,7 @@ int main() {
   copied.push_range(std::ranges::istream_view<std::string>(in));
   assert(copied.fold().unwrap() == "cxy");
 
-  using P = PairMonoid<Concat, IntAddGroup>;
+  using P = PairMonoid<Concat, AddGroup<int>>;
   const std::vector<P> pair_values{{"ab", 2}, {"c", 3}};
   FoldableQueue<P> copied_pairs({pair_values});
   FoldableQueue<P> moved_pairs({{"ab", 2}, {"c", 3}});

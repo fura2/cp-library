@@ -16,21 +16,21 @@ using Concat =
 
 int main() {
   auto at_most = [](int limit) {
-    return [limit](const IntAddGroup& x) { return x.unwrap() <= limit; };
+    return [limit](const AddGroup<int>& x) { return x.unwrap() <= limit; };
   };
-  const SegmentTree<IntAddGroup> empty{0};
-  static_assert(std::same_as<decltype(empty.fold()), const IntAddGroup&>);
+  const SegmentTree<AddGroup<int>> empty{0};
+  static_assert(std::same_as<decltype(empty.fold()), const AddGroup<int>&>);
   assert(empty.size() == 0 && empty.fold().unwrap() == 0);
   assert(empty.fold(0, 0).unwrap() == 0);
   assert(empty.max_right(0, at_most(0)) == 0);
   assert(empty.min_left(0, at_most(0)) == 0);
-  SegmentTree<IntAddGroup> single{1};
+  SegmentTree<AddGroup<int>> single{1};
   single.set(0, 7);
   assert(single.get(0).unwrap() == 7 && single.fold().unwrap() == 7);
 
-  SegmentTree<IntAddGroup> tree{std::vector<int>{2, 1, 3, 0, 4}};
-  static_assert(std::same_as<decltype(tree.fold()), const IntAddGroup&>);
-  static_assert(std::same_as<decltype(tree.fold(0, 5)), IntAddGroup>);
+  SegmentTree<AddGroup<int>> tree{std::vector<int>{2, 1, 3, 0, 4}};
+  static_assert(std::same_as<decltype(tree.fold()), const AddGroup<int>&>);
+  static_assert(std::same_as<decltype(tree.fold(0, 5)), AddGroup<int>>);
   assert(tree.size() == 5 && tree.fold().unwrap() == 10);
   assert(tree.fold(1, 4).unwrap() == 4 && tree.fold(2, 2).unwrap() == 0);
   assert(tree.max_right(0, at_most(3)) == 2);
@@ -65,7 +65,7 @@ int main() {
   assert(all.unwrap() == "abcXYef");
   assert(snapshot.unwrap() == "abcdef");
 
-  using P = PairMonoid<Concat, IntAddGroup>;
+  using P = PairMonoid<Concat, AddGroup<int>>;
   SegmentTree<P> pairs({{"a", 1}, {"bc", 2}, {"d", 3}});
   assert(pairs.size() == 3);
   assert(pairs.fold().first.unwrap() == "abcd");

@@ -3,21 +3,30 @@
 #include <concepts>
 #include <utility>
 
+#include "algebra/collection/id.hpp"
 #include "algebra/monoid_impl.hpp"
-#include "template/constant.hpp"
 
-template <typename T, auto NegInf>
-  requires requires {
-    { NegInf() } -> std::same_as<T>;
-  } && requires(const T& a, const T& b) {
+namespace argmax_monoid_detail {
+
+template <typename T>
+  requires requires(const T& a, const T& b) {
     { a < b } -> std::same_as<bool>;
   }
-using ArgmaxMonoid = MonoidImpl<std::pair<T, int>,
-                                [](const auto& a, const auto& b) {
-                                  return a.first < b.first ? b : a;
-                                },
-                                []() { return std::pair{NegInf(), -1}; }>;
+inline constexpr auto op =
+    [](const std::pair<T, int>& a, const std::pair<T, int>& b) {
+      return a.first < b.first ? b : a;
+    };
 
-using IntArgmaxMonoid = ArgmaxMonoid<int, []() { return -INF; }>;
-using LintArgmaxMonoid = ArgmaxMonoid<long long, []() { return -LINF; }>;
-using DoubleArgmaxMonoid = ArgmaxMonoid<double, []() { return -DINF; }>;
+template <typename T>
+  requires requires {
+    { id_neg_inf<T>() } -> std::same_as<T>;
+  }
+inline constexpr auto id =
+    []() -> std::pair<T, int> { return std::pair{id_neg_inf<T>(), -1}; };
+
+}  // namespace argmax_monoid_detail
+
+template <typename T>
+using ArgmaxMonoid = MonoidImpl<std::pair<T, int>,
+                                argmax_monoid_detail::op<T>,
+                                argmax_monoid_detail::id<T>>;

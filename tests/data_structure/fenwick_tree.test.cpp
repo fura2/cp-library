@@ -3,27 +3,27 @@
 #include <cassert>
 #include <vector>
 
-#include "algebra/collection/add_add_pair_group.hpp"
 #include "algebra/collection/add_group.hpp"
 #include "algebra/collection/max_monoid.hpp"
+#include "algebra/pair_group.hpp"
 
 int main() {
   auto at_most = [](int limit) {
-    return [limit](const IntAddGroup& x) { return x.unwrap() <= limit; };
+    return [limit](const AddGroup<int>& x) { return x.unwrap() <= limit; };
   };
-  const FenwickTree<IntAddGroup> empty{0};
+  const FenwickTree<AddGroup<int>> empty{0};
   assert(empty.size() == 0 && empty.fold().unwrap() == 0);
   assert(empty.fold(0, 0).unwrap() == 0);
   assert(empty.max_right(at_most(0)) == 0);
   assert(empty.max_right(0, at_most(0)) == 0);
   assert(empty.min_left(0, at_most(0)) == 0);
-  FenwickTree<IntAddGroup> single{1};
+  FenwickTree<AddGroup<int>> single{1};
   single.apply(0, 7);
   assert(single.get(0).unwrap() == 7);
   single.set(0, 2);
   assert(single.fold().unwrap() == 2);
 
-  FenwickTree<IntAddGroup> tree{std::vector<int>{2, 1, 3, 0, 4}};
+  FenwickTree<AddGroup<int>> tree{std::vector<int>{2, 1, 3, 0, 4}};
   assert(tree.size() == 5 && tree.fold().unwrap() == 10);
   assert(tree.fold(3).unwrap() == 6 && tree.fold(1, 4).unwrap() == 4);
   assert(tree.fold(2, 2).unwrap() == 0);
@@ -45,16 +45,17 @@ int main() {
   assert(pretty(tree) == "[5 element(s)]");
 
   // Prefix folds and updates also work for a monoid without inverses.
-  FenwickTree<IntMaxMonoid> maximum{std::vector<int>{-2, 5, 1}};
+  FenwickTree<MaxMonoid<int>> maximum{std::vector<int>{-2, 5, 1}};
   assert(maximum.fold(0).unwrap() == -INF);
   assert(maximum.fold(2).unwrap() == 5);
   maximum.apply(2, 9);
   assert(maximum.fold().unwrap() == 9);
   assert(maximum.max_right(
-             [](const IntMaxMonoid& x) { return x.unwrap() <= 5; }) == 2);
+             [](const MaxMonoid<int>& x) { return x.unwrap() <= 5; }) == 2);
   assert(pretty(maximum) == "[3 element(s)]");
 
-  FenwickTree<LintAddIntAddPairGroup> pairs({{1, 10}, {2, 20}, {3, 30}});
+  FenwickTree<PairGroup<AddGroup<long long>, AddGroup<int>>> pairs(
+      {{1, 10}, {2, 20}, {3, 30}});
   assert(pairs.size() == 3);
   assert(pairs.fold().first.unwrap() == 6);
   assert(pairs.fold().second.unwrap() == 60);

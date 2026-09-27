@@ -1,22 +1,23 @@
-#include "algebra/collection/add_add_pair_group.hpp"
-
 #include <cassert>
 #include <concepts>
 #include <vector>
 
+#include "algebra/collection/add_group.hpp"
+#include "algebra/pair_group.hpp"
 #include "algebra/pair_monoid.hpp"
 #include "data_structure/fenwick_tree.hpp"
 
-using P = LintAddIntAddPairGroup;
-using Q = LintAddLintAddPairGroup;
-using M = PairMonoid<LintAddGroup, IntAddGroup>;
+using P = PairGroup<AddGroup<long long>, AddGroup<int>>;
+using Q = PairGroup<AddGroup<long long>, AddGroup<long long>>;
+using M = PairMonoid<AddGroup<long long>, AddGroup<int>>;
 
 template <typename T>
 concept HasRangeFold =
     requires(const FenwickTree<T>& tree) { tree.fold(0, 0); };
 
-static_assert(std::same_as<P, PairGroup<LintAddGroup, IntAddGroup>>);
-static_assert(std::same_as<Q, PairGroup<LintAddGroup, LintAddGroup>>);
+static_assert(std::constructible_from<P, AddGroup<long long>, AddGroup<int>>);
+static_assert(
+    std::constructible_from<Q, AddGroup<long long>, AddGroup<long long>>);
 static_assert(Group<P> && Group<Q> && !Group<M>);
 static_assert(HasRangeFold<P> && HasRangeFold<Q> && !HasRangeFold<M>);
 

@@ -53,10 +53,11 @@ int main() {
   assert(pretty(std::pair{std::vector<int>{1, 2}, std::tuple{3, 4}}) ==
          "([1, 2], (3, 4))");
 
-  const std::vector<IntAddGroup> values = {IntAddGroup{1}, IntAddGroup{2}};
-  assert(pretty(SegmentTree<IntAddGroup>{values}) == "[1, 2]");
-  assert(pretty(FenwickTree<IntAddGroup>{values}) == "[1, 2]");
-  assert(pretty(FoldableQueue<IntAddGroup>{values}) == "[1, 2]");
+  const std::vector<AddGroup<int>> values = {AddGroup<int>{1},
+                                             AddGroup<int>{2}};
+  assert(pretty(SegmentTree<AddGroup<int>>{values}) == "[1, 2]");
+  assert(pretty(FenwickTree<AddGroup<int>>{values}) == "[1, 2]");
+  assert(pretty(FoldableQueue<AddGroup<int>>{values}) == "[1, 2]");
   TestIO io;
   int x = 1, y = 2;
   show(x);

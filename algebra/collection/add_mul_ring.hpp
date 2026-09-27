@@ -1,33 +1,9 @@
 #pragma once
 
+#include "algebra/collection/id.hpp"
+#include "algebra/collection/op.hpp"
 #include "algebra/ring_impl.hpp"
 
-template <typename T, auto Zero, auto One>
-  requires(
-              requires {
-                { Zero() } -> std::same_as<T>;
-                { One() } -> std::same_as<T>;
-              } &&
-              requires(const T& a, const T& b) {
-                { a + b } -> std::same_as<T>;
-                { a * b } -> std::same_as<T>;
-              } &&
-              requires(const T& a) {
-                { -a } -> std::same_as<T>;
-              })
-using AddMulRing = RingImpl<T,
-                            [](const T& a, const T& b) { return a + b; },
-                            [](const T& a, const T& b) { return a * b; },
-                            Zero,
-                            One,
-                            [](const T& a) { return -a; }>;
-
-using IntAddMulRing = AddMulRing<int, []() { return 0; }, []() { return 1; }>;
-using LintAddMulRing =
-    AddMulRing<long long, []() { return 0LL; }, []() { return 1LL; }>;
-using DoubleAddMulRing =
-    AddMulRing<double, []() { return 0.0; }, []() { return 1.0; }>;
-
-using IntRing = IntAddMulRing;
-using LintRing = LintAddMulRing;
-using DoubleRing = DoubleAddMulRing;
+template <typename T>
+using AddMulRing =
+    RingImpl<T, op_add<T>, op_mul<T>, id_zero<T>, id_one<T>, op_neg<T>>;

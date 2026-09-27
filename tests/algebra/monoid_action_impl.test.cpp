@@ -7,8 +7,8 @@
 #include "algebra/collection/mul_monoid.hpp"
 #include "algebra/monoid_action.hpp"
 
-using M = IntAddGroup;
-using F = IntMulMonoid;
+using M = AddGroup<int>;
+using F = MulMonoid<int>;
 
 M scale(const M& m, const F& f) { return M{m.unwrap() * f.unwrap()}; }
 

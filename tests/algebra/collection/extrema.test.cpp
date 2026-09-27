@@ -6,9 +6,38 @@
 #include "algebra/collection/argmin_monoid.hpp"
 #include "algebra/collection/max_monoid.hpp"
 #include "algebra/collection/min_monoid.hpp"
+#include "algebra/monoid.hpp"
+
+template <typename T>
+concept ValidMin = requires { typename MinMonoid<T>; };
+template <typename T>
+concept ValidMax = requires { typename MaxMonoid<T>; };
+template <typename T>
+concept ValidArgmin = requires { typename ArgminMonoid<T>; };
+template <typename T>
+concept ValidArgmax = requires { typename ArgmaxMonoid<T>; };
+
+struct Ordered {
+  int value;
+  friend bool operator<(const Ordered& a, const Ordered& b) {
+    return a.value < b.value;
+  }
+};
+
+template <>
+inline constexpr auto id_inf<Ordered> = []() { return Ordered{INF}; };
+
+static_assert(ValidMin<int> && ValidMax<int>);
+static_assert(ValidArgmin<int> && ValidArgmax<int>);
+static_assert(!ValidMin<float> && !ValidMax<float>);
+static_assert(!ValidArgmin<float> && !ValidArgmax<float>);
+// Having +infinity is insufficient when unary minus is unavailable.
+static_assert(ValidMin<Ordered> && ValidArgmin<Ordered>);
+static_assert(!ValidMax<Ordered> && !ValidArgmax<Ordered>);
 
 template <typename Min, typename Max, typename Argmin, typename Argmax>
 void check() {
+  static_assert(Monoid<Min> && Monoid<Max> && Monoid<Argmin> && Monoid<Argmax>);
   using T = std::remove_cvref_t<decltype(Min{}.unwrap())>;
   const Min low{T{2}}, high{T{5}};
   const Max low_max{T{2}}, high_max{T{5}};
@@ -40,13 +69,16 @@ void check() {
 }
 
 int main() {
-  check<IntMinMonoid, IntMaxMonoid, IntArgminMonoid, IntArgmaxMonoid>();
-  check<LintMinMonoid, LintMaxMonoid, LintArgminMonoid, LintArgmaxMonoid>();
-  check<DoubleMinMonoid,
-        DoubleMaxMonoid,
-        DoubleArgminMonoid,
-        DoubleArgmaxMonoid>();
-  assert(IntMinMonoid::identity().unwrap() == INF);
-  assert(LintMaxMonoid::identity().unwrap() == -LINF);
-  assert(DoubleMinMonoid::identity().unwrap() == DINF);
+  check<MinMonoid<int>, MaxMonoid<int>, ArgminMonoid<int>, ArgmaxMonoid<int>>();
+  check<MinMonoid<long long>,
+        MaxMonoid<long long>,
+        ArgminMonoid<long long>,
+        ArgmaxMonoid<long long>>();
+  check<MinMonoid<double>,
+        MaxMonoid<double>,
+        ArgminMonoid<double>,
+        ArgmaxMonoid<double>>();
+  assert(MinMonoid<int>::identity().unwrap() == INF);
+  assert(MaxMonoid<long long>::identity().unwrap() == -LINF);
+  assert(MinMonoid<double>::identity().unwrap() == DINF);
 }

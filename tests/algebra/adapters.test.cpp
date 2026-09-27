@@ -45,20 +45,20 @@ static_assert(HasPretty<AdditiveMonoidOfSemiring<PrintableRing>>);
 static_assert(HasPretty<MultiplicativeMonoidOfSemiring<PrintableRing>>);
 
 int main() {
-  using Add = AdditiveMonoidOfSemiring<IntMinPlusSemiring>;
-  using Mul = MultiplicativeMonoidOfSemiring<IntMinPlusSemiring>;
-  using Group = AdditiveGroupOfRing<IntRing>;
-  const IntMinPlusSemiring value{3};
+  using Add = AdditiveMonoidOfSemiring<MinPlusSemiring<int>>;
+  using Mul = MultiplicativeMonoidOfSemiring<MinPlusSemiring<int>>;
+  using Group = AdditiveGroupOfRing<AddMulRing<int>>;
+  const MinPlusSemiring<int> value{3};
   Add a{value};
   Mul m{value};
-  const IntRing ring_value{3};
+  const AddMulRing<int> ring_value{3};
   Group g{ring_value};
   assert(Add{}.unwrap() == INF && Add::identity().unwrap() == INF);
   assert(Mul{}.unwrap() == 0 && Mul::identity().unwrap() == 0);
   assert(Group{}.unwrap() == 0 && Group::identity().unwrap() == 0);
-  assert((a * Add{IntMinPlusSemiring{5}}).unwrap() == 3);
-  assert((m * Mul{IntMinPlusSemiring{5}}).unwrap() == 8);
-  assert((g * Group{IntRing{5}}).unwrap() == 8);
+  assert((a * Add{MinPlusSemiring<int>{5}}).unwrap() == 3);
+  assert((m * Mul{MinPlusSemiring<int>{5}}).unwrap() == 8);
+  assert((g * Group{AddMulRing<int>{5}}).unwrap() == 8);
   assert(g.inverse().unwrap() == -3 && (g * g.inverse()).unwrap() == 0);
   assert((a * Add::identity()).unwrap() == 3);
   assert((Mul::identity() * m).unwrap() == 3);

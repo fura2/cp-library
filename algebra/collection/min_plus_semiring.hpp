@@ -1,29 +1,30 @@
 #pragma once
 
+#include <concepts>
+
+#include "algebra/collection/id.hpp"
+#include "algebra/collection/op.hpp"
 #include "algebra/semiring_impl.hpp"
-#include "template/constant.hpp"
 
-template <typename T, auto Inf, auto Zero>
+namespace min_plus_semiring_detail {
+
+template <typename T>
   requires requires {
-    { Inf() } -> std::same_as<T>;
-    { Zero() } -> std::same_as<T>;
+    { id_inf<T>() } -> std::same_as<T>;
   } && requires(const T& a, const T& b) {
-    { a < b } -> std::same_as<bool>;
     { a + b } -> std::same_as<T>;
+    { a == b } -> std::same_as<bool>;
   }
-using MinPlusSemiring =
-    SemiringImpl<T,
-                 [](const T& a, const T& b) { return b < a ? b : a; },
-                 [](const T& a, const T& b) {
-                   if (a == Inf() || b == Inf()) return Inf();
-                   return a + b;
-                 },
-                 Inf,
-                 Zero>;
+inline constexpr auto op = [](const T& a, const T& b) -> T {
+  if (a == id_inf<T>() || b == id_inf<T>()) return id_inf<T>();
+  return a + b;
+};
 
-using IntMinPlusSemiring =
-    MinPlusSemiring<int, []() { return INF; }, []() { return 0; }>;
-using LintMinPlusSemiring =
-    MinPlusSemiring<long long, []() { return LINF; }, []() { return 0LL; }>;
-using DoubleMinPlusSemiring =
-    MinPlusSemiring<double, []() { return DINF; }, []() { return 0.0; }>;
+}  // namespace min_plus_semiring_detail
+
+template <typename T>
+using MinPlusSemiring = SemiringImpl<T,
+                                     op_min<T>,
+                                     min_plus_semiring_detail::op<T>,
+                                     id_inf<T>,
+                                     id_zero<T>>;

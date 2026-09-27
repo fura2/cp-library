@@ -11,7 +11,7 @@
 #include "algebra/collection/add_mul_ring.hpp"
 #include "algebra/collection/min_plus_semiring.hpp"
 
-using Matrix = FixedSquareMatrix<2, IntRing>;
+using Matrix = FixedSquareMatrix<2, AddMulRing<int>>;
 
 void check(const Matrix& a, int a00, int a01, int a10, int a11) {
   assert(a[0][0].unwrap() == a00 && a[0][1].unwrap() == a01);
@@ -33,7 +33,7 @@ struct BooleanSemiring {
 };
 
 int main() {
-  const IntRing raw[2][2] = {{1, 2}, {3, 4}};
+  const AddMulRing<int> raw[2][2] = {{1, 2}, {3, 4}};
   const Matrix a{raw};
   const Matrix::matrix_type storage = {{{5, 6}, {7, 8}}};
   const Matrix b{storage};
@@ -50,8 +50,8 @@ int main() {
   check(a * Matrix::identity(), 1, 2, 3, 4);
   check(Matrix::identity() * a, 1, 2, 3, 4);
   check(a * Matrix::zero(), 0, 0, 0, 0);
-  check(IntRing{2} * a, 2, 4, 6, 8);
-  check(a * IntRing{3}, 3, 6, 9, 12);
+  check(AddMulRing<int>{2} * a, 2, 4, 6, 8);
+  check(a * AddMulRing<int>{3}, 3, 6, 9, 12);
   moved += b;
   moved -= b;
   moved *= moved;
@@ -60,8 +60,8 @@ int main() {
   assert(std::as_const(moved).unwrap()[0][0].unwrap() == 9);
   assert(pretty(a) == "[[1, 2], [3, 4]]");
 
-  using Tropical = FixedSquareMatrix<2, IntMinPlusSemiring>;
-  const IntMinPlusSemiring costs[2][2] = {{0, 3}, {INF, 0}};
+  using Tropical = FixedSquareMatrix<2, MinPlusSemiring<int>>;
+  const MinPlusSemiring<int> costs[2][2] = {{0, 3}, {INF, 0}};
   const Tropical t{costs};
   const auto product = t * t;
   assert(product[0][1].unwrap() == 3 && product[1][0].unwrap() == INF);
@@ -71,6 +71,6 @@ int main() {
   assert(BoolMatrix::identity() * BoolMatrix::identity() ==
          BoolMatrix::identity());
   assert(BoolMatrix::zero() != BoolMatrix::identity());
-  using Scalar = FixedSquareMatrix<1, IntRing>;
+  using Scalar = FixedSquareMatrix<1, AddMulRing<int>>;
   assert((Scalar::identity() * Scalar::identity())[0][0].unwrap() == 1);
 }
