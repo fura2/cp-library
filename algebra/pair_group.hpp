@@ -19,6 +19,16 @@ class PairGroup {
   PairGroup(T&& x, U&& y)
       : first(std::forward<T>(x)), second(std::forward<U>(y)) {}
 
+  template <typename T = G, typename U = H>
+    requires std::constructible_from<G, const T&> &&
+                 std::constructible_from<H, const U&>
+  PairGroup(const std::pair<T, U>& p): first(p.first), second(p.second) {}
+
+  template <typename T = G, typename U = H>
+    requires std::constructible_from<G, T&&> && std::constructible_from<H, U&&>
+  PairGroup(std::pair<T, U>&& p)
+      : first(std::forward<T>(p.first)), second(std::forward<U>(p.second)) {}
+
   friend PairGroup operator*(const PairGroup& p, const PairGroup& q) {
     return PairGroup{p.first * q.first, p.second * q.second};
   }

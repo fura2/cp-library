@@ -63,6 +63,13 @@ struct MoveOnly {
   }
 };
 
+// A reference element must retain its lvalue category during conversion.
+struct LvalueInt {
+  int value;
+  operator int() const& { return value; }
+  operator int() && = delete;
+};
+
 static_assert(Group<P> && Monoid<P> && std::copyable<P>);
 static_assert(Monoid<M> && !Group<M> && !std::same_as<P, M>);
 static_assert(HasPairGroup<Permutation, Sum>);
@@ -71,6 +78,19 @@ static_assert(!HasPairGroup<int, Sum> && !HasPairGroup<Sum, int>);
 static_assert(std::constructible_from<P, std::vector<int>&, long long>);
 static_assert(!std::constructible_from<P, int, int>);
 static_assert(!std::constructible_from<P, std::vector<int>, std::string>);
+static_assert(
+    std::constructible_from<P, std::pair<std::vector<int>, long long>&>);
+static_assert(
+    std::constructible_from<P, const std::pair<std::vector<int>, long long>&>);
+static_assert(
+    std::constructible_from<P, std::pair<std::vector<int>, long long>&&>);
+static_assert(!std::constructible_from<P, const std::pair<int, int>&>);
+static_assert(!std::constructible_from<P, std::pair<int, int>&&>);
+static_assert(
+    !std::constructible_from<P,
+                             const std::pair<std::vector<int>, std::string>&>);
+static_assert(
+    !std::constructible_from<P, std::pair<std::vector<int>, std::string>&&>);
 static_assert(std::same_as<decltype((std::declval<P&>().first)), Permutation&>);
 static_assert(std::same_as<decltype((std::declval<const P&>().first)),
                            const Permutation&>);
@@ -117,6 +137,51 @@ void check_construction() {
   const PairGroup<Sum, Numbers> default_right{4LL, {5, 6}};
   assert(pretty(default_left) == "((1, 2), 3)");
   assert(pretty(default_right) == "(4, (5, 6))");
+}
+
+void check_pair_construction() {
+  std::pair<std::vector<int>, long long> source{{1, 2, 0}, 3};
+  const P copied{source}, const_copied{std::as_const(source)};
+  assert((copied.first.unwrap() == std::vector<int>{1, 2, 0}));
+  assert(copied.second.unwrap() == 3);
+  assert(const_copied.first.unwrap() == copied.first.unwrap());
+  assert(const_copied.second.unwrap() == 3);
+  assert(source.first == copied.first.unwrap() && source.second == 3);
+
+  const P converted{std::pair{std::vector<int>{1, 0, 2}, 4LL}};
+  assert((converted.first.unwrap() == std::vector<int>{1, 0, 2}));
+  assert(converted.second.unwrap() == 4);
+
+  LvalueInt left{5}, right{7};
+  using Numbers = PairGroup<Sum, Sum>;
+  const std::pair<LvalueInt&, LvalueInt&> refs{left, right};
+  const Numbers copied_refs{refs};
+  const Numbers forwarded_refs{std::pair<LvalueInt&, LvalueInt&>{left, right}};
+  assert(copied_refs.first.unwrap() == 5 && copied_refs.second.unwrap() == 7);
+  assert(forwarded_refs.first.unwrap() == 5 &&
+         forwarded_refs.second.unwrap() == 7);
+  assert(left.value == 5 && right.value == 7);
+}
+
+void check_pair_move_only() {
+  using Q = PairGroup<MoveOnly, MoveOnly>;
+  using Source = std::pair<MoveOnly, MoveOnly>;
+  static_assert(std::constructible_from<Q, Source&&>);
+  static_assert(!std::constructible_from<Q, Source&>);
+  static_assert(!std::constructible_from<Q, const Source&>);
+  static_assert(!std::constructible_from<Q, const Source&&>);
+
+  Source source{MoveOnly{2}, MoveOnly{3}};
+  const Q moved{std::move(source)};
+  assert(*moved.first.value == 2 && *moved.second.value == 3);
+  assert(!source.first.value && !source.second.value);
+
+  // Rvalue-reference members must also be forwarded as rvalues.
+  MoveOnly left{5}, right{7};
+  std::pair<MoveOnly&&, MoveOnly&&> refs{std::move(left), std::move(right)};
+  const Q moved_refs{std::move(refs)};
+  assert(*moved_refs.first.value == 5 && *moved_refs.second.value == 7);
+  assert(!left.value && !right.value);
 }
 
 void check_noncommutative_operations() {
@@ -166,6 +231,8 @@ void check_move_only() {
 
 int main() {
   check_construction();
+  check_pair_construction();
+  check_pair_move_only();
   check_noncommutative_operations();
   check_move_only();
 

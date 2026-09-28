@@ -19,6 +19,16 @@ class PairMonoid {
   PairMonoid(T&& x, U&& y)
       : first(std::forward<T>(x)), second(std::forward<U>(y)) {}
 
+  template <typename T = M, typename U = N>
+    requires std::constructible_from<M, const T&> &&
+                 std::constructible_from<N, const U&>
+  PairMonoid(const std::pair<T, U>& p): first(p.first), second(p.second) {}
+
+  template <typename T = M, typename U = N>
+    requires std::constructible_from<M, T&&> && std::constructible_from<N, U&&>
+  PairMonoid(std::pair<T, U>&& p)
+      : first(std::forward<T>(p.first)), second(std::forward<U>(p.second)) {}
+
   friend PairMonoid operator*(const PairMonoid& p, const PairMonoid& q) {
     return PairMonoid{p.first * q.first, p.second * q.second};
   }

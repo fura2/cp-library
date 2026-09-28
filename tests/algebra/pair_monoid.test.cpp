@@ -49,12 +49,29 @@ struct MoveOnly {
   }
 };
 
+// A reference element must retain its lvalue category during conversion.
+struct LvalueInt {
+  int value;
+  operator int() const& { return value; }
+  operator int() && = delete;
+};
+
 static_assert(Monoid<P> && std::copyable<P>);
 static_assert(HasPairMonoid<Concat, Sum>);
 static_assert(!HasPairMonoid<int, Sum> && !HasPairMonoid<Sum, int>);
 static_assert(std::constructible_from<P, const char*, long long>);
 static_assert(!std::constructible_from<P, int, int>);
 static_assert(!std::constructible_from<P, std::string, std::string>);
+static_assert(std::constructible_from<P, std::pair<std::string, long long>&>);
+static_assert(
+    std::constructible_from<P, const std::pair<std::string, long long>&>);
+static_assert(std::constructible_from<P, std::pair<std::string, long long>&&>);
+static_assert(!std::constructible_from<P, const std::pair<int, int>&>);
+static_assert(!std::constructible_from<P, std::pair<int, int>&&>);
+static_assert(
+    !std::constructible_from<P, const std::pair<std::string, std::string>&>);
+static_assert(
+    !std::constructible_from<P, std::pair<std::string, std::string>&&>);
 static_assert(std::same_as<decltype((std::declval<P&>().first)), Concat&>);
 static_assert(
     std::same_as<decltype((std::declval<const P&>().first)), const Concat&>);
@@ -103,6 +120,50 @@ void check_construction() {
   assert(pretty(default_right) == "(4, (\"cd\", 5))");
 }
 
+void check_pair_construction() {
+  std::pair<std::string, long long> source{"text", 3};
+  const P copied{source}, const_copied{std::as_const(source)};
+  assert(copied.first.unwrap() == "text" && copied.second.unwrap() == 3);
+  assert(const_copied.first.unwrap() == "text" &&
+         const_copied.second.unwrap() == 3);
+  assert(source.first == "text" && source.second == 3);
+
+  const P converted{std::pair{"temporary", 4LL}};
+  assert(converted.first.unwrap() == "temporary");
+  assert(converted.second.unwrap() == 4);
+
+  LvalueInt left{5}, right{7};
+  using Numbers = PairMonoid<Sum, Sum>;
+  const std::pair<LvalueInt&, LvalueInt&> refs{left, right};
+  const Numbers copied_refs{refs};
+  const Numbers forwarded_refs{std::pair<LvalueInt&, LvalueInt&>{left, right}};
+  assert(copied_refs.first.unwrap() == 5 && copied_refs.second.unwrap() == 7);
+  assert(forwarded_refs.first.unwrap() == 5 &&
+         forwarded_refs.second.unwrap() == 7);
+  assert(left.value == 5 && right.value == 7);
+}
+
+void check_pair_move_only() {
+  using Q = PairMonoid<MoveOnly, MoveOnly>;
+  using Source = std::pair<MoveOnly, MoveOnly>;
+  static_assert(std::constructible_from<Q, Source&&>);
+  static_assert(!std::constructible_from<Q, Source&>);
+  static_assert(!std::constructible_from<Q, const Source&>);
+  static_assert(!std::constructible_from<Q, const Source&&>);
+
+  Source source{MoveOnly{2}, MoveOnly{3}};
+  const Q moved{std::move(source)};
+  assert(*moved.first.value == 2 && *moved.second.value == 3);
+  assert(!source.first.value && !source.second.value);
+
+  // Rvalue-reference members must also be forwarded as rvalues.
+  MoveOnly left{5}, right{7};
+  std::pair<MoveOnly&&, MoveOnly&&> refs{std::move(left), std::move(right)};
+  const Q moved_refs{std::move(refs)};
+  assert(*moved_refs.first.value == 5 && *moved_refs.second.value == 7);
+  assert(!left.value && !right.value);
+}
+
 void check_noncommutative_operations() {
   const TextPair a{"ab", "XY"}, b{"cd", "ZW"};
   assert(pretty(a * b) == "(\"abcd\", \"XYZW\")");
@@ -134,6 +195,8 @@ void check_move_only() {
 
 int main() {
   check_construction();
+  check_pair_construction();
+  check_pair_move_only();
   check_noncommutative_operations();
   check_move_only();
 
