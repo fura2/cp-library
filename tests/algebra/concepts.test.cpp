@@ -13,16 +13,32 @@
 #include "algebra/semiring.hpp"
 
 struct AddAction {
-  using value_monoid = MinMonoid<int>;
-  using action_monoid = AddGroup<int>;
-  static value_monoid act(const value_monoid& x, const action_monoid& f) {
-    return x.unwrap() == INF ? x : value_monoid{x.unwrap() + f.unwrap()};
+  using value_type = MinMonoid<int>;
+  using action_type = AddGroup<int>;
+  static value_type act(const value_type& x, const action_type& f) {
+    return x.unwrap() == INF ? x : value_type{x.unwrap() + f.unwrap()};
+  }
+};
+
+struct ScalarAddAction {
+  using value_type = int;
+  using action_type = AddGroup<int>;
+  static value_type act(const value_type& x, const action_type& f) {
+    return x + f.unwrap();
   }
 };
 
 struct MissingAct {
-  using value_monoid = MinMonoid<int>;
-  using action_monoid = AddGroup<int>;
+  using value_type = MinMonoid<int>;
+  using action_type = AddGroup<int>;
+};
+
+struct NonMonoidAction {
+  using value_type = int;
+  using action_type = int;
+  static value_type act(const value_type& x, const action_type& f) {
+    return x + f;
+  }
 };
 
 static_assert(Semigroup<int> && !Monoid<int>);
@@ -33,10 +49,16 @@ static_assert(Group<AddGroup<int>> && CommutativeMonoid<AddGroup<int>>);
 static_assert(Semiring<MinPlusSemiring<int>> && !Ring<MinPlusSemiring<int>>);
 static_assert(Ring<AddMulRing<int>> && Semiring<AddMulRing<int>>);
 static_assert(!Semiring<int> && !Ring<int>);
-static_assert(MonoidAction<AddAction>);
+static_assert(MonoidAction<AddAction> && MonoidActionOnMonoid<AddAction>);
+static_assert(MonoidAction<ScalarAddAction>);
+static_assert(!MonoidActionOnMonoid<ScalarAddAction>);
+static_assert(!MonoidAction<NonMonoidAction>);
+static_assert(!MonoidActionOnMonoid<NonMonoidAction>);
 static_assert(!MonoidAction<MissingAct> && !MonoidAction<int>);
+static_assert(!MonoidActionOnMonoid<MissingAct> && !MonoidActionOnMonoid<int>);
 
 int main() {
+  assert(ScalarAddAction::act(3, AddGroup<int>{2}) == 5);
   assert(AddAction::act(MinMonoid<int>{3}, AddGroup<int>{2}).unwrap() == 5);
   assert(
       AddAction::act(MinMonoid<int>::identity(), AddGroup<int>{2}).unwrap() ==

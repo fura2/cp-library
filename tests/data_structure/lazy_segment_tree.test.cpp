@@ -34,6 +34,22 @@ using AffineSum =
                      }>;
 using Tree = LazySegmentTree<AffineSum>;
 
+using AffinePoint = MonoidActionImpl<long long,
+                                     Affine,
+                                     [](const long long& x, const Affine& f) {
+                                       const auto [a, b] = f.unwrap();
+                                       return a * x + b;
+                                     }>;
+
+template <typename A>
+concept ValidLazySegmentTree = requires { typename LazySegmentTree<A>; };
+
+static_assert(MonoidActionOnMonoid<AffineSum>);
+static_assert(ValidLazySegmentTree<AffineSum>);
+static_assert(MonoidAction<AffinePoint> && !MonoidActionOnMonoid<AffinePoint>);
+static_assert(!ValidLazySegmentTree<AffinePoint>);
+static_assert(!ValidLazySegmentTree<int>);
+
 void check_sums(const Tree& tree, const std::vector<long long>& values) {
   const int n = values.size();
   assert(tree.size() == n);

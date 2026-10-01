@@ -15,11 +15,11 @@ using ActionMonoid = LastMonoid<T>;
 
 template <typename T>
 inline constexpr auto act =
-    [](const ValueMonoid<T>& m, const ActionMonoid<T>& f) {
+    [](const ValueMonoid<T>& x, const ActionMonoid<T>& f) {
       return f.unwrap().has_value()
-                 ? ValueMonoid<T>{m.second.unwrap() * f.unwrap().value(),
-                                  m.second.unwrap()}
-                 : m;
+                 ? ValueMonoid<T>{x.second.unwrap() * f.unwrap().value(),
+                                  x.second.unwrap()}
+                 : x;
     };
 
 }  // namespace sum_assign_monoid_action_detail

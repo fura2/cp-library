@@ -14,9 +14,9 @@ using ActionMonoid = AddMonoid<T>;
 
 template <typename T>
 inline constexpr auto act =
-    [](const ValueMonoid<T>& m, const ActionMonoid<T>& f) {
-      return ValueMonoid<T>{m.first.unwrap() + m.second.unwrap() * f.unwrap(),
-                            m.second.unwrap()};
+    [](const ValueMonoid<T>& x, const ActionMonoid<T>& f) {
+      return ValueMonoid<T>{x.first.unwrap() + x.second.unwrap() * f.unwrap(),
+                            x.second.unwrap()};
     };
 
 }  // namespace sum_add_monoid_action_detail

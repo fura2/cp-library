@@ -25,10 +25,10 @@ void check_value(const M& value, const T& sum, int length) {
   assert(value.second.unwrap() == length);
 }
 
-template <MonoidAction A>
+template <MonoidActionOnMonoid A>
 void check_action() {
-  using M = A::value_monoid;
-  using F = A::action_monoid;
+  using M = A::value_type;
+  using F = A::action_type;
   using T = std::remove_cvref_t<decltype(M{}.first.unwrap())>;
   static_assert(std::same_as<M, PairMonoid<AddMonoid<T>, AddMonoid<int>>>);
   static_assert(std::same_as<F, LastMonoid<T>>);
@@ -61,7 +61,7 @@ void check_action() {
   check_value(A::act(wrapped, assign_four), T{12}, 3);
 }
 
-template <MonoidAction A, typename T>
+template <MonoidActionOnMonoid A, typename T>
 void check_ranges(const LazySegmentTree<A>& tree,
                   const std::vector<T>& values) {
   const int n = values.size();
@@ -80,10 +80,10 @@ void check_ranges(const LazySegmentTree<A>& tree,
   check_value(tree.fold(), total, n);
 }
 
-template <MonoidAction A>
+template <MonoidActionOnMonoid A>
 void check_tree() {
-  using M = A::value_monoid;
-  using F = A::action_monoid;
+  using M = A::value_type;
+  using F = A::action_type;
   using T = std::remove_cvref_t<decltype(M{}.first.unwrap())>;
   using Tree = LazySegmentTree<A>;
 
@@ -123,16 +123,15 @@ void check_tree() {
 void check_numeric_types() {
   using L = SumAssignMonoidAction<long long>;
   using D = SumAssignMonoidAction<double>;
-  check_value(
-      L::act(L::value_monoid{0LL, 3}, L::action_monoid{3'000'000'000LL}),
-      9'000'000'000LL,
-      3);
-  check_value(D::act(D::value_monoid{0.0, 3}, D::action_monoid{0.25}), 0.75, 3);
+  check_value(L::act(L::value_type{0LL, 3}, L::action_type{3'000'000'000LL}),
+              9'000'000'000LL,
+              3);
+  check_value(D::act(D::value_type{0.0, 3}, D::action_type{0.25}), 0.75, 3);
 
   using A = SumAssignMonoidAction<mint>;
-  using M = A::value_monoid;
-  using F = A::action_monoid;
-  static_assert(MonoidAction<A>);
+  using M = A::value_type;
+  using F = A::action_type;
+  static_assert(MonoidActionOnMonoid<A>);
   static_assert(std::same_as<M, PairMonoid<MintAddMonoid, AddMonoid<int>>>);
   const M value{MintAddMonoid{mint{7}}, AddMonoid<int>{3}};
   const auto assigned = A::act(value, F{mint{-1}});

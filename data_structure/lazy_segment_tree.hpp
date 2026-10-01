@@ -8,53 +8,53 @@
 
 #include "algebra/monoid_action.hpp"
 
-template <MonoidAction A>
+template <MonoidActionOnMonoid A>
 class LazySegmentTree {
-  using M = A::value_monoid;
-  using F = A::action_monoid;
+  using X = A::value_type;
+  using F = A::action_type;
 
  public:
   explicit LazySegmentTree(int n)
       : n{n},
         sz(std::bit_ceil<unsigned int>(n)),
-        m(2 * sz, M::identity()),
+        x(2 * sz, X::identity()),
         f(2 * sz, F::identity()) {}
 
-  template <typename T = M>
-    requires std::constructible_from<M, const T&>
+  template <typename T = X>
+    requires std::constructible_from<X, const T&>
   explicit LazySegmentTree(const std::vector<T>& a)
       : n(a.size()),
         sz(std::bit_ceil<unsigned int>(n)),
-        m(2 * sz, M::identity()),
+        x(2 * sz, X::identity()),
         f(2 * sz, F::identity()) {
     for (int i = 0; i < n; ++i) {
-      m[sz + i] = M{a[i]};
+      x[sz + i] = X{a[i]};
     }
     for (int i = sz - 1; i > 0; --i) {
-      m[i] = m[i << 1] * m[(i << 1) | 1];
+      x[i] = x[i << 1] * x[(i << 1) | 1];
     }
   }
 
   int size() const { return n; }
 
-  const M& get(int i) const {
+  const X& get(int i) const {
     assert(0 <= i && i < n);
     // TODO
   }
 
-  template <typename T = M>
-    requires std::constructible_from<M, const T&>
+  template <typename T = X>
+    requires std::constructible_from<X, const T&>
   void set(int i, const T& v) {
     assert(0 <= i && i < n);
     // TODO
   }
 
-  const M& fold() const {
+  const X& fold() const {
     // TODO
-    return m[1];
+    return x[1];
   }
 
-  M fold(int l, int r) const {
+  X fold(int l, int r) const {
     assert(0 <= l && l <= r && r <= n);
     return fold(1, 0, sz, l, r);
   }
@@ -67,23 +67,23 @@ class LazySegmentTree {
   }
 
   template <typename G>
-    requires std::predicate<G&, M>
+    requires std::predicate<G&, X>
   int max_right(int l, G g) const {
     assert(0 <= l && l <= n);
-    assert(g(M::identity()));
+    assert(g(X::identity()));
     // TODO
   }
 
   template <typename G>
-    requires std::predicate<G&, M>
+    requires std::predicate<G&, X>
   int min_left(int r, G g) const {
     assert(0 <= r && r <= n);
-    assert(g(M::identity()));
+    assert(g(X::identity()));
     // TODO
   }
 
   friend std::string pretty(const LazySegmentTree& S) {
-    if constexpr (requires(const M& x) {
+    if constexpr (requires(const X& x) {
                     { pretty(x) } -> std::same_as<std::string>;
                   }) {
       std::string s = "[";
@@ -98,13 +98,13 @@ class LazySegmentTree {
 
  private:
   int n, sz;
-  mutable std::vector<M> m;
+  mutable std::vector<X> x;
   mutable std::vector<F> f;
 
-  M fold(int u, int a, int b, int l, int r) const {
+  X fold(int u, int a, int b, int l, int r) const {
     propagate(u);
-    if (b <= l || r <= a) return M::identity();
-    if (l <= a && b <= r) return m[u];
+    if (b <= l || r <= a) return X::identity();
+    if (l <= a && b <= r) return x[u];
     int c = (a + b) / 2;
     return fold(2 * u, a, c, l, r) * fold(2 * u + 1, c, b, l, r);
   }
@@ -123,13 +123,13 @@ class LazySegmentTree {
     int c = (a + b) / 2;
     apply(2 * u, a, c, l, r, v);
     apply(2 * u + 1, c, b, l, r, v);
-    m[u] = m[2 * u] * m[2 * u + 1];
+    x[u] = x[2 * u] * x[2 * u + 1];
   }
 
   void propagate(int u) const {
     // if (f[u] == F::identity()) return;
     if (f[u].unwrap() == F::identity().unwrap()) return;  // TODO: あとで直す
-    m[u] = A::act(m[u], f[u]);
+    x[u] = A::act(x[u], f[u]);
     if (u < sz) {
       f[2 * u] = f[2 * u] * f[u];
       f[2 * u + 1] = f[2 * u + 1] * f[u];

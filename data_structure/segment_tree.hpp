@@ -134,8 +134,8 @@ class SegmentTree {
   }
 
   friend std::string pretty(const SegmentTree& S) {
-    if constexpr (requires(const M& x) {
-                    { pretty(x) } -> std::same_as<std::string>;
+    if constexpr (requires(const M& m) {
+                    { pretty(m) } -> std::same_as<std::string>;
                   }) {
       std::string s = "[";
       for (int i = 0; i < S.size(); ++i) {

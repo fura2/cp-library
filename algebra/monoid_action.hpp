@@ -7,11 +7,14 @@
 template <typename A>
 concept MonoidAction =
     requires {
-      typename A::value_monoid;
-      typename A::action_monoid;
-    } && Monoid<typename A::value_monoid> &&
-    Monoid<typename A::action_monoid> &&
-    requires(const typename A::value_monoid& m,
-             const typename A::action_monoid& f) {
-      { A::act(m, f) } -> std::same_as<typename A::value_monoid>;
+      typename A::value_type;
+      typename A::action_type;
+    } && Monoid<typename A::action_type> &&
+    requires(const typename A::value_type& x,
+             const typename A::action_type& f) {
+      { A::act(x, f) } -> std::same_as<typename A::value_type>;
     };
+
+template <typename A>
+concept MonoidActionOnMonoid =
+    MonoidAction<A> && Monoid<typename A::value_type>;
