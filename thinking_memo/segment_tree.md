@@ -31,7 +31,7 @@ max_right と min_left を実装した。
   }
   return n;
 ```
-基本的なアイデアは、上がって下がる。以下では、セグメント木の入力となるモノイドの元の列を区間 $[x,y)$ 上で積をとったものを $A[x,y)$ と書く。
+基本的なアイデアは「上がって下がる」。以下では、セグメント木の入力となるモノイドの元の列を区間 $[x,y)$ 上で積をとったものを $A[x,y)$ と書く。
 1. $[l, l+1)$ に対応する葉ノードから始めて、上 or 右に移動しながら、
     ```math
     f(A[l,x+d))=f(A[l,x)\cdot A[x, x+d))=\text{false}
@@ -100,5 +100,5 @@ if (r & 1) { --r; rcum = a[r] * rcum; }
 ```
 は後者を集約している。
 
-参考文献
+#### 参考文献
 - [1] Al.Cash, Efficient and easy segment trees, https://codeforces.com/blog/entry/18051

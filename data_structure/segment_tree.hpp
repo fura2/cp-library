@@ -23,8 +23,8 @@ class SegmentTree {
     for (int i = 0; i < n; ++i) {
       this->a[sz + i] = M{a[i]};
     }
-    for (int i = sz - 1; i > 0; --i) {
-      this->a[i] = this->a[i << 1] * this->a[(i << 1) | 1];
+    for (int u = sz - 1; u > 0; --u) {
+      this->a[u] = this->a[u << 1] * this->a[(u << 1) | 1];
     }
   }
 
@@ -39,11 +39,11 @@ class SegmentTree {
     requires std::constructible_from<M, const T&>
   void set(int i, const T& v) {
     assert(0 <= i && i < n);
-    i += sz;
-    a[i] = M{v};
-    while (i > 1) {
-      i >>= 1;
-      a[i] = a[i << 1] * a[(i << 1) | 1];
+    int u = i + sz;
+    a[u] = M{v};
+    while (u > 1) {
+      u >>= 1;
+      a[u] = a[u << 1] * a[(u << 1) | 1];
     }
   }
 
@@ -51,9 +51,9 @@ class SegmentTree {
 
   M fold(int l, int r) const {
     assert(0 <= l && l <= r && r <= n);
-    M lcum = M::identity(), rcum = M::identity();
     l += sz;
     r += sz;
+    M lcum = M::identity(), rcum = M::identity();
     while (l < r) {
       if (l & 1) {
         lcum = lcum * a[l];
@@ -77,26 +77,26 @@ class SegmentTree {
 
     if (l == n) return n;
 
-    int i = sz + l;
+    int u = sz + l;
     M cum = M::identity();
     while (true) {
-      while ((i & 1) == 0) i >>= 1;
+      while ((u & 1) == 0) u >>= 1;
 
-      if (!f(cum * a[i])) {
-        while (i < sz) {
-          i <<= 1;
-          if (f(cum * a[i])) {
-            cum = cum * a[i];
-            ++i;
+      if (!f(cum * a[u])) {
+        while (u < sz) {
+          u <<= 1;
+          if (f(cum * a[u])) {
+            cum = cum * a[u];
+            ++u;
           }
         }
-        return i - sz;
+        return u - sz;
       }
 
-      cum = cum * a[i];
+      cum = cum * a[u];
 
-      if (std::has_single_bit<unsigned int>(i + 1)) break;
-      ++i;
+      if (std::has_single_bit<unsigned int>(u + 1)) break;
+      ++u;
     }
     return n;
   }
@@ -109,26 +109,26 @@ class SegmentTree {
 
     if (r == 0) return 0;
 
-    int i = sz + r - 1;
+    int u = sz + r - 1;
     M cum = M::identity();
     while (true) {
-      while (i > 1 && (i & 1)) i >>= 1;
+      while (u > 1 && (u & 1)) u >>= 1;
 
-      if (!f(a[i] * cum)) {
-        while (i < sz) {
-          i = (i << 1) | 1;
-          if (f(a[i] * cum)) {
-            cum = a[i] * cum;
-            --i;
+      if (!f(a[u] * cum)) {
+        while (u < sz) {
+          u = (u << 1) | 1;
+          if (f(a[u] * cum)) {
+            cum = a[u] * cum;
+            --u;
           }
         }
-        return i + 1 - sz;
+        return u + 1 - sz;
       }
 
-      cum = a[i] * cum;
+      cum = a[u] * cum;
 
-      if (std::has_single_bit<unsigned int>(i)) break;
-      --i;
+      if (std::has_single_bit<unsigned int>(u)) break;
+      --u;
     }
     return 0;
   }

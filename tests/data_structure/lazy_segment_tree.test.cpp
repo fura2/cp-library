@@ -1,3 +1,8 @@
+// Declare pretty overloads before templates that use them.
+// clang-format off
+#include "template/debug.hpp"
+// clang-format on
+
 #include "data_structure/lazy_segment_tree.hpp"
 
 #include <cassert>
@@ -116,6 +121,54 @@ void check_affine_sum() {
   check_sums(moved, {});
 }
 
+void check_point_access() {
+  Tree single{1};
+  static_assert(
+      std::same_as<decltype(std::as_const(single).get(0)), const SumLength&>);
+  assert((single.get(0).unwrap() == P{0, 0}));
+  single.set(0, P{4, 1});
+  single.apply(0, 1, P{2, 1});
+  assert((single.get(0).unwrap() == P{9, 1}));
+  single.set(0, SumLength{P{-3, 1}});
+  check_sums(single, {-3});
+
+  Tree tree{std::vector<P>{{1, 1}, {2, 1}, {3, 1}, {4, 1}}};
+  tree.apply(0, 4, P{2, 1});
+  tree.apply(0, 4, P{3, 2});
+  assert((tree.fold().unwrap() == P{80, 4}));
+  // Read both ends before any range query propagates their pending actions.
+  const Tree& view = tree;
+  assert((view.get(3).unwrap() == P{29, 1}));
+  assert((view.get(0).unwrap() == P{11, 1}));
+  assert((view.get(3).unwrap() == P{29, 1}));
+  assert((tree.fold().unwrap() == P{80, 4}));
+
+  // A point assignment must override earlier pending actions, then receive
+  // subsequent updates normally. Braces also exercise the default T = X.
+  tree.apply(0, 4, P{0, 7});
+  tree.set(2, {P{100, 1}});
+  assert((tree.fold().unwrap() == P{121, 4}));
+  tree.apply(1, 4, P{2, 1});
+  assert((tree.fold().unwrap() == P{238, 4}));
+  tree.set(0, P{-4, 1});
+  tree.set(3, P{6, 1});
+  check_sums(tree, {-4, 15, 201, 6});
+}
+
+void check_empty_boundaries() {
+  // Include powers of two, where the end boundary is past the last leaf.
+  for (int n: {0, 1, 2, 3, 4, 5, 8}) {
+    Tree tree{std::vector<P>(n, P{2, 1})};
+    tree.apply(0, n, P{3, 1});
+    for (int i = 0; i <= n; ++i) {
+      tree.apply(i, i, P{0, 99});
+      assert((std::as_const(tree).fold(i, i).unwrap() == P{0, 0}));
+      assert((tree.fold().unwrap() == P{7LL * n, n}));
+    }
+    check_sums(tree, std::vector<long long>(n, 7));
+  }
+}
+
 void check_concatenation() {
   using Word = MonoidImpl<std::string,
                           [](const std::string& a, const std::string& b) {
@@ -143,6 +196,15 @@ void check_concatenation() {
   assert(std::as_const(tree).fold(2, 4).unwrap() == "zz");
   assert(std::as_const(tree).fold(3, 4).unwrap().empty());
   assert(std::as_const(tree).fold(2, 2).unwrap().empty());
+
+  // Replacing a word changes its length as well as the noncommutative fold.
+  tree.apply(0, 5, 'q');
+  tree.set(1, std::string{"XYZ"});
+  assert(tree.fold().unwrap() == "qqXYZqqqq");
+  tree.apply(1, 4, 'r');
+  assert(tree.fold().unwrap() == "qqrrrrrqq");
+  assert(std::as_const(tree).get(1).unwrap() == "rrr");
+  assert(std::as_const(tree).fold(1, 5).unwrap() == "rrrrrqq");
 }
 
 struct ExplicitScale {
@@ -155,8 +217,6 @@ struct ExplicitScale {
     return ExplicitScale{f.factor * g.factor};
   }
   static ExplicitScale identity() { return ExplicitScale{1}; }
-
-  int unwrap() const { return factor; }
 };
 
 void check_explicit_action() {
@@ -179,9 +239,23 @@ void check_explicit_action() {
   assert((tree.fold(4, 5).unwrap() == P{10, 1}));
 }
 
+void check_pretty() {
+  assert(pretty(Tree{0}) == "[]");
+  Tree tree{std::vector<P>{{1, 1}, {2, 1}, {3, 1}, {4, 1}}};
+  tree.apply(0, 4, P{0, 5});
+  assert(pretty(std::as_const(tree)) == "[(5, 1), (5, 1), (5, 1), (5, 1)]");
+  assert((tree.fold().unwrap() == P{20, 4}));
+  tree.set(2, P{9, 1});
+  assert(pretty(std::as_const(tree)) == "[(5, 1), (5, 1), (9, 1), (5, 1)]");
+  check_sums(tree, {5, 5, 9, 5});
+}
+
 int main() {
-  // get/set/max_right/min_left and element-wise pretty are not implemented yet.
+  // max_right/min_left are not implemented yet.
   check_affine_sum();
+  check_point_access();
+  check_empty_boundaries();
   check_concatenation();
   check_explicit_action();
+  check_pretty();
 }
