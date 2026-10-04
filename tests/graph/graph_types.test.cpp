@@ -5,6 +5,7 @@
 
 #include <cassert>
 #include <ranges>
+#include <span>
 #include <type_traits>
 
 #include "graph/digraph.hpp"
@@ -23,6 +24,50 @@ static_assert(IncidenceGraph<WeightedGraph<long long>>);
 static_assert(IncidenceGraph<WeightedDigraph<long long>>);
 static_assert(!IncidenceGraph<int>);
 
+template <typename EdgeT>
+struct GraphWithEdge {
+  using edge_type = EdgeT;
+  static constexpr bool directed = true;
+  int num_vertices() const;
+  int num_edges() const;
+  std::span<const EdgeT> operator[](int) const;
+};
+
+struct MissingFrom {
+  int to, id;
+};
+struct MissingTo {
+  int from, id;
+};
+struct MissingId {
+  int from, to;
+};
+
+template <typename From, typename To, typename Id>
+struct EdgeWithFields {
+  From from;
+  To to;
+  Id id;
+};
+
+struct MissingNumEdges: GraphWithEdge<Edge> {
+  int num_edges() const = delete;
+};
+struct WrongNumEdgesType: GraphWithEdge<Edge> {
+  long long num_edges() const;
+};
+
+static_assert(IncidenceGraph<GraphWithEdge<Edge>>);
+static_assert(IncidenceGraph<GraphWithEdge<EdgeWithFields<short, long, int>>>);
+static_assert(!IncidenceGraph<GraphWithEdge<MissingFrom>>);
+static_assert(!IncidenceGraph<GraphWithEdge<MissingTo>>);
+static_assert(!IncidenceGraph<GraphWithEdge<MissingId>>);
+static_assert(!IncidenceGraph<GraphWithEdge<EdgeWithFields<void*, int, int>>>);
+static_assert(!IncidenceGraph<GraphWithEdge<EdgeWithFields<int, void*, int>>>);
+static_assert(!IncidenceGraph<GraphWithEdge<EdgeWithFields<int, int, void*>>>);
+static_assert(!IncidenceGraph<MissingNumEdges>);
+static_assert(!IncidenceGraph<WrongNumEdgesType>);
+
 template <typename G>
 int add(G& g, int u, int v, int cost) {
   if constexpr (std::same_as<typename G::edge_type, Edge>) {
@@ -35,6 +80,8 @@ int add(G& g, int u, int v, int cost) {
 
 template <typename G>
 void check_graph() {
+  const G default_empty;
+  assert(default_empty.num_vertices() == 0 && default_empty.num_edges() == 0);
   const G empty{0};
   assert(empty.num_vertices() == 0 && empty.num_edges() == 0);
   G g{3, 4};

@@ -13,6 +13,7 @@ class WeightedDigraph {
   using edge_type = WeightedEdge<T>;
   static constexpr bool directed = true;
 
+  explicit WeightedDigraph(): n{0}, m{0}, G{} {}
   explicit WeightedDigraph(int n): n{n}, m{0}, G(n) {}
   explicit WeightedDigraph(int n, int m): n{n}, m{0}, G(n) { E.reserve(m); }
 

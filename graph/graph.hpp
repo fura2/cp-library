@@ -12,6 +12,7 @@ class Graph {
   using edge_type = Edge;
   static constexpr bool directed = false;
 
+  explicit Graph(): n{0}, m{0}, G{} {}
   explicit Graph(int n): n{n}, m{0}, G(n) {}
   explicit Graph(int n, int m): n{n}, m{0}, G(n) { E.reserve(2 * m); }
 
