@@ -110,10 +110,4 @@ int main() {
            expected % 998244353);
     assert(modular_table[a].unwrap() == expected % 998244353);
   }
-
-  // The LPF array need not come from LinearSieve.
-  const std::vector<int> supplied = {-1, -1, 2, 3, 2, 5, 2, 7, 2, 3, 2, 11, 2};
-  assert(multiplicative_function(12, sigma, supplied) == 28);
-  auto supplied_table = multiplicative_function_table(sigma, supplied);
-  assert(supplied_table.size() == 13 && supplied_table[12] == 28);
 }

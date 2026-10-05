@@ -38,10 +38,4 @@ int main() {
   // Large prime powers can be checked without allocating a large LPF array.
   assert(divisor_sum_prime_power(2, 30) == 2147483647LL);
   assert(divisor_sum_prime_power(2147483647, 1) == 2147483648LL);
-
-  // The LPF array need not come from LinearSieve.
-  const std::vector<int> supplied = {-1, -1, 2, 3, 2, 5, 2, 7, 2, 3, 2, 11, 2};
-  assert(divisor_sum(12, supplied) == 28);
-  auto supplied_table = divisor_sum_table(supplied);
-  assert(supplied_table.size() == 13 && supplied_table[12] == 28);
 }

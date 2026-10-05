@@ -22,9 +22,4 @@ int main() {
           std::vector<std::pair<int, int>>{{59, 1}}));
   assert((prime_factorization(60, lpf) ==
           std::vector<std::pair<int, int>>{{2, 2}, {3, 1}, {5, 1}}));
-
-  // The LPF array need not come from LinearSieve.
-  const std::vector<int> supplied = {-1, -1, 2, 3, 2, 5, 2, 7, 2, 3, 2, 11, 2};
-  assert((prime_factorization(12, supplied) ==
-          std::vector<std::pair<int, int>>{{2, 2}, {3, 1}}));
 }

@@ -6,6 +6,20 @@
 #include "algebra/collection/add_group.hpp"
 #include "algebra/collection/max_monoid.hpp"
 #include "algebra/pair_group.hpp"
+#include "algebra/pair_monoid.hpp"
+
+using SumCount = PairGroup<AddGroup<long long>, AddGroup<int>>;
+using MonoidPair = PairMonoid<AddGroup<long long>, AddGroup<int>>;
+
+template <typename T>
+concept HasRangeFold =
+    requires(const FenwickTree<T>& tree) { tree.fold(0, 0); };
+
+static_assert(HasRangeFold<SumCount> && !HasRangeFold<MonoidPair>);
+
+void check(const SumCount& value, long long sum, int count) {
+  assert(value.first.unwrap() == sum && value.second.unwrap() == count);
+}
 
 int main() {
   auto at_most = [](int limit) {
@@ -54,15 +68,17 @@ int main() {
              [](const MaxMonoid<int>& x) { return x.unwrap() <= 5; }) == 2);
   assert(pretty(maximum) == "[3 element(s)]");
 
-  FenwickTree<PairGroup<AddGroup<long long>, AddGroup<int>>> pairs(
-      {{1, 10}, {2, 20}, {3, 30}});
+  // Sum and count use different types; sums exceed the 32-bit integer range.
+  FenwickTree<SumCount> pairs(
+      {{3'000'000'000LL, 1}, {4'000'000'000LL, 2}, {-2'000'000'000LL, 1}});
   assert(pairs.size() == 3);
-  assert(pairs.fold().first.unwrap() == 6);
-  assert(pairs.fold().second.unwrap() == 60);
-  pairs.apply(1, {4, -5});
-  assert(pairs.get(1).first.unwrap() == 6);
-  assert(pairs.get(1).second.unwrap() == 15);
-  pairs.set(0, {-1, 7});
-  assert(pairs.fold().first.unwrap() == 8);
-  assert(pairs.fold().second.unwrap() == 52);
+  check(pairs.fold(), 5'000'000'000LL, 4);
+  check(pairs.fold(1, 3), 2'000'000'000LL, 3);
+  check(pairs.fold(1, 1), 0, 0);
+  pairs.set(0, {1'000'000'000LL, 2});
+  check(pairs.get(0), 1'000'000'000LL, 2);
+  check(pairs.fold(), 3'000'000'000LL, 5);
+  pairs.apply(1, {-1'000'000'000LL, 1});
+  check(pairs.get(1), 3'000'000'000LL, 3);
+  check(pairs.fold(), 2'000'000'000LL, 6);
 }

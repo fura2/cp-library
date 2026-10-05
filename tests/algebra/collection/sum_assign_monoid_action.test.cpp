@@ -11,13 +11,13 @@
 #include "data_structure/lazy_segment_tree.hpp"
 
 template <typename T>
-concept ValidAddAssign = requires { typename SumAssignMonoidAction<T>; };
+concept ValidSumAssign = requires { typename SumAssignMonoidAction<T>; };
 
 template <>
 inline constexpr auto id_zero<long double> = []() { return 0.0L; };
 
-static_assert(ValidAddAssign<int> && ValidAddAssign<long double>);
-static_assert(!ValidAddAssign<float> && !ValidAddAssign<short>);
+static_assert(ValidSumAssign<int> && ValidSumAssign<long double>);
+static_assert(!ValidSumAssign<float> && !ValidSumAssign<short>);
 
 template <typename M, typename T>
 void check_value(const M& value, const T& sum, int length) {
@@ -61,63 +61,16 @@ void check_action() {
   check_value(A::act(wrapped, assign_four), T{12}, 3);
 }
 
-template <MonoidActionOnMonoid A, typename T>
-void check_ranges(const LazySegmentTree<A>& tree,
-                  const std::vector<T>& values) {
-  const int n = values.size();
-  assert(tree.size() == n);
-  T total{};
-  for (const T& value: values) total += value;
-  // Check the root before subrange queries push pending assignments down.
-  check_value(tree.fold(), total, n);
-  for (int l = 0; l <= n; ++l) {
-    T sum{};
-    for (int r = l; r <= n; ++r) {
-      check_value(tree.fold(l, r), sum, r - l);
-      if (r < n) sum += values[r];
-    }
-  }
-  check_value(tree.fold(), total, n);
-}
-
-template <MonoidActionOnMonoid A>
 void check_tree() {
-  using M = A::value_type;
-  using F = A::action_type;
-  using T = std::remove_cvref_t<decltype(M{}.first.unwrap())>;
-  using Tree = LazySegmentTree<A>;
-
-  Tree empty{0};
-  empty.apply(0, 0, T{9});
-  check_ranges(empty, std::vector<T>{});
-
+  using A = SumAssignMonoidAction<int>;
+  // Keep one usage example; range boundaries are covered by the tree's tests.
   // Each element has length 1, even when its value is 0.
-  Tree single{std::vector<M>{M{AddMonoid<T>{T{4}}, AddMonoid<int>{1}}}};
-  single.apply(0, 1, T{0});
-  check_value(single.fold(), T{0}, 1);
-  single.apply(0, 1, F{T{-3}});
-  check_ranges(single, std::vector<T>{T{-3}});
-
-  Tree zeros{std::vector<M>(3, M{T{0}, 1})};
-  zeros.apply(0, 3, T{2});
-  check_ranges(zeros, std::vector<T>{T{2}, T{2}, T{2}});
-
-  Tree tree{std::vector<M>{
-      M{T{1}, 1}, M{T{2}, 1}, M{T{3}, 1}, M{T{4}, 1}, M{T{5}, 1}}};
-  check_ranges(tree, std::vector<T>{T{1}, T{2}, T{3}, T{4}, T{5}});
-  // Compose overlapping assignments without querying subranges between them.
-  tree.apply(0, 5, T{7});
-  check_value(tree.fold(), T{35}, 5);
-  tree.apply(0, 4, F{T{-2}});
-  check_value(tree.fold(), T{-1}, 5);
-  tree.apply(1, 5, T{0});
-  check_value(tree.fold(), T{-2}, 5);
-  tree.apply(2, 4, T{3});
-  tree.apply(0, 5, F::identity());
-  tree.apply(0, 0, T{99});
-  tree.apply(3, 3, T{99});
-  tree.apply(5, 5, T{99});
-  check_ranges(tree, std::vector<T>{T{-2}, T{0}, T{3}, T{3}, T{0}});
+  LazySegmentTree<A> tree{std::vector<A::value_type>{{1, 1}, {0, 1}, {3, 1}}};
+  tree.apply(0, 3, 4);
+  tree.apply(1, 3, 0);
+  tree.apply(0, 3, A::action_type::identity());
+  check_value(tree.fold(), 4, 3);
+  check_value(tree.fold(1, 3), 0, 2);
 }
 
 void check_numeric_types() {
@@ -146,8 +99,6 @@ int main() {
   check_action<SumAssignMonoidAction<long long>>();
   check_action<SumAssignMonoidAction<double>>();
   check_action<SumAssignMonoidAction<long double>>();
-  check_tree<SumAssignMonoidAction<int>>();
-  check_tree<SumAssignMonoidAction<long long>>();
-  check_tree<SumAssignMonoidAction<double>>();
+  check_tree();
   check_numeric_types();
 }

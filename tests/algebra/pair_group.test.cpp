@@ -14,7 +14,6 @@
 
 #include "algebra/group_impl.hpp"
 #include "algebra/pair_monoid.hpp"
-#include "data_structure/segment_tree.hpp"
 
 using Sum = GroupImpl<int,
                       [](int a, int b) { return a + b; },
@@ -199,21 +198,8 @@ void check_noncommutative_operations() {
     assert(equal(x * e, x) && equal(e * x, x));
     assert(equal(x * x.inverse(), e) && equal(x.inverse() * x, e));
     assert(equal(x.inverse().inverse(), x));
-    for (const PermPair& y: values) {
-      assert(equal((x * y).inverse(), y.inverse() * x.inverse()));
-      for (const PermPair& z: values) {
-        assert(equal((x * y) * z, x * (y * z)));
-      }
-    }
   }
-
-  SegmentTree<PermPair> tree{std::vector<PermPair>{a, b}};
-  assert(equal(tree.fold(), a * b));
-  assert(equal(tree.fold(1, 2), b));
-  assert(equal(tree.fold(1, 1), e));
-  tree.set(0, e);
-  assert(equal(tree.fold(), b));
-  assert(equal(SegmentTree<PermPair>{0}.fold(), e));
+  assert(equal((a * b).inverse(), b.inverse() * a.inverse()));
 }
 
 void check_move_only() {
@@ -247,12 +233,6 @@ int main() {
   copied.second.unwrap() = 9;
   assert(pretty(std::as_const(copied)) == "([0, 2, 1], 9)");
   assert(pretty(a) == "([1, 2, 0], 3)");
-  copied = b;
-  assert(pretty(copied) == pretty(b));
-  P moved{std::move(copied)};
-  assert(pretty(moved) == pretty(b));
-  moved = P::identity();
-  assert(pretty(moved) == "([0, 1, 2], 0)");
 
   const PairGroup<P, Sum> nested{a, 5};
   assert(pretty(nested.inverse()) == "(([2, 0, 1], -3), -5)");

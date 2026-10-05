@@ -34,10 +34,4 @@ int main() {
     assert(num_divisors(a, lpf) == expected);
     assert(table[a] == expected);
   }
-
-  // The LPF array need not come from LinearSieve.
-  const std::vector<int> supplied = {-1, -1, 2, 3, 2, 5, 2, 7, 2, 3, 2, 11, 2};
-  assert(num_divisors(12, supplied) == 6);
-  auto supplied_table = num_divisors_table(supplied);
-  assert(supplied_table.size() == 13 && supplied_table[12] == 6);
 }

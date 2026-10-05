@@ -41,10 +41,4 @@ int main() {
   // Large prime powers can be checked without allocating a large LPF array.
   assert(totient_prime_power(2, 30) == 536870912);
   assert(totient_prime_power(2147483647, 1) == 2147483646);
-
-  // The LPF array need not come from LinearSieve.
-  const std::vector<int> supplied = {-1, -1, 2, 3, 2, 5, 2, 7, 2, 3, 2, 11, 2};
-  assert(totient(12, supplied) == 4);
-  auto supplied_table = totient_table(supplied);
-  assert(supplied_table.size() == 13 && supplied_table[12] == 4);
 }

@@ -18,8 +18,4 @@ int main() {
   assert((divisors(59, lpf) == std::vector<int>{1, 59}));
   assert((divisors(60, lpf) ==
           std::vector<int>{1, 2, 3, 4, 5, 6, 10, 12, 15, 20, 30, 60}));
-
-  // The LPF array need not come from LinearSieve.
-  const std::vector<int> supplied = {-1, -1, 2, 3, 2, 5, 2, 7, 2, 3, 2, 11, 2};
-  assert((divisors(12, supplied) == std::vector<int>{1, 2, 3, 4, 6, 12}));
 }

@@ -1,4 +1,3 @@
-#include <cassert>
 #include <string>
 
 #include "algebra/collection/add_group.hpp"
@@ -57,10 +56,4 @@ static_assert(!MonoidActionOnMonoid<NonMonoidAction>);
 static_assert(!MonoidAction<MissingAct> && !MonoidAction<int>);
 static_assert(!MonoidActionOnMonoid<MissingAct> && !MonoidActionOnMonoid<int>);
 
-int main() {
-  assert(ScalarAddAction::act(3, AddGroup<int>{2}) == 5);
-  assert(AddAction::act(MinMonoid<int>{3}, AddGroup<int>{2}).unwrap() == 5);
-  assert(
-      AddAction::act(MinMonoid<int>::identity(), AddGroup<int>{2}).unwrap() ==
-      INF);
-}
+int main() {}

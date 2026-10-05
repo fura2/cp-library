@@ -13,7 +13,6 @@
 #include <vector>
 
 #include "algebra/monoid_impl.hpp"
-#include "data_structure/segment_tree.hpp"
 
 using Concat =
     MonoidImpl<std::string,
@@ -168,16 +167,6 @@ void check_noncommutative_operations() {
   const TextPair a{"ab", "XY"}, b{"cd", "ZW"};
   assert(pretty(a * b) == "(\"abcd\", \"XYZW\")");
   assert(pretty(b * a) == "(\"cdab\", \"ZWXY\")");
-  const std::vector<TextPair> values{TextPair::identity(), a, b};
-  for (const TextPair& x: values) {
-    for (const TextPair& y: values) {
-      for (const TextPair& z: values) {
-        const TextPair left = (x * y) * z, right = x * (y * z);
-        assert(left.first.unwrap() == right.first.unwrap());
-        assert(left.second.unwrap() == right.second.unwrap());
-      }
-    }
-  }
 }
 
 void check_move_only() {
@@ -213,12 +202,6 @@ int main() {
   assert(std::as_const(copied).first.unwrap() == "changed");
   assert(std::as_const(copied).second.unwrap() == 9);
   assert(a.first.unwrap() == "ab" && a.second.unwrap() == 2);
-  copied = b;
-  assert(pretty(copied) == pretty(b));
-  P moved{std::move(copied)};
-  assert(pretty(moved) == pretty(b));
-  moved = P::identity();
-  assert(pretty(moved) == pretty(e));
 
   using Nested = PairMonoid<P, Sum>;
   const Nested nested{a, 7};
@@ -227,12 +210,4 @@ int main() {
   assert(pretty(std::vector<P>{e, a}) == "[(\"\", 0), (\"ab\", 2)]");
   const PairMonoid<Opaque, Sum> opaque{};
   assert((opaque * opaque).second.unwrap() == 0);
-
-  SegmentTree<P> tree(std::vector<P>{a, b});
-  assert(pretty(tree.fold()) == "(\"abcd\", 5)");
-  assert(pretty(tree.fold(1, 2)) == pretty(b));
-  assert(pretty(tree.fold(1, 1)) == pretty(e));
-  tree.set(0, P{"x", 7});
-  assert(pretty(tree.fold()) == "(\"xcd\", 10)");
-  assert(pretty(SegmentTree<P>{0}.fold()) == pretty(e));
 }

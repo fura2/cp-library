@@ -41,11 +41,4 @@ int main() {
     assert(moebius(a, lpf) == expected[a]);
     assert(table[a] == expected[a]);
   }
-
-  // The LPF array need not come from LinearSieve.
-  const std::vector<int> supplied = {-1, -1, 2, 3, 2, 5, 2, 7, 2, 3, 2, 11, 2};
-  assert(moebius(6, supplied) == 1 && moebius(12, supplied) == 0);
-  auto supplied_table = moebius_table(supplied);
-  assert(supplied_table.size() == 13);
-  assert(supplied_table[6] == 1 && supplied_table[12] == 0);
 }

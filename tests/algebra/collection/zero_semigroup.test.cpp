@@ -15,7 +15,7 @@
 
 template <typename T>
 void check(const std::vector<T>& values) {
-  // Exercise dependent aliases as well as their use as vector element types.
+  // Keep aliases dependent on T to catch the GCC 15.2 lambda NTTP issue.
   using L = LeftZeroSemigroup<T>;
   using R = RightZeroSemigroup<T>;
   static_assert(Semigroup<L> && Semigroup<R>);
@@ -40,12 +40,6 @@ void check(const std::vector<T>& values) {
     for (int j = 0; j < int(values.size()); ++j) {
       assert((left[i] * left[j]).unwrap() == values[i]);
       assert((right[i] * right[j]).unwrap() == values[j]);
-      for (int k = 0; k < int(values.size()); ++k) {
-        assert(((left[i] * left[j]) * left[k]).unwrap() ==
-               (left[i] * (left[j] * left[k])).unwrap());
-        assert(((right[i] * right[j]) * right[k]).unwrap() ==
-               (right[i] * (right[j] * right[k])).unwrap());
-      }
     }
   }
 

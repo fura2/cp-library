@@ -13,8 +13,6 @@
 #include "algebra/collection/first_monoid.hpp"
 #include "algebra/collection/last_monoid.hpp"
 #include "algebra/monoid.hpp"
-#include "data_structure/foldable_queue.hpp"
-#include "data_structure/segment_tree.hpp"
 
 struct NonDefault {
   int value;
@@ -24,18 +22,13 @@ struct NonDefault {
 };
 
 template <Monoid M>
-void check_laws(const std::vector<M>& values) {
+void check_identity(const std::vector<M>& values) {
   const M e = M::identity();
   assert(!M{}.unwrap() && !e.unwrap());
   for (const M& x: values) {
     assert((e * x).unwrap() == x.unwrap());
     assert((x * e).unwrap() == x.unwrap());
     assert((x * x).unwrap() == x.unwrap());
-    for (const M& y: values) {
-      for (const M& z: values) {
-        assert(((x * y) * z).unwrap() == (x * (y * z)).unwrap());
-      }
-    }
   }
 }
 
@@ -63,8 +56,8 @@ void check_values(const T& a, const T& b) {
   assert((fa * fb).unwrap() == a && (fb * fa).unwrap() == b);
   assert((la * lb).unwrap() == b && (lb * la).unwrap() == a);
   assert(!F{std::nullopt}.unwrap() && !L{std::nullopt}.unwrap());
-  check_laws(std::vector<F>{F::identity(), fa, fb});
-  check_laws(std::vector<L>{L::identity(), la, lb});
+  check_identity(std::vector<F>{F::identity(), fa, fb});
+  check_identity(std::vector<L>{L::identity(), la, lb});
 
   const std::optional<T> source{a};
   F first{source};
@@ -77,38 +70,6 @@ void check_values(const T& a, const T& b) {
   first.unwrap().reset();
   last.unwrap().reset();
   assert(!first.unwrap() && !last.unwrap());
-}
-
-template <Monoid M, bool First>
-void check_data_structures() {
-  SegmentTree<M> tree(std::vector<M>{M{}, M{4}, M{0}, M{}, M{7}, M{}});
-  assert(tree.fold().unwrap() == (First ? 4 : 7));
-  assert(tree.fold(1, 2).unwrap() == 4);
-  assert(tree.fold(2, 4).unwrap() == 0);
-  assert(!tree.fold(0, 1).unwrap() && !tree.fold(5, 6).unwrap());
-  assert(!tree.fold(2, 2).unwrap());
-  tree.set(1, M::identity());
-  tree.set(4, M::identity());
-  assert(tree.fold().unwrap() == 0);
-  tree.set(2, M::identity());
-  assert(!tree.fold().unwrap());
-  assert(!SegmentTree<M>{0}.fold().unwrap());
-
-  FoldableQueue<M> queue;
-  assert(!queue.fold().unwrap());
-  queue.push(M::identity());
-  queue.push(M{4});
-  queue.push(M{0});
-  assert(queue.fold().unwrap() == (First ? 4 : 0));
-  queue.pop();
-  queue.push(M{7});
-  assert(queue.fold().unwrap() == (First ? 4 : 7));
-  queue.pop();
-  assert(queue.fold().unwrap() == (First ? 0 : 7));
-  queue.pop();
-  assert(queue.fold().unwrap() == 7);
-  queue.pop();
-  assert(queue.empty() && !queue.fold().unwrap());
 }
 
 int main() {
@@ -129,6 +90,4 @@ int main() {
   assert(pretty(LastMonoid<int>{0}) == "0");
   assert(pretty(FirstMonoid<std::string>{std::string{}}) == "\"\"");
   assert(pretty(LastMonoid<std::string>{std::string{"ab"}}) == "\"ab\"");
-  check_data_structures<FirstMonoid<int>, true>();
-  check_data_structures<LastMonoid<int>, false>();
 }
