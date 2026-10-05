@@ -13,7 +13,7 @@ class StronglyConnectedComponents {
  public:
   template <typename GraphT>
     requires IncidenceGraph<GraphT> && Directed<GraphT>
-  StronglyConnectedComponents(const GraphT& G): n{G.num_vertices()} {
+  explicit StronglyConnectedComponents(const GraphT& G): n{G.num_vertices()} {
     int m = G.num_edges();
 
     Digraph G_rev(n, m);

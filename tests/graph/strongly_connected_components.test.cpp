@@ -15,6 +15,10 @@ static_assert(
 static_assert(std::is_constructible_v<StronglyConnectedComponents,
                                       const WeightedDigraph<int>&>);
 static_assert(
+    !std::is_convertible_v<const Digraph&, StronglyConnectedComponents>);
+static_assert(!std::is_convertible_v<const WeightedDigraph<int>&,
+                                     StronglyConnectedComponents>);
+static_assert(
     !std::is_constructible_v<StronglyConnectedComponents, const Graph&>);
 static_assert(!std::is_constructible_v<StronglyConnectedComponents,
                                        const WeightedGraph<int>&>);
