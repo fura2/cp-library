@@ -1,4 +1,4 @@
-#include "typical/run_length_encoding.hpp"
+#include "string/run_length_encoding.hpp"
 
 #include <cassert>
 #include <sstream>
