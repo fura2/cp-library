@@ -6,9 +6,10 @@
 #include <type_traits>
 #include <vector>
 
-#include "algebra/collection/mint_add_monoid.hpp"
+#include "algebra/collection/add_monoid.hpp"
 #include "algebra/monoid_action.hpp"
 #include "data_structure/lazy_segment_tree.hpp"
+#include "mint/mint.hpp"
 
 template <typename T>
 concept ValidSumAssign = requires { typename SumAssignMonoidAction<T>; };
@@ -85,8 +86,8 @@ void check_numeric_types() {
   using M = A::value_type;
   using F = A::action_type;
   static_assert(MonoidActionOnMonoid<A>);
-  static_assert(std::same_as<M, PairMonoid<MintAddMonoid, AddMonoid<int>>>);
-  const M value{MintAddMonoid{mint{7}}, AddMonoid<int>{3}};
+  static_assert(std::same_as<M, PairMonoid<AddMonoid<mint>, AddMonoid<int>>>);
+  const M value{AddMonoid<mint>{mint{7}}, AddMonoid<int>{3}};
   const auto assigned = A::act(value, F{mint{-1}});
   assert(assigned.first.unwrap().unwrap() == mint{-3}.unwrap());
   assert(assigned.second.unwrap() == 3);

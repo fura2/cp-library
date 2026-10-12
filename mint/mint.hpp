@@ -6,6 +6,7 @@
 #include <utility>
 #include <vector>
 
+#include "algebra/collection/id.hpp"
 #include "template/io.hpp"
 
 class mint {
@@ -148,3 +149,9 @@ inline mint multinomial(const std::vector<int>& a) {
   }
   return res;
 }
+
+template <>
+inline constexpr auto id_zero<mint> = []() { return mint{0}; };
+
+template <>
+inline constexpr auto id_one<mint> = []() { return mint{1}; };
