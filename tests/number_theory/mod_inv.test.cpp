@@ -1,4 +1,4 @@
-#include "number_theory/modinv.hpp"
+#include "number_theory/mod_inv.hpp"
 
 #include <array>
 #include <cassert>
@@ -6,16 +6,16 @@
 #include <numeric>
 
 int main() {
-  assert(modinv(3, 11) == 4);
-  assert(modinv(-3, 11) == 7);
-  assert(modinv(17, 11) == 2);
-  assert(modinv(-17, 11) == 9);
-  assert(modinv(3, 8) == 3);
-  assert(modinv(7, 15) == 13);
-  assert(modinv(-7, 15) == 2);
-  assert(modinv(0, 1) == 0);
-  assert(modinv(123, 1) == 0);
-  assert(modinv(-123, 1) == 0);
+  assert(mod_inv(3, 11) == 4);
+  assert(mod_inv(-3, 11) == 7);
+  assert(mod_inv(17, 11) == 2);
+  assert(mod_inv(-17, 11) == 9);
+  assert(mod_inv(3, 8) == 3);
+  assert(mod_inv(7, 15) == 13);
+  assert(mod_inv(-7, 15) == 2);
+  assert(mod_inv(0, 1) == 0);
+  assert(mod_inv(123, 1) == 0);
+  assert(mod_inv(-123, 1) == 0);
 
   // LLONG_MIN is outside the supported input domain.
   const long long lmax = std::numeric_limits<long long>::max();
@@ -40,7 +40,7 @@ int main() {
   for (long long a: values) {
     for (int m: moduli) {
       if (std::gcd(a, m) != 1) continue;
-      const long long x = modinv(a, m);
+      const long long x = mod_inv(a, m);
       assert(0 <= x && x < m);
       // Reduce a first: a * x may overflow long long.
       long long r = a % m;
@@ -50,18 +50,18 @@ int main() {
   }
 
   // Compare exact results for large moduli: even (a % m) * x may overflow.
-  assert(modinv(1, lmax) == 1);
-  assert(modinv(-1, lmax) == lmax - 1);
-  assert(modinv(2, lmax) == lmax / 2 + 1);
-  assert(modinv(-2, lmax) == lmax / 2);
-  assert(modinv(lmax - 1, lmax) == lmax - 1);
-  assert(modinv(1 - lmax, lmax) == 1);
-  assert(modinv(lmax, lmax - 1) == 1);
-  assert(modinv(-lmax, lmax - 1) == lmax - 2);
+  assert(mod_inv(1, lmax) == 1);
+  assert(mod_inv(-1, lmax) == lmax - 1);
+  assert(mod_inv(2, lmax) == lmax / 2 + 1);
+  assert(mod_inv(-2, lmax) == lmax / 2);
+  assert(mod_inv(lmax - 1, lmax) == lmax - 1);
+  assert(mod_inv(1 - lmax, lmax) == 1);
+  assert(mod_inv(lmax, lmax - 1) == 1);
+  assert(mod_inv(-lmax, lmax - 1) == lmax - 2);
 
   // Consecutive Fibonacci numbers exercise many Euclidean algorithm steps.
   const long long f91 = 4'660'046'610'375'530'309;
   const long long f92 = 7'540'113'804'746'346'429;
-  assert(modinv(f91, f92) == f91);
-  assert(modinv(-f91, f92) == f92 - f91);
+  assert(mod_inv(f91, f92) == f91);
+  assert(mod_inv(-f91, f92) == f92 - f91);
 }

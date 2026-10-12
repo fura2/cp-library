@@ -2,7 +2,7 @@
 
 #include <cassert>
 
-inline long long modpow(long long a, long long k, int m) {
+inline long long mod_pow(long long a, long long k, int m) {
   assert(k >= 0);
   assert(m > 0);
   a %= m;
