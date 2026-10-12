@@ -42,6 +42,9 @@ int main() {
   check(Matrix{}, 0, 0, 0, 0);
   check(Matrix::zero(), 0, 0, 0, 0);
   check(Matrix::identity(), 1, 0, 0, 1);
+  // Identity providers are available without the matrix collection headers.
+  check(id_zero<Matrix>(), 0, 0, 0, 0);
+  check(id_one<Matrix>(), 1, 0, 0, 1);
   check(a + b, 6, 8, 10, 12);
   check(a - b, -4, -4, -4, -4);
   check(-a, -1, -2, -3, -4);
@@ -67,6 +70,9 @@ int main() {
   assert(product[0][1].unwrap() == 3 && product[1][0].unwrap() == INF);
   assert(Tropical::zero()[0][0].unwrap() == INF);
   assert(Tropical::identity()[0][0].unwrap() == 0);
+  assert(id_zero<Tropical>()[0][0].unwrap() == INF);
+  assert(id_one<Tropical>()[0][0].unwrap() == 0);
+  assert(id_one<Tropical>()[0][1].unwrap() == INF);
   using BoolMatrix = FixedSquareMatrix<2, BooleanSemiring>;
   assert(BoolMatrix::identity() * BoolMatrix::identity() ==
          BoolMatrix::identity());

@@ -27,8 +27,6 @@ int main() {
   const R b{RM{other}};
   assert((a * b).unwrap()[0][0].unwrap() == 4);
   assert((b * a).unwrap()[0][0].unwrap() == 3);
-  assert(id_zero<RM>()[0][0].unwrap() == 0);
-  assert(id_one<RM>()[0][0].unwrap() == 1);
   const MinPlusSemiring<int> costs[2][2] = {{0, 3}, {INF, 0}};
   const S s{FixedSquareMatrix<2, MinPlusSemiring<int>>{costs}};
   assert(S::zero().unwrap()[0][0].unwrap() == INF);
@@ -36,9 +34,6 @@ int main() {
   assert((s + S::zero()).unwrap()[0][1].unwrap() == 3);
   assert((s * s).unwrap()[0][1].unwrap() == 3);
   assert((S::one() * s).unwrap()[1][0].unwrap() == INF);
-  assert(id_zero<SM>()[0][0].unwrap() == INF);
-  assert(id_one<SM>()[0][0].unwrap() == 0);
-  assert(id_one<SM>()[0][1].unwrap() == INF);
 
   using Nested = MatrixRing<2, R>;
   assert(Nested::zero().unwrap()[0][0].unwrap()[0][0].unwrap() == 0);
