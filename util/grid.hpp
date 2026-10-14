@@ -69,20 +69,31 @@ class Grid {
     return res;
   }
 
-  void transpose() {
-    std::vector<std::string> data2(w, std::string(h, '?'));
+  Grid transpose() const {
+    Grid G{w, h};
     for (int i = 0; i < h; ++i) {
       for (int j = 0; j < w; ++j) {
-        data2[j][i] = data[i][j];
+        G[j][i] = data[i][j];
       }
     }
-    std::swap(h, w);
-    data = std::move(data2);
+    return G;
+  }
+
+  Grid rotate() const {
+    Grid G{w, h};
+    for (int i = 0; i < h; ++i) {
+      for (int j = 0; j < w; ++j) {
+        G[w - 1 - j][i] = data[i][j];
+      }
+    }
+    return G;
   }
 
   friend std::string pretty(const Grid& G) {
     std::string s;
-    for (int i = 0; i < G.h; ++i) s += "\n" + G.data[i];
+    for (int i = 0; i < G.h; ++i) {
+      s += "\n" + G.data[i];
+    }
     return s;
   }
 
@@ -95,6 +106,12 @@ class Grid {
 
 template <>
 struct Input<Grid> {
+  static Grid read(int n) {
+    Grid G{n, n};
+    G.data = Input<std::vector<std::string>>::read(n);
+    return G;
+  }
+
   static Grid read(int h, int w) {
     Grid G{h, w};
     G.data = Input<std::vector<std::string>>::read(h);
