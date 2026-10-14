@@ -85,11 +85,23 @@ void check_graph() {
   const G empty{0};
   assert(empty.num_vertices() == 0 && empty.num_edges() == 0);
   G g{3, 4};
-  assert(g.num_vertices() == 3 && g.num_edges() == 0);
+  const G& view = g;
+  assert(view.num_vertices() == 3 && view.num_edges() == 0);
+  if constexpr (!G::directed) {
+    assert(view.degree(0) == 0 && view.degree(1) == 0 && view.degree(2) == 0);
+  }
   assert(add(g, 0, 1, -7) == 0);
+  if constexpr (!G::directed) {
+    assert(view.degree(0) == 1 && view.degree(1) == 1);
+  }
   assert(add(g, 0, 1, 8) == 1);  // Parallel edges have different IDs.
   assert(add(g, 1, 1, 3) == 2);  // Self-loop.
   assert(g.num_edges() == 3);
+  if constexpr (!G::directed) {
+    assert(view.degree(0) == 2);  // Count both parallel edges.
+    assert(view.degree(1) == 4);  // A self-loop contributes two.
+    assert(view.degree(2) == 0);  // Isolated vertex.
+  }
   assert(g.edge(0).from == 0 && g.edge(0).to == 1 && g.edge(0).id == 0);
   assert(g.edge(1).id == 1 && g.edge(2).from == 1 && g.edge(2).to == 1);
   if constexpr (requires { g.edge(0).cost; }) {

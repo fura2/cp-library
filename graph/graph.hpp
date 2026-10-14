@@ -19,6 +19,11 @@ class Graph {
   int num_vertices() const { return n; }
   int num_edges() const { return m; }
 
+  int degree(int u) const {
+    assert(0 <= u && u < n);
+    return G[u].size();
+  }
+
   auto operator[](int u) const {
     assert(0 <= u && u < n);
     return std::views::transform(
