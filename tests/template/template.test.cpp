@@ -44,6 +44,28 @@ int main() {
   assert(chmin(x, 2) && x == 2);
   assert(!chmin(x, 2) && !chmin(x, 3));
 
+  std::vector<int> unique_values;
+  uniq(unique_values);
+  assert(unique_values.empty());
+  unique_values = {7};
+  uniq(unique_values);
+  assert((unique_values == std::vector<int>{7}));
+  unique_values = {4, 4, 4};
+  uniq(unique_values);
+  assert((unique_values == std::vector<int>{4}));
+  unique_values = {3, -1, 3, 0, -1, 2};
+  uniq(unique_values);
+  assert((unique_values == std::vector<int>{-1, 0, 2, 3}));
+  uniq(unique_values);
+  assert((unique_values == std::vector<int>{-1, 0, 2, 3}));
+
+  std::vector<std::string> words{"b", "a", "b", ""};
+  uniq(words);
+  assert((words == std::vector<std::string>{"", "a", "b"}));
+  std::vector<bool> flags{true, false, true};
+  uniq(flags);
+  assert((flags == std::vector<bool>{false, true}));
+
   TestIO io;
   assert(std::cin.tie() == nullptr);
   assert(std::cout.precision() == 12);

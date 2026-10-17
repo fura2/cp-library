@@ -43,6 +43,12 @@ bool chmin(T& a, const T& b) {
   return b < a ? a = b, true : false;
 }
 
+template <typename T>
+void uniq(std::vector<T>& a) {
+  std::ranges::sort(a);
+  a.erase(std::ranges::unique(a).begin(), a.end());
+}
+
 inline void yesno(bool b) { output(b ? "Yes" : "No"); }
 inline void yes() { yesno(true); }
 inline void no() { yesno(false); }
