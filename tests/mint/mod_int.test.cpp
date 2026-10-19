@@ -9,6 +9,8 @@
 #include "tests/support/io.hpp"
 
 static_assert(std::same_as<mint, ModInt<998244353>>);
+static_assert(mint::mod() == 998244353);
+static_assert(ModInt<7>::mod() == 7);
 
 struct HasInverse {
   HasInverse inverse() const;
@@ -20,6 +22,7 @@ template <typename T, bool Accepted>
 void check_constraints() {
   static_assert(is_mod_int<T> == Accepted);
   static_assert(requires(T x) { pow<T>(x, 0); } == Accepted);
+  static_assert(requires { inverse<T>(1); } == Accepted);
   static_assert(requires { factorial<T>(0); } == Accepted);
   static_assert(requires { factorial_inverse<T>(0); } == Accepted);
   static_assert(requires { choose<T>(0, 0); } == Accepted);
@@ -61,6 +64,14 @@ int main() {
   assert(pow(mint{0}, 0).unwrap() == 1);
   assert(pow(mint{2}, mod - 1).unwrap() == 1);
 
+  // Extend the inverse cache in steps, then revisit earlier entries.
+  for (int n: {1, 2, 8, 3, 12, 1}) {
+    assert((mint{n} * inverse<mint>(n)).unwrap() == 1);
+  }
+  assert(inverse<ModInt<2>>(1).unwrap() == 1);
+  assert(factorial_inverse<ModInt<2>>(0).unwrap() == 1);
+  assert(factorial_inverse<ModInt<2>>(1).unwrap() == 1);
+
   assert(factorial<mint>(0).unwrap() == 1);
   assert(factorial<mint>(5).unwrap() == 120);
   assert(factorial<mint>(3).unwrap() == 6);
@@ -68,6 +79,7 @@ int main() {
   assert((factorial<mint>(8) * factorial_inverse<mint>(8)).unwrap() == 1);
   assert((factorial<mint>(3) * factorial_inverse<mint>(3)).unwrap() == 1);
   assert((factorial<mint>(10) * factorial_inverse<mint>(10)).unwrap() == 1);
+  assert(factorial_inverse<mint>(0).unwrap() == 1);
   for (int type: {0, 1}) {
     assert(choose<mint>(5, 2, type).unwrap() == 10);
     assert(choose<mint>(5, 0, type).unwrap() == 1);
@@ -103,15 +115,21 @@ int main() {
   std::vector<int> large_parts{20, 20, 20};
   assert(multinomial<mint>(large_parts).unwrap() == 526190592);
 
-  // Factorial caches must be independent for each modulus.
+  // All caches must be independent for each modulus.
   using Mod7 = ModInt<7>;
   using Mod11 = ModInt<11>;
+  assert(inverse<Mod7>(3).unwrap() == 5);
+  assert(inverse<Mod11>(3).unwrap() == 4);
+  assert(inverse<Mod7>(6).unwrap() == 6);
+  assert(inverse<Mod7>(3).unwrap() == 5);
   assert(factorial<Mod7>(5).unwrap() == 1);
   assert(factorial_inverse<Mod7>(5).unwrap() == 1);
-  assert(factorial<Mod11>(5).unwrap() == 10);
+  // An inverse factorial can be requested before the factorial itself.
   assert(factorial_inverse<Mod11>(5).unwrap() == 10);
+  assert(factorial<Mod11>(5).unwrap() == 10);
   assert(factorial<Mod7>(3).unwrap() == 6);
   assert(factorial_inverse<Mod7>(3).unwrap() == 6);
+  assert(factorial_inverse<Mod7>(6).unwrap() == 6);
   assert(factorial<mint>(5).unwrap() == 120);
   for (int type: {0, 1}) {
     assert(choose<Mod7>(5, 2, type).unwrap() == 3);

@@ -83,6 +83,8 @@ class ModInt {
 
   int unwrap() const { return x; }
 
+  static constexpr int mod() { return Mod; }
+
   friend std::string pretty(const ModInt& m) { return std::to_string(m.x); }
 
  private:
@@ -115,6 +117,19 @@ inline T pow(T m, long long k) {
 
 template <typename T>
   requires is_mod_int<T>
+inline T inverse(int n) {
+  assert(0 < n && n < T::mod());
+  static std::vector<T> memo = {0, 1};
+  if (std::ssize(memo) <= n) {
+    int k = memo.size();
+    memo.resize(n + 1);
+    for (; k <= n; ++k) memo[k] = -memo[T::mod() % k] * (T::mod() / k);
+  }
+  return memo[n];
+}
+
+template <typename T>
+  requires is_mod_int<T>
 inline T factorial(int n) {
   assert(n >= 0);
   static std::vector<T> memo = {1};
@@ -134,8 +149,8 @@ inline T factorial_inverse(int n) {
   if (std::ssize(memo) <= n) {
     int k = memo.size();
     memo.resize(n + 1);
-    memo[n] = factorial<T>(n).inverse();
-    for (int i = n; i > k; i--) memo[i - 1] = memo[i] * i;
+    inverse<T>(n);
+    for (; k <= n; ++k) memo[k] = memo[k - 1] * inverse<T>(k);
   }
   return memo[n];
 }
