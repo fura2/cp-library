@@ -40,17 +40,14 @@ static_assert(!std::constructible_from<Compression<MoveOnlyValue>,
                                        const std::vector<MoveOnlyValue>&>);
 
 void check_values_and_indices() {
-  Compression<int> empty;
-  empty.build();
+  const Compression<int> empty;
   assert(empty.size() == 0 && empty.index(0) == 0);
   Compression<int> empty_list({});
   empty_list.add_range({});
-  empty_list.build();
-  assert(empty_list.size() == 0);
+  assert(empty_list.index(0) == 0 && empty_list.size() == 0);
 
   Compression<int> single({5});
   single.add(5);
-  single.build();
   assert(single.size() == 1 && single.value(0) == 5);
   assert(single.index(4) == 0 && single.index(5) == 0 && single.index(6) == 1);
 
@@ -59,7 +56,8 @@ void check_values_and_indices() {
   c.add(0);
   c.add_range({4, 7});
   c.add_range({});
-  c.build();
+  // index() must also work as the first query through a const reference.
+  assert(std::as_const(c).index(4) == 3);
   const std::array expected{-3, 0, 1, 4, 7};
   assert(c.size() == static_cast<int>(expected.size()));
   for (int i = 0; i < c.size(); ++i) {
@@ -70,21 +68,19 @@ void check_values_and_indices() {
   Compression<std::pair<int, int>> pairs({{2, 3}, {1, 2}, {2, 3}});
   pairs.add({3, 4});
   pairs.add_range({{0, 1}, {1, 2}});
-  pairs.build();
+  // value() must build before indexing the sorted, deduplicated values.
+  assert((std::as_const(pairs).value(3) == std::pair{3, 4}));
   assert(pairs.size() == 4 && pairs.index({2, 3}) == 2);
   assert((pairs.value(0) == std::pair{0, 1}));
-  assert((pairs.value(3) == std::pair{3, 4}));
 }
 
 void check_conversions_and_moves() {
   const std::vector<int> values{3, 1, 3};
   Compression<MoveOnlyValue> copied(values);
   copied.add_range(values);
-  copied.build();
   assert(copied.size() == 2);
   assert(*copied.value(0).value == 1 && *copied.value(1).value == 3);
-  Compression<MoveOnlyValue> converted(std::vector<int>{3, 1, 3});
-  converted.build();
+  const Compression<MoveOnlyValue> converted(std::vector<int>{3, 1, 3});
   assert(converted.size() == 2 && *converted.value(1).value == 3);
 
   std::vector<MoveOnlyValue> source;
@@ -107,7 +103,6 @@ void check_conversions_and_moves() {
   static_assert(std::ranges::input_range<decltype(stream)>);
   static_assert(!std::ranges::sized_range<decltype(stream)>);
   moved.add_range(stream);
-  moved.build();
   const std::array expected{-1, 1, 2, 3, 4, 5};
   assert(moved.size() == static_cast<int>(expected.size()));
   for (int i = 0; i < moved.size(); ++i) {
@@ -118,8 +113,6 @@ void check_conversions_and_moves() {
   const std::vector<bool> bits{true, false, true};
   Compression<int> copied_bits(bits);
   Compression<int> moved_bits(std::vector<bool>{true, false, true});
-  copied_bits.build();
-  moved_bits.build();
   assert(copied_bits.size() == 2 && moved_bits.size() == 2);
   assert(copied_bits.value(0) == 0 && copied_bits.value(1) == 1);
   assert(moved_bits.value(0) == 0 && moved_bits.value(1) == 1);
@@ -134,7 +127,6 @@ void check_repeated_ranges() {
   }
   // Singleton ranges must not relocate all previously stored values each time.
   assert(MoveOnlyValue::transfers < 8 * n);
-  c.build();
   assert(c.size() == n);
   assert(*c.value(0).value == 0 && *c.value(n - 1).value == n - 1);
 }

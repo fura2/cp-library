@@ -47,30 +47,29 @@ class Compression {
     }
   }
 
-  void build() {
-    assert(!built);
-    std::ranges::sort(a);
-    a.erase(std::ranges::unique(a).begin(), a.end());
-    built = true;
-  }
-
   int size() const {
-    assert(built);
+    if (!built) build();
     return a.size();
   }
 
   const T& value(int i) const {
-    assert(built);
+    if (!built) build();
     assert(0 <= i && i < size());
     return a[i];
   }
 
   int index(const T& v) const {
-    assert(built);
+    if (!built) build();
     return std::ranges::lower_bound(a, v) - a.begin();
   }
 
  private:
-  std::vector<T> a;
-  bool built;
+  mutable std::vector<T> a;
+  mutable bool built;
+
+  void build() const {
+    std::ranges::sort(a);
+    a.erase(std::ranges::unique(a).begin(), a.end());
+    built = true;
+  }
 };
