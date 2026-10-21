@@ -61,6 +61,15 @@ class Grid {
     return nbd;
   };
 
+  std::pair<int, int> find(char c) const {
+    for (int i = 0; i < h; ++i) {
+      for (int j = 0; j < w; ++j) {
+        if (data[i][j] == c) return {i, j};
+      }
+    }
+    return {-1, -1};
+  }
+
   int count(char c) const {
     int res = 0;
     for (int i = 0; i < h; ++i)

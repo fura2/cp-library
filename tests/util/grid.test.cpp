@@ -19,7 +19,9 @@ int main() {
   Grid empty;
   assert(empty.height() == 0 && empty.width() == 0);
   assert(!empty.contains(0, 0) && empty.count('.') == 0);
+  assert((empty.find('.') == std::pair{-1, -1}));
   const Grid single{1, 1};
+  assert((single.find('.') == std::pair{0, 0}));
   assert(cells(single.neighbors4(0, 0)).empty());
   assert(cells(single.neighbors8(0, 0)).empty());
   Grid g{3, 3};
@@ -37,10 +39,20 @@ int main() {
   assert(g.count('#') == 1 && g.count('.') == 8);
   TestIO io{"abc def ab cd #"};
   const auto rectangle = input<Grid>(2, 3);
+  assert((rectangle.find('f') == std::pair{1, 2}));
+  assert((rectangle.find('#') == std::pair{-1, -1}));
+
+  // find() returns the first match in row-major order.
+  Grid repeated{2, 3};
+  repeated[0] = ".##";
+  repeated[1] = "#..";
+  assert((repeated.find('#') == std::pair{0, 1}));
+
   auto transposed = rectangle.transpose();
   assert(transposed.height() == 3 && transposed.width() == 2);
   assert(transposed[0] == "ad" && transposed[1] == "be" &&
          transposed[2] == "cf");
+  assert((transposed.find('f') == std::pair{2, 1}));
   assert(pretty(transposed) == "\nad\nbe\ncf");
   output(transposed);
   assert(io.out.str() == "ad\nbe\ncf\n");
@@ -61,6 +73,9 @@ int main() {
   for (auto [h, w]: {std::pair{0, 0}, {0, 3}, {2, 0}, {1, 1}, {1, 3}, {3, 1}}) {
     Grid border{h, w};
     for (int i = 0; i < h; ++i) border[i] = std::string(w, '#');
+    if (h == 0 || w == 0) {
+      assert((border.find('#') == std::pair{-1, -1}));
+    }
     const auto t = border.transpose();
     const auto r = border.rotate();
     assert(t.height() == w && t.width() == h && t.count('#') == h * w);
