@@ -20,7 +20,7 @@ class FoldableQueue {
   explicit FoldableQueue(const std::vector<T>& a)
       : cum_front{M::identity()}, cum_back{M::identity()} {
     stk_back.reserve(a.size());
-    for (const T& x: a) {
+    for (const auto& x: a) {
       const M& y = stk_back.emplace_back(x);
       cum_back = cum_back * y;
     }
@@ -31,7 +31,7 @@ class FoldableQueue {
   explicit FoldableQueue(std::vector<T>&& a)
       : cum_front{M::identity()}, cum_back{M::identity()} {
     stk_back.reserve(a.size());
-    for (T& x: a) {
+    for (auto&& x: a) {
       const M& y = stk_back.emplace_back(std::move(x));
       cum_back = cum_back * y;
     }
@@ -66,9 +66,6 @@ class FoldableQueue {
     requires std::ranges::input_range<R> &&
              std::constructible_from<M, std::ranges::range_reference_t<R>>
   void push_range(R&& rg) {
-    if constexpr (std::ranges::sized_range<R>) {
-      stk_back.reserve(stk_back.size() + std::ranges::size(rg));
-    }
     for (auto&& x: std::forward<R>(rg)) {
       push(std::forward<decltype(x)>(x));
     }

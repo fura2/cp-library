@@ -14,3 +14,16 @@
 ## 2026.7.4
 
 Monoid コンセプトの仕様変更に合わせて大幅に書き直した。
+
+## 2026.10.22
+
+`push_range` の処理の冒頭で、追加で必要なだけのメモリを reserve していた
+
+```cpp
+if constexpr (std::ranges::sized_range<R>) {
+  stk_back.reserve(stk_back.size() + std::ranges::size(rg));
+}
+```
+
+が、これだと空でない range に対して `push_range` を呼ぶたびにメモリの再確保が発生してしまうことが分かった。特に、サイズ 1 の range を $N$ 回 `push_range` したときに $\Theta(N^2)$ 回のデータの移動が起きてしまって良くない。
+手動での reserve をやらないことにして対応した。典型的な使い方をした場合のパフォーマンスを少し犠牲にしてしまうが仕方ない。

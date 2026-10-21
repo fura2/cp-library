@@ -1,8 +1,13 @@
 #include "data_structure/foldable_queue.hpp"
 
+#include <array>
 #include <cassert>
+#include <concepts>
+#include <memory>
+#include <ranges>
 #include <sstream>
 #include <string>
+#include <utility>
 #include <vector>
 
 #include "algebra/collection/add_group.hpp"
@@ -13,6 +18,76 @@ using Concat =
     MonoidImpl<std::string,
                [](const std::string& a, const std::string& b) { return a + b; },
                []() { return std::string{}; }>;
+
+struct CountingSum {
+  static inline int transfers = 0;
+  int value;
+
+  explicit CountingSum(int x): value{x} {}
+  explicit CountingSum(std::unique_ptr<int>&& x): value{*x} { x.reset(); }
+  CountingSum(const CountingSum& other): value{other.value} { ++transfers; }
+  CountingSum(CountingSum&& other) noexcept: value{other.value} { ++transfers; }
+  CountingSum& operator=(const CountingSum&) = default;
+  CountingSum& operator=(CountingSum&&) = default;
+
+  static CountingSum identity() { return CountingSum{0}; }
+  friend CountingSum operator*(const CountingSum& a, const CountingSum& b) {
+    return CountingSum{a.value + b.value};
+  }
+};
+
+static_assert(Monoid<CountingSum>);
+static_assert(std::constructible_from<CountingSum, const int&>);
+static_assert(!std::convertible_to<int, CountingSum>);
+static_assert(std::constructible_from<FoldableQueue<CountingSum>,
+                                      std::vector<std::unique_ptr<int>>&&>);
+static_assert(
+    !std::constructible_from<FoldableQueue<CountingSum>,
+                             const std::vector<std::unique_ptr<int>>&>);
+
+void check_generic_inputs() {
+  const std::vector<int> values{2, 3};
+  FoldableQueue<CountingSum> copied(values);
+  FoldableQueue<CountingSum> converted(std::vector<int>{2, 3});
+  assert(copied.fold().value == 5 && converted.fold().value == 5);
+
+  const std::vector<bool> bits{true, false, true};
+  const FoldableQueue<CountingSum> copied_bits(bits);
+  const FoldableQueue<CountingSum> moved_bits(
+      std::vector<bool>{true, false, true});
+  assert(copied_bits.fold().value == 2 && moved_bits.fold().value == 2);
+  assert(copied_bits[1].value == 0 && moved_bits[1].value == 0);
+
+  std::vector<std::unique_ptr<int>> source;
+  source.push_back(std::make_unique<int>(2));
+  source.push_back(std::make_unique<int>(5));
+  FoldableQueue<CountingSum> moved(std::move(source));
+  for (const auto& x: source) assert(!x);
+  auto token = std::make_unique<int>(11);
+  moved.push(std::move(token));
+  assert(!token);
+  std::vector<std::unique_ptr<int>> more;
+  more.push_back(std::make_unique<int>(3));
+  more.push_back(std::make_unique<int>(4));
+  moved.push_range(more | std::views::as_rvalue);
+  for (const auto& x: more) assert(!x);
+  assert(moved.size() == 5 && moved.fold().value == 25);
+  moved.pop();
+  assert(moved.front().value == 5 && moved.fold().value == 23);
+}
+
+void check_repeated_ranges() {
+  constexpr int n = 1024;
+  FoldableQueue<CountingSum> q;
+  CountingSum::transfers = 0;
+  for (int i = 0; i < n; ++i) {
+    q.push_range(std::array<int, 1>{i});
+  }
+  // Singleton ranges must not relocate the entire existing back stack each
+  // time.
+  assert(CountingSum::transfers < 8 * n);
+  assert(q.size() == n && q.fold().value == n * (n - 1) / 2);
+}
 
 int main() {
   FoldableQueue<Concat> q;
@@ -80,4 +155,7 @@ int main() {
   pairs.push(tail);
   assert(pairs.fold().first.unwrap() == "cde");
   assert(pairs.fold().second.unwrap() == 12);
+
+  check_generic_inputs();
+  check_repeated_ranges();
 }
