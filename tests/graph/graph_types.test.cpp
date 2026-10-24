@@ -24,6 +24,13 @@ static_assert(IncidenceGraph<WeightedGraph<long long>>);
 static_assert(IncidenceGraph<WeightedDigraph<long long>>);
 static_assert(!IncidenceGraph<int>);
 
+static_assert(Weighted<WeightedGraph<int>>);
+static_assert(Weighted<WeightedDigraph<long long>>);
+static_assert(!Weighted<Graph>);
+static_assert(!Weighted<Digraph>);
+static_assert(!Weighted<WeightedGraph<void*>>);
+static_assert(!Weighted<int>);
+
 template <typename EdgeT>
 struct GraphWithEdge {
   using edge_type = EdgeT;

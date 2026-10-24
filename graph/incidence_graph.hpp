@@ -24,3 +24,8 @@ template <typename GraphT>
 concept Undirected = !GraphT::directed;
 template <typename GraphT>
 concept Directed = GraphT::directed;
+
+template <typename GraphT>
+concept Weighted = requires(const GraphT::edge_type& e) {
+  { e.cost } -> std::convertible_to<int>;
+};
