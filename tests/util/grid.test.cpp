@@ -20,8 +20,10 @@ int main() {
   assert(empty.height() == 0 && empty.width() == 0);
   assert(!empty.contains(0, 0) && empty.count('.') == 0);
   assert((empty.find('.') == std::pair{-1, -1}));
+  assert(empty.find_all('.').empty());
   const Grid single{1, 1};
   assert((single.find('.') == std::pair{0, 0}));
+  assert((single.find_all('.') == std::vector<std::pair<int, int>>{{0, 0}}));
   assert(cells(single.neighbors4(0, 0)).empty());
   assert(cells(single.neighbors8(0, 0)).empty());
   Grid g{3, 3};
@@ -41,12 +43,16 @@ int main() {
   const auto rectangle = input<Grid>(2, 3);
   assert((rectangle.find('f') == std::pair{1, 2}));
   assert((rectangle.find('#') == std::pair{-1, -1}));
+  assert((rectangle.find_all('f') == std::vector<std::pair<int, int>>{{1, 2}}));
+  assert(rectangle.find_all('#').empty());
 
-  // find() returns the first match in row-major order.
+  // find() returns the first match; find_all() returns all in row-major order.
   Grid repeated{2, 3};
   repeated[0] = ".##";
   repeated[1] = "#..";
   assert((repeated.find('#') == std::pair{0, 1}));
+  assert((repeated.find_all('#') ==
+          std::vector<std::pair<int, int>>{{0, 1}, {0, 2}, {1, 0}}));
 
   auto transposed = rectangle.transpose();
   assert(transposed.height() == 3 && transposed.width() == 2);
@@ -75,6 +81,7 @@ int main() {
     for (int i = 0; i < h; ++i) border[i] = std::string(w, '#');
     if (h == 0 || w == 0) {
       assert((border.find('#') == std::pair{-1, -1}));
+      assert(border.find_all('#').empty());
     }
     const auto t = border.transpose();
     const auto r = border.rotate();
