@@ -45,6 +45,8 @@ static_assert(!Semigroup<std::string> && !Group<int>);
 static_assert(Monoid<MinMonoid<int>> && IdempotentSemigroup<MinMonoid<int>>);
 static_assert(!Group<MinMonoid<int>>);
 static_assert(Group<AddGroup<int>> && CommutativeMonoid<AddGroup<int>>);
+static_assert(CommutativeGroup<AddGroup<int>>);
+static_assert(!CommutativeGroup<MinMonoid<int>> && !CommutativeGroup<int>);
 static_assert(Semiring<MinPlusSemiring<int>> && !Ring<MinPlusSemiring<int>>);
 static_assert(Ring<AddMulRing<int>> && Semiring<AddMulRing<int>>);
 static_assert(!Semiring<int> && !Ring<int>);
