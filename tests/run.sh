@@ -73,7 +73,18 @@ while IFS= read -r source; do
   fi
   [[ $selected == 1 ]] || continue
 
-  run_case "$source" ''
+  case "$source" in
+    tests/algebra/collection/max_add_monoid_action.test.cpp)
+      # GCC 15.2.0 at -O2 falsely warns about x[2] in
+      # LazySegmentTree<MaxAddMonoidAction<int>>{1}.fold(0, 1).
+      # r goes from 2 to 1, so the branch reading x[--r] is never reached.
+      # Keep the warning visible; remove this exception once GCC is fixed.
+      run_case "$source" '' -Wno-error=array-bounds
+      ;;
+    *)
+      run_case "$source" ''
+      ;;
+  esac
   case "$source" in
     tests/template/template.test.cpp | tests/template/io.test.cpp)
       run_case "$source" local -DLOCAL
