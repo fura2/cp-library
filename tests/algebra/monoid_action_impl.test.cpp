@@ -73,6 +73,7 @@ void check_string_assignment() {
 
 int main() {
   check_action<ScaleSum>();
-  check_action<GenericScaleSum>();
+  // Generic lambdas need one instantiation check, not another set of laws.
+  assert(GenericScaleSum::act(M{3}, F{2}).unwrap() == 6);
   check_string_assignment();
 }

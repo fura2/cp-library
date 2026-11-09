@@ -92,28 +92,19 @@ int main() {
     assert(multichoose<mint>(3, 0, type).unwrap() == 1);
   }
 
-  std::vector<int> no_parts;
-  std::vector<int> zeros{0, 0, 0};
-  std::vector<int> single{20};
-  std::vector<int> two_parts{4, 3};
   const std::vector<int> parts{2, 1, 3};
-  std::vector<int> reordered{3, 2, 1};
-  std::vector<int> with_zeros{0, 2, 0, 1, 3, 0};
-  std::vector<int> repeated{3, 3, 3};
-  assert(multinomial<mint>(no_parts).unwrap() == 1);
-  assert(multinomial<mint>(zeros).unwrap() == 1);
-  assert(multinomial<mint>(single).unwrap() == 1);
-  assert(multinomial<mint>(two_parts).unwrap() == 35);
+  assert(multinomial<mint>({}).unwrap() == 1);
+  assert(multinomial<mint>({0, 0, 0}).unwrap() == 1);
+  assert(multinomial<mint>({20}).unwrap() == 1);
+  assert(multinomial<mint>({4, 3}).unwrap() == 35);
   assert(multinomial<mint>(parts).unwrap() == 60);
-  assert(multinomial<mint>({2, 1, 3}).unwrap() == 60);
-  assert(multinomial<mint>(reordered).unwrap() == 60);
-  assert(multinomial<mint>(with_zeros).unwrap() == 60);
-  assert(multinomial<mint>(repeated).unwrap() == 1680);
+  assert(multinomial<mint>({3, 2, 1}).unwrap() == 60);
+  assert(multinomial<mint>({0, 2, 0, 1, 3, 0}).unwrap() == 60);
+  assert(multinomial<mint>({3, 3, 3}).unwrap() == 1680);
 
-  std::vector<int> ones(20, 1);
-  assert(multinomial<mint>(ones).unwrap() == 2432902008176640000LL % mod);
-  std::vector<int> large_parts{20, 20, 20};
-  assert(multinomial<mint>(large_parts).unwrap() == 526190592);
+  assert(multinomial<mint>(std::vector<int>(20, 1)).unwrap() ==
+         2432902008176640000LL % mod);
+  assert(multinomial<mint>({20, 20, 20}).unwrap() == 526190592);
 
   // All caches must be independent for each modulus.
   using Mod7 = ModInt<7>;

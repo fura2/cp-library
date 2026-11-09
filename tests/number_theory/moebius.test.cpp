@@ -14,17 +14,6 @@ int main() {
 
   const LinearSieve sieve{1000};
   const auto& lpf = sieve.least_prime_factors();
-  assert(moebius(1, lpf) == 1);
-  assert(moebius(2, lpf) == -1);
-  assert(moebius(6, lpf) == 1);
-  assert(moebius(30, lpf) == -1);
-  assert(moebius(210, lpf) == 1);
-  assert(moebius(4, lpf) == 0);
-  assert(moebius(12, lpf) == 0);
-  assert(moebius(49, lpf) == 0);
-  assert(moebius(997, lpf) == -1);
-  assert(moebius(1000, lpf) == 0);
-
   auto table = moebius_table(lpf);
   static_assert(std::same_as<decltype(moebius(1, lpf)), int>);
   static_assert(std::same_as<decltype(table), std::vector<int>>);

@@ -7,7 +7,7 @@
 #include "algebra/monoid.hpp"
 
 template <typename T>
-std::vector<T> subset_zeta_transform(std::vector<T> f) {
+void subset_zeta_transform_inplace(std::vector<T>& f) {
   assert(std::has_single_bit(f.size()));
   int n = std::bit_width(f.size()) - 1;
 
@@ -18,11 +18,10 @@ std::vector<T> subset_zeta_transform(std::vector<T> f) {
       }
     }
   }
-  return f;
 }
 
 template <CommutativeMonoid M>
-std::vector<M> subset_zeta_transform(std::vector<M> f) {
+void subset_zeta_transform_inplace(std::vector<M>& f) {
   assert(std::has_single_bit(f.size()));
   int n = std::bit_width(f.size()) - 1;
 
@@ -33,11 +32,16 @@ std::vector<M> subset_zeta_transform(std::vector<M> f) {
       }
     }
   }
+}
+
+template <typename T>
+std::vector<T> subset_zeta_transform(std::vector<T> f) {
+  subset_zeta_transform_inplace(f);
   return f;
 }
 
 template <typename T>
-std::vector<T> superset_zeta_transform(std::vector<T> f) {
+void superset_zeta_transform_inplace(std::vector<T>& f) {
   assert(std::has_single_bit(f.size()));
   int n = std::bit_width(f.size()) - 1;
 
@@ -48,11 +52,10 @@ std::vector<T> superset_zeta_transform(std::vector<T> f) {
       }
     }
   }
-  return f;
 }
 
 template <CommutativeMonoid M>
-std::vector<M> superset_zeta_transform(std::vector<M> f) {
+void superset_zeta_transform_inplace(std::vector<M>& f) {
   assert(std::has_single_bit(f.size()));
   int n = std::bit_width(f.size()) - 1;
 
@@ -63,5 +66,10 @@ std::vector<M> superset_zeta_transform(std::vector<M> f) {
       }
     }
   }
+}
+
+template <typename T>
+std::vector<T> superset_zeta_transform(std::vector<T> f) {
+  superset_zeta_transform_inplace(f);
   return f;
 }

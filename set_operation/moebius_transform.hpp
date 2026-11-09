@@ -7,7 +7,7 @@
 #include "algebra/group.hpp"
 
 template <typename T>
-std::vector<T> subset_moebius_transform(std::vector<T> f) {
+void subset_moebius_transform_inplace(std::vector<T>& f) {
   assert(std::has_single_bit(f.size()));
   int n = std::bit_width(f.size()) - 1;
 
@@ -18,11 +18,10 @@ std::vector<T> subset_moebius_transform(std::vector<T> f) {
       }
     }
   }
-  return f;
 }
 
 template <CommutativeGroup G>
-std::vector<G> subset_moebius_transform(std::vector<G> f) {
+void subset_moebius_transform_inplace(std::vector<G>& f) {
   assert(std::has_single_bit(f.size()));
   int n = std::bit_width(f.size()) - 1;
 
@@ -33,11 +32,16 @@ std::vector<G> subset_moebius_transform(std::vector<G> f) {
       }
     }
   }
+}
+
+template <typename T>
+std::vector<T> subset_moebius_transform(std::vector<T> f) {
+  subset_moebius_transform_inplace(f);
   return f;
 }
 
 template <typename T>
-std::vector<T> superset_moebius_transform(std::vector<T> f) {
+void superset_moebius_transform_inplace(std::vector<T>& f) {
   assert(std::has_single_bit(f.size()));
   int n = std::bit_width(f.size()) - 1;
 
@@ -48,11 +52,10 @@ std::vector<T> superset_moebius_transform(std::vector<T> f) {
       }
     }
   }
-  return f;
 }
 
 template <CommutativeGroup G>
-std::vector<G> superset_moebius_transform(std::vector<G> f) {
+void superset_moebius_transform_inplace(std::vector<G>& f) {
   assert(std::has_single_bit(f.size()));
   int n = std::bit_width(f.size()) - 1;
 
@@ -63,5 +66,10 @@ std::vector<G> superset_moebius_transform(std::vector<G> f) {
       }
     }
   }
+}
+
+template <typename T>
+std::vector<T> superset_moebius_transform(std::vector<T> f) {
+  superset_moebius_transform_inplace(f);
   return f;
 }

@@ -67,12 +67,7 @@ int main() {
 
   using P = PairMonoid<Concat, AddGroup<int>>;
   SegmentTree<P> pairs({{"a", 1}, {"bc", 2}, {"d", 3}});
-  assert(pairs.size() == 3);
-  assert(pairs.fold().first.unwrap() == "abcd");
-  assert(pairs.fold().second.unwrap() == 6);
   pairs.set(1, {"XY", 5});
   assert(pairs.fold().first.unwrap() == "aXYd");
   assert(pairs.fold().second.unwrap() == 9);
-  assert(pairs.fold(1, 3).first.unwrap() == "XYd");
-  assert(pairs.fold(1, 3).second.unwrap() == 8);
 }

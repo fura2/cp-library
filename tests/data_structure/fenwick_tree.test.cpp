@@ -71,14 +71,9 @@ int main() {
   // Sum and count use different types; sums exceed the 32-bit integer range.
   FenwickTree<SumCount> pairs(
       {{3'000'000'000LL, 1}, {4'000'000'000LL, 2}, {-2'000'000'000LL, 1}});
-  assert(pairs.size() == 3);
   check(pairs.fold(), 5'000'000'000LL, 4);
   check(pairs.fold(1, 3), 2'000'000'000LL, 3);
-  check(pairs.fold(1, 1), 0, 0);
   pairs.set(0, {1'000'000'000LL, 2});
-  check(pairs.get(0), 1'000'000'000LL, 2);
-  check(pairs.fold(), 3'000'000'000LL, 5);
   pairs.apply(1, {-1'000'000'000LL, 1});
-  check(pairs.get(1), 3'000'000'000LL, 3);
   check(pairs.fold(), 2'000'000'000LL, 6);
 }

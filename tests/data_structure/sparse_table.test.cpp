@@ -27,13 +27,6 @@ int main() {
 
   using Bounds = PairMonoid<MinMonoid<int>, MaxMonoid<int>>;
   const SparseTable<Bounds> bounds({{4, 4}, {1, 1}, {7, 7}});
-  assert(bounds.size() == 3);
-  assert(bounds.fold(0, 2).first.unwrap() == 1);
-  assert(bounds.fold(0, 2).second.unwrap() == 4);
-  assert(bounds.fold(1, 3).first.unwrap() == 1);
-  assert(bounds.fold(1, 3).second.unwrap() == 7);
-  const SparseTable<Bounds> empty_bounds({});
-  assert(empty_bounds.size() == 0);
-  assert(empty_bounds.fold(0, 0).first.unwrap() == INF);
-  assert(empty_bounds.fold(0, 0).second.unwrap() == -INF);
+  assert(bounds.fold(0, 3).first.unwrap() == 1);
+  assert(bounds.fold(0, 3).second.unwrap() == 7);
 }

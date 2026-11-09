@@ -115,37 +115,23 @@ int main() {
 
   const std::vector<std::string> values = {"ab", "c"};
   FoldableQueue<Concat> copied{values};
-  FoldableQueue<Concat> moved{std::vector<std::string>{"ab", "c"}};
-  assert(copied.fold().unwrap() == "abc" && moved.fold().unwrap() == "abc");
+  assert(copied.fold().unwrap() == "abc");
   copied.pop();
   assert(copied.back().unwrap() == "c");
   std::istringstream in{"x y"};
   copied.push_range(std::ranges::istream_view<std::string>(in));
   assert(copied.fold().unwrap() == "cxy");
 
+  // Keep one compound-monoid workflow; constructor value categories and empty
+  // folds are exercised above. Braced arguments use the default template type.
   using P = PairMonoid<Concat, AddGroup<int>>;
-  const std::vector<P> pair_values{{"ab", 2}, {"c", 3}};
-  FoldableQueue<P> copied_pairs({pair_values});
-  FoldableQueue<P> moved_pairs({{"ab", 2}, {"c", 3}});
-  assert(copied_pairs.size() == 2 && moved_pairs.size() == 2);
-  assert(copied_pairs.fold().first.unwrap() == "abc");
-  assert(copied_pairs.fold().second.unwrap() == 5);
-  assert(moved_pairs.fold().first.unwrap() == "abc");
-  assert(moved_pairs.fold().second.unwrap() == 5);
-  copied_pairs.pop();
-  moved_pairs.pop();
-  assert(copied_pairs.front().first.unwrap() == "c");
-  assert(copied_pairs.fold().second.unwrap() == 3);
-  assert(moved_pairs.front().first.unwrap() == "c");
-  assert(moved_pairs.fold().second.unwrap() == 3);
   const FoldableQueue<P> empty_pairs({});
-  assert(empty_pairs.empty());
-  assert(empty_pairs.fold().first.unwrap().empty());
-  assert(empty_pairs.fold().second.unwrap() == 0);
+  assert(empty_pairs.empty() && empty_pairs.fold().first.unwrap().empty() &&
+         empty_pairs.fold().second.unwrap() == 0);
 
-  FoldableQueue<P> pairs;
-  pairs.push({"ab", 2});
-  pairs.push_range({{"c", 3}, {"d", 4}});
+  FoldableQueue<P> pairs({{"ab", 2}});
+  pairs.push({"c", 3});
+  pairs.push_range({{"d", 4}});
   pairs.push_range({});
   assert(pairs.size() == 3);
   assert(pairs.fold().first.unwrap() == "abcd");

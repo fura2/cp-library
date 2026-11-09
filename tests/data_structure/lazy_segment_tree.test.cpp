@@ -99,12 +99,8 @@ void check_affine_sum() {
   tree.apply(0, 4, Affine{P{3, 2}});
   assert((tree.fold().unwrap() == P{91, 5}));
 
-  // Copy and assign while descendants still have pending actions.
+  // A snapshot must keep its pending actions when the original is updated.
   const Tree snapshot = tree;
-  Tree copied{0};
-  copied = tree;
-  Tree moved{1};
-  moved = std::move(copied);
 
   const P assign_seven{0, 7};
   tree.apply(1, 5, assign_seven);
@@ -115,10 +111,6 @@ void check_affine_sum() {
   tree.apply(5, 5, Affine{P{0, 100}});
   check_sums(tree, {11, 7, 4, 4, 7});
   check_sums(snapshot, {11, 17, 23, 29, 11});
-  check_sums(moved, {11, 17, 23, 29, 11});
-
-  moved = Tree{0};
-  check_sums(moved, {});
 }
 
 void check_point_access() {

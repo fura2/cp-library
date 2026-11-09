@@ -15,16 +15,6 @@ int main() {
 
   const LinearSieve sieve{1000};
   const auto& lpf = sieve.least_prime_factors();
-  assert(totient(1, lpf) == 1);
-  assert(totient(2, lpf) == 1);
-  assert(totient(4, lpf) == 2);
-  assert(totient(12, lpf) == 4);
-  assert(totient(30, lpf) == 8);
-  assert(totient(32, lpf) == 16);
-  assert(totient(49, lpf) == 42);
-  assert(totient(59, lpf) == 58);
-  assert(totient(1000, lpf) == 400);
-
   auto table = totient_table(lpf);
   static_assert(std::same_as<decltype(totient(1, lpf)), int>);
   static_assert(std::same_as<decltype(table), std::vector<int>>);

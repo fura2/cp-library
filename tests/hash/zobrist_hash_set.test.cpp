@@ -7,9 +7,8 @@ struct FixedHash {
   std::size_t operator()(long long x) const { return Splitmix64::hash(x); }
 };
 
-template <typename Hash>
-void check() {
-  ZobristHashSet<long long, Hash> a, b;
+int main() {
+  ZobristHashSet<long long> a, b;
   assert(a.size() == 0 && a.hash() == 0 && !a.contains(1));
   assert(!a.erase(1));
   assert(a.insert(1));
@@ -24,11 +23,8 @@ void check() {
   assert(a.hash() == one);
   assert(a.erase(1) && a.hash() == 0 && a.size() == 0);
   assert(a.insert(1) && a.hash() == one);
-}
 
-int main() {
-  check<Splitmix64>();
-  check<FixedHash>();
+  // A custom hash must also be used for the accumulated XOR.
   ZobristHashSet<long long, FixedHash> s;
   s.insert(5);
   s.insert(9);

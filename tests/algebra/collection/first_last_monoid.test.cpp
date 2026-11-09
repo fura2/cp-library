@@ -8,7 +8,6 @@
 #include <optional>
 #include <string>
 #include <utility>
-#include <vector>
 
 #include "algebra/collection/first_monoid.hpp"
 #include "algebra/collection/last_monoid.hpp"
@@ -22,14 +21,13 @@ struct NonDefault {
 };
 
 template <Monoid M>
-void check_identity(const std::vector<M>& values) {
+void check_identity(const M& x) {
   const M e = M::identity();
   assert(!M{}.unwrap() && !e.unwrap());
-  for (const M& x: values) {
-    assert((e * x).unwrap() == x.unwrap());
-    assert((x * e).unwrap() == x.unwrap());
-    assert((x * x).unwrap() == x.unwrap());
-  }
+  assert(!(e * e).unwrap());
+  assert((e * x).unwrap() == x.unwrap());
+  assert((x * e).unwrap() == x.unwrap());
+  assert((x * x).unwrap() == x.unwrap());
 }
 
 template <typename T>
@@ -56,8 +54,8 @@ void check_values(const T& a, const T& b) {
   assert((fa * fb).unwrap() == a && (fb * fa).unwrap() == b);
   assert((la * lb).unwrap() == b && (lb * la).unwrap() == a);
   assert(!F{std::nullopt}.unwrap() && !L{std::nullopt}.unwrap());
-  check_identity(std::vector<F>{F::identity(), fa, fb});
-  check_identity(std::vector<L>{L::identity(), la, lb});
+  check_identity(fa);
+  check_identity(la);
 
   const std::optional<T> source{a};
   F first{source};

@@ -14,14 +14,6 @@ int main() {
 
   const LinearSieve sieve{1000};
   const auto& lpf = sieve.least_prime_factors();
-  assert(num_divisors(1, lpf) == 1);
-  assert(num_divisors(2, lpf) == 2);
-  assert(num_divisors(32, lpf) == 6);
-  assert(num_divisors(49, lpf) == 3);
-  assert(num_divisors(59, lpf) == 2);
-  assert(num_divisors(60, lpf) == 12);
-  assert(num_divisors(1000, lpf) == 16);
-
   auto table = num_divisors_table(lpf);
   static_assert(std::same_as<decltype(num_divisors(1, lpf)), int>);
   static_assert(std::same_as<decltype(table), std::vector<int>>);

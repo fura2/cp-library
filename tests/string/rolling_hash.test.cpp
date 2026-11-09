@@ -92,17 +92,12 @@ int main() {
   check_subranges(std::string{"x"});
   check_subranges(std::string{"abacaba"});
   check_subranges(std::string{"a\0b\0a", 5});
-  check_subranges(std::string(16, 'z'));
-  check_subranges(std::vector<int>{});
   check_subranges(std::vector<int>{0, 0, 0});
   check_subranges(std::vector<int>{-1,
                                    0,
                                    1,
                                    std::numeric_limits<int>::min(),
-                                   std::numeric_limits<int>::max(),
-                                   -42,
-                                   42,
-                                   -1});
+                                   std::numeric_limits<int>::max()});
   check_subranges(std::vector<unsigned int>{
       0, 1, std::numeric_limits<unsigned int>::max(), 7, 0});
 

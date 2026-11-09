@@ -7,14 +7,13 @@
 #include <concepts>
 #include <string>
 #include <utility>
-#include <vector>
 
 #include "algebra/collection/left_zero_semigroup.hpp"
 #include "algebra/collection/right_zero_semigroup.hpp"
 #include "algebra/monoid.hpp"
 
 template <typename T>
-void check(const std::vector<T>& values) {
+void check(const T& first, const T& last) {
   // Keep aliases dependent on T to catch the GCC 15.2 lambda NTTP issue.
   using L = LeftZeroSemigroup<T>;
   using R = RightZeroSemigroup<T>;
@@ -30,32 +29,24 @@ void check(const std::vector<T>& values) {
   static_assert(
       std::same_as<decltype(std::declval<const R&>().unwrap()), const T&>);
 
-  std::vector<L> left;
-  std::vector<R> right;
-  for (const T& x: values) {
-    left.emplace_back(x);
-    right.emplace_back(x);
-  }
-  for (int i = 0; i < int(values.size()); ++i) {
-    for (int j = 0; j < int(values.size()); ++j) {
-      assert((left[i] * left[j]).unwrap() == values[i]);
-      assert((right[i] * right[j]).unwrap() == values[j]);
-    }
-  }
+  const L la{first}, lb{last};
+  const R ra{first}, rb{last};
+  assert((la * lb).unwrap() == first && (lb * la).unwrap() == last);
+  assert((ra * rb).unwrap() == last && (rb * ra).unwrap() == first);
+  assert((la * la).unwrap() == first && (ra * ra).unwrap() == first);
 
-  L a{left.front()};
-  R b{right.front()};
-  a.unwrap() = values.back();
-  b.unwrap() = values.back();
-  assert(std::as_const(a).unwrap() == values.back());
-  assert(std::as_const(b).unwrap() == values.back());
-  assert(left.front().unwrap() == values.front());
-  assert(right.front().unwrap() == values.front());
+  L a{la};
+  R b{ra};
+  a.unwrap() = last;
+  b.unwrap() = last;
+  assert(std::as_const(a).unwrap() == last);
+  assert(std::as_const(b).unwrap() == last);
+  assert(la.unwrap() == first && ra.unwrap() == first);
 }
 
 int main() {
-  check<int>({-4, 0, 7});
-  check<std::string>({"", "a", "a string long enough to require allocation"});
+  check<int>(-4, 7);
+  check<std::string>("", "a string long enough to require allocation");
   assert(pretty(LeftZeroSemigroup<int>{3}) == "3");
   assert(pretty(RightZeroSemigroup<std::string>{std::string{"ab"}}) ==
          "\"ab\"");

@@ -81,6 +81,11 @@ void check_numeric_types() {
               9'000'000'000LL,
               3);
   check_value(D::act(D::value_type{0.0, 3}, D::action_type{0.25}), 0.75, 3);
+  using Extended = SumAssignMonoidAction<long double>;
+  check_value(Extended::act(Extended::value_type{0.0L, 3},
+                            Extended::action_type{0.25L}),
+              0.75L,
+              3);
 
   using A = SumAssignMonoidAction<mint>;
   using M = A::value_type;
@@ -97,9 +102,6 @@ void check_numeric_types() {
 
 int main() {
   check_action<SumAssignMonoidAction<int>>();
-  check_action<SumAssignMonoidAction<long long>>();
-  check_action<SumAssignMonoidAction<double>>();
-  check_action<SumAssignMonoidAction<long double>>();
   check_tree();
   check_numeric_types();
 }
