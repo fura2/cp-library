@@ -21,16 +21,8 @@ class AdditiveMonoidOfSemiring {
     return AdditiveMonoidOfSemiring{S::zero()};
   }
 
-  decltype(auto) unwrap() const
-    requires requires(const S& s) { s.unwrap(); }
-  {
-    return s.unwrap();
-  }
-  decltype(auto) unwrap()
-    requires requires(S& s) { s.unwrap(); }
-  {
-    return s.unwrap();
-  }
+  const S& unwrap() const { return s; }
+  S& unwrap() { return s; }
 
   friend std::string pretty(const AdditiveMonoidOfSemiring& m)
     requires requires(const S& s) {

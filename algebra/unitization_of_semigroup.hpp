@@ -23,17 +23,13 @@ class UnitizationOfSemigroup {
   }
   static UnitizationOfSemigroup identity() { return UnitizationOfSemigroup{}; }
 
-  decltype(auto) unwrap() const
-    requires requires(const S& s) { s.unwrap(); }
-  {
+  const S& unwrap() const {
     assert(s.has_value());
-    return s.value().unwrap();
+    return s.value();
   }
-  decltype(auto) unwrap()
-    requires requires(S& s) { s.unwrap(); }
-  {
+  S& unwrap() {
     assert(s.has_value());
-    return s.value().unwrap();
+    return s.value();
   }
 
   bool is_identity() const { return !s.has_value(); }

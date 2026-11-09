@@ -22,16 +22,8 @@ class MultiplicativeMonoidOfSemiring {
     return MultiplicativeMonoidOfSemiring{S::one()};
   }
 
-  decltype(auto) unwrap() const
-    requires requires(const S& s) { s.unwrap(); }
-  {
-    return s.unwrap();
-  }
-  decltype(auto) unwrap()
-    requires requires(S& s) { s.unwrap(); }
-  {
-    return s.unwrap();
-  }
+  const S& unwrap() const { return s; }
+  S& unwrap() { return s; }
 
   friend std::string pretty(const MultiplicativeMonoidOfSemiring& m)
     requires requires(const S& s) {

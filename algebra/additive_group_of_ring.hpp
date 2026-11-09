@@ -22,16 +22,8 @@ class AdditiveGroupOfRing {
   }
   AdditiveGroupOfRing inverse() const { return AdditiveGroupOfRing{-r}; }
 
-  decltype(auto) unwrap() const
-    requires requires(const R& r) { r.unwrap(); }
-  {
-    return r.unwrap();
-  }
-  decltype(auto) unwrap()
-    requires requires(R& r) { r.unwrap(); }
-  {
-    return r.unwrap();
-  }
+  const R& unwrap() const { return r; }
+  R& unwrap() { return r; }
 
   friend std::string pretty(const AdditiveGroupOfRing& g)
     requires requires(const R& r) {

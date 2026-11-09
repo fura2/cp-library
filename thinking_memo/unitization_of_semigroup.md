@@ -13,3 +13,8 @@
 のように書けて、これは `UnitizationOfSemigroup` の積に比べてコンパイラが最適化しやすい様子。
 
 ある程度きれいには書けているので一応残しているが、今のところ使用例はない。
+
+## 2026.11.9
+
+`MultiplicativeMonoidOfSemiring`, `AdditiveMonoidOfSemiring`, `AdditiveGroupOfRing` と合わせて、`unwrap` は一重だけラップを外す仕様に変更した。
+`or_convolution` で `AdditiveGroupOfRing<R>` から内部 `R` を取り出す操作が必要になったため。
