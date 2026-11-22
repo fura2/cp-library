@@ -19,7 +19,7 @@
 
 #define DEBUG
 
-#define impl_overload7(a, b, c, d, e, f, g, h, ...) h
+#define impl_overload8(a, b, c, d, e, f, g, h, ...) h
 
 // clang-format off
 #define impl_show1(a) { std::cerr << #a << " = " << pretty(a) << "\n"; }
@@ -32,7 +32,7 @@
 #define show(...) \
   do { \
     std::cerr << "\033[33m"; \
-    impl_overload7(__VA_ARGS__, impl_show7, impl_show6, impl_show5, impl_show4, impl_show3, impl_show2, impl_show1)(__VA_ARGS__) \
+    impl_overload8(__VA_ARGS__, impl_show7, impl_show6, impl_show5, impl_show4, impl_show3, impl_show2, impl_show1)(__VA_ARGS__) \
     std::cerr << "\033[0m"; \
   } while (false)
 // clang-format on

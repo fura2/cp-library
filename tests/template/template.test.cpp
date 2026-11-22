@@ -12,19 +12,14 @@ static_assert(std::is_same_v<uint, unsigned int>);
 static_assert(std::is_same_v<ulint, unsigned long long>);
 
 int main() {
-  int count = 0;
-  rep (3) ++count;
-  rep (0) ++count;
-  assert(count == 3);
   std::vector<int> values;
+  rep (i, 0) values.push_back(i);
+  assert(values.empty());
   rep (i, 3) values.push_back(i);
   assert((values == std::vector<int>{0, 1, 2}));
   values.clear();
   rep (i, 2, 5) values.push_back(i);
   assert((values == std::vector<int>{2, 3, 4}));
-  values.clear();
-  rep (i, 1, 7, 2) values.push_back(i);
-  assert((values == std::vector<int>{1, 3, 5}));
   values.clear();
   rrep (i, 3) values.push_back(i);
   assert((values == std::vector<int>{2, 1, 0}));
@@ -32,10 +27,8 @@ int main() {
   rrep (i, 2, 5) values.push_back(i);
   assert((values == std::vector<int>{4, 3, 2}));
   values.clear();
-  rrep (i, 1, 7, 2) values.push_back(i);
-  assert((values == std::vector<int>{6, 4, 2}));
   rrep (i, 0) values.push_back(i);
-  assert(values.size() == 3);
+  assert(values.empty());
   assert(bit(10, 0) == 0 && bit(10, 1) == 1);
   assert(bit(1ULL << 63, 63) == 1);
   int x = 3;

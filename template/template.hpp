@@ -14,17 +14,16 @@
 #include "template/constant.hpp"
 #include "template/io.hpp"
 
-#define impl_overload4(a, b, c, d, e, ...) e
+#define impl_overload4(a, b, c, d, ...) d
 
 // clang-format off
-#define impl_rep3(i, a, b) impl_rep4(i, a, b, 1)
-#define impl_rep2(i, n) impl_rep3(i, 0, n)
-#define impl_rep1(n) for (int _ = 0; _ < (n); ++_)
-#define rep(...) impl_overload4(__VA_ARGS__, impl_rep4, impl_rep3, impl_rep2, impl_rep1)(__VA_ARGS__)
+#define impl_rep2(i, a, b) for (int i = (a); i < (b); ++i)
+#define impl_rep1(i, n) impl_rep2(i, 0, n)
+#define rep(...) impl_overload4(__VA_ARGS__, impl_rep2, impl_rep1)(__VA_ARGS__)
 
-#define impl_rrep3(i, a, b) impl_rrep4(i, a, b, 1)
-#define impl_rrep2(i, n) impl_rrep3(i, 0, n)
-#define rrep(...) impl_overload4(__VA_ARGS__, impl_rrep4, impl_rrep3, impl_rrep2)(__VA_ARGS__)
+#define impl_rrep2(i, a, b) for (int i = (b) - 1; i >= (a); --i)
+#define impl_rrep1(i, n) impl_rrep2(i, 0, n)
+#define rrep(...) impl_overload4(__VA_ARGS__, impl_rrep2, impl_rrep1)(__VA_ARGS__)
 // clang-format on
 
 template <typename T>
