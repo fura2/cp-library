@@ -41,14 +41,14 @@ class FenwickTree {
     requires Group<M> && std::constructible_from<M, const T&>
   void set(int i, const T& v) {
     assert(0 <= i && i < n);
-    apply(i, get(i).inverse() * M{v});
+    apply(i, get(i).inverse() * M(v));
   }
 
   template <typename T = M>
     requires std::constructible_from<M, const T&>
   void apply(int i, const T& v) {
     assert(0 <= i && i < n);
-    M m{v};
+    M m(v);
     for (++i; i < n + 1; i += i & -i) a[i] = a[i] * m;
   }
 

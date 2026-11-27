@@ -30,7 +30,7 @@ class LazySegmentTree {
         x(2 * sz, X::identity()),
         f(sz, F::identity()) {
     for (int i = 0; i < n; ++i) {
-      x[sz + i] = X{a[i]};
+      x[sz + i] = X(a[i]);
     }
     for (int u = sz - 1; u > 0; --u) {
       x[u] = x[u << 1] * x[(u << 1) | 1];
@@ -52,7 +52,7 @@ class LazySegmentTree {
     assert(0 <= i && i < n);
     int u = sz + i;
     push(u);
-    x[u] = X{v};
+    x[u] = X(v);
     fix(u);
   }
 
@@ -98,12 +98,12 @@ class LazySegmentTree {
     int l2 = l, r2 = r;
     while (l < r) {
       if (l & 1) {
-        calc(l, F{v});
+        calc(l, F(v));
         ++l;
       }
       if (r & 1) {
         --r;
-        calc(r, F{v});
+        calc(r, F(v));
       }
       l >>= 1;
       r >>= 1;

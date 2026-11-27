@@ -12,6 +12,7 @@
 #include <vector>
 
 #include "algebra/collection/last_monoid.hpp"
+#include "algebra/collection/max_add_monoid_action.hpp"
 #include "algebra/monoid_action_impl.hpp"
 #include "algebra/monoid_impl.hpp"
 
@@ -242,6 +243,14 @@ void check_pretty() {
   check_sums(tree, {5, 5, 9, 5});
 }
 
+void check_direct_initialization() {
+  LazySegmentTree<MaxAddMonoidAction<int>> tree{
+      std::vector<long long>{1, 2, 3, 4}};
+  tree.set(1, 5LL);
+  tree.apply(1, 3, 7LL);
+  assert(tree.get(1).unwrap() == 12 && tree.get(2).unwrap() == 10);
+}
+
 int main() {
   // max_right/min_left are not implemented yet.
   check_affine_sum();
@@ -249,5 +258,6 @@ int main() {
   check_empty_boundaries();
   check_concatenation();
   check_explicit_action();
+  check_direct_initialization();
   check_pretty();
 }

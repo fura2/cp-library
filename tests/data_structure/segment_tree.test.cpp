@@ -28,7 +28,8 @@ int main() {
   single.set(0, 7);
   assert(single.get(0).unwrap() == 7 && single.fold().unwrap() == 7);
 
-  SegmentTree<AddGroup<int>> tree{std::vector<int>{2, 1, 3, 0, 4}};
+  // Construction and set both accept long long inputs for AddGroup<int>.
+  SegmentTree<AddGroup<int>> tree{std::vector<long long>{2, 1, 3, 0, 4}};
   static_assert(std::same_as<decltype(tree.fold()), const AddGroup<int>&>);
   static_assert(std::same_as<decltype(tree.fold(0, 5)), AddGroup<int>>);
   assert(tree.size() == 5 && tree.fold().unwrap() == 10);
@@ -43,7 +44,7 @@ int main() {
   assert(tree.min_left(5, at_most(0)) == 5);
   assert(tree.min_left(5, at_most(100)) == 0);
   assert(tree.min_left(0, at_most(0)) == 0);
-  tree.set(2, 6);
+  tree.set(2, 6LL);
   assert(tree.get(2).unwrap() == 6 && tree.fold().unwrap() == 13);
   assert(tree.fold(1, 4).unwrap() == 7);
   assert(pretty(tree) == "[5 element(s)]");

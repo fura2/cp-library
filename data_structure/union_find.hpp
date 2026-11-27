@@ -23,7 +23,7 @@ class UnionFind {
       if (p[v] < p[u]) std::swap(u, v);
       p[u] += p[v];
       p[v] = u;
-      n--;
+      --n;
     }
   }
 

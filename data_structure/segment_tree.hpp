@@ -21,7 +21,7 @@ class SegmentTree {
         sz(std::bit_ceil<unsigned int>(n)),
         a(2 * sz, M::identity()) {
     for (int i = 0; i < n; ++i) {
-      this->a[sz + i] = M{a[i]};
+      this->a[sz + i] = M(a[i]);
     }
     for (int u = sz - 1; u > 0; --u) {
       this->a[u] = this->a[u << 1] * this->a[(u << 1) | 1];
@@ -40,7 +40,7 @@ class SegmentTree {
   void set(int i, const T& v) {
     assert(0 <= i && i < n);
     int u = i + sz;
-    a[u] = M{v};
+    a[u] = M(v);
     while (u > 1) {
       u >>= 1;
       a[u] = a[u << 1] * a[(u << 1) | 1];

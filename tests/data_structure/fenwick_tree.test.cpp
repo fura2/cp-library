@@ -32,9 +32,10 @@ int main() {
   assert(empty.max_right(0, at_most(0)) == 0);
   assert(empty.min_left(0, at_most(0)) == 0);
   FenwickTree<AddGroup<int>> single{1};
-  single.apply(0, 7);
+  // long long inputs exercise direct initialization of AddGroup<int>.
+  single.apply(0, 7LL);
   assert(single.get(0).unwrap() == 7);
-  single.set(0, 2);
+  single.set(0, 2LL);
   assert(single.fold().unwrap() == 2);
 
   FenwickTree<AddGroup<int>> tree{std::vector<int>{2, 1, 3, 0, 4}};
